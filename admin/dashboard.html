@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -28,9 +28,9 @@
       margin-bottom: 18px;
     }
     .logo span {
-      background: linear-gradient(120deg, #f97316, #ec4899);
-      -webkit-background-clip: text;
-      color: transparent;
+      color: #111827;          /* 글자 선명하게 보이게 수정 */
+      font-weight: 900;
+      letter-spacing: 0.18em;
     }
     .menu-title {
       font-size: 11px;
@@ -198,6 +198,7 @@
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+    // 관리자 로그인 여부 체크
     function checkAdmin() {
       const flag = localStorage.getItem('neoai_admin_logged_in');
       if (flag !== 'true') {
@@ -206,88 +207,69 @@
       }
     }
 
+    // 회원 목록 불러오기
     async function loadUsers() {
       const tbody = document.getElementById('userTbody');
       tbody.innerHTML = '';
 
       try {
         const { data, error } = await supabase
-  .from('users')
-  .select('id, username, name, phone, amount, status, approved, role')
-  .order('created_at', { ascending: true });
+          .from('users')
+          .select('id, username, name, phone, amount, status, approved, role')
+          .order('created_at', { ascending: true });
 
-if (error || !data) {
-  const tr = document.createElement('tr');
-  const td = document.createElement('td');
-  td.colSpan = 7;
-  td.className = 'empty';
-  td.textContent = '회원 목록을 불러올 수 없습니다.';
-  tr.appendChild(td);
-  tbody.appendChild(tr);
-  return;
-}
+        if (error) {
+          console.error(error);
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 7;
+          td.className = 'empty';
+          td.textContent = '회원 목록을 불러올 수 없습니다.';
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+          return;
+        }
 
-        const users = data;
+        if (!data || data.length === 0) {
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 7;
+          td.className = 'empty';
+          td.textContent = '등록된 회원이 없습니다.';
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+          return;
+        }
 
-        if (!users.length) {
-  const tr = document.createElement('tr');
-  const td = document.createElement('td');
-  td.colSpan = 7;
-  td.className = 'empty';
-  td.textContent = '등록된 회원이 없습니다.';
-  tr.appendChild(td);
-  tbody.appendChild(tr);
-  return;
-}
+        // 여기서 필터링 방식 선택:
+        // 1) 모든 유저 보기: const users = data;
+        // 2) admin 계정 빼고 보기:
+        const users = data.filter(u => u.role !== 'admin');
 
-users.forEach(user => {
-  const tr = document.createElement('tr');
+        users.forEach(user => {
+          const tr = document.createElement('tr');
 
-  tr.innerHTML = `
-    <td>${user.username}</td>
-    <td>${user.name || ''}</td>
-    <td>${user.phone || ''}</td>
-    <td><input type="number" min="0" value="${user.amount || 0}" data-id="${user.id}" class="inpAmount" /></td>
-    <td>
-      <select data-id="${user.id}" class="selStatus">
-        <option value="진행중" ${user.status === '진행중' ? 'selected' : ''}>진행중</option>
-        <option value="진행 완료" ${user.status === '진행 완료' ? 'selected' : ''}>진행 완료</option>
-      </select>
-    </td>
-    <td>
-      <select data-id="${user.id}" class="selApproved">
-        <option value="false" ${!user.approved ? 'selected' : ''}>승인 대기</option>
-        <option value="true" ${user.approved ? 'selected' : ''}>승인 완료</option>
-      </select>
-    </td>
-    <td><button data-id="${user.id}" class="btnSaveRow">저장</button></td>
-  `;
+          tr.innerHTML = `
+            <td>${user.username || ''}</td>
+            <td>${user.name || ''}</td>
+            <td>${user.phone || ''}</td>
+            <td><input type="number" min="0" value="${user.amount || 0}" data-id="${user.id}" class="inpAmount" /></td>
+            <td>
+              <select data-id="${user.id}" class="selStatus">
+                <option value="진행중" ${user.status === '진행중' ? 'selected' : ''}>진행중</option>
+                <option value="진행 완료" ${user.status === '진행 완료' ? 'selected' : ''}>진행 완료</option>
+              </select>
+            </td>
+            <td>
+              <select data-id="${user.id}" class="selApproved">
+                <option value="false" ${!user.approved ? 'selected' : ''}>승인 대기</option>
+                <option value="true" ${user.approved ? 'selected' : ''}>승인 완료</option>
+              </select>
+            </td>
+            <td><button data-id="${user.id}" class="btnSaveRow">저장</button></td>
+          `;
 
-  tbody.appendChild(tr);
-});
-
-        tbody.addEventListener('click', async (e) => {
-          if (!e.target.classList.contains('btnSaveRow')) return;
-          const id = e.target.getAttribute('data-id');
-          const amountInput = document.querySelector(\`.inpAmount[data-id="\${id}"]\`);
-          const statusSelect = document.querySelector(\`.selStatus[data-id="\${id}"]\`);
-          const approvedSelect = document.querySelector(\`.selApproved[data-id="\${id}"]\`);
-
-          const amount = Number(amountInput.value || 0);
-          const status = statusSelect.value;
-          const approved = approvedSelect.value === 'true';
-
-          const { error: updateError } = await supabase
-            .from('users')
-            .update({ amount, status, approved })
-            .eq('id', id);
-
-          if (updateError) {
-            console.error(updateError);
-            alert('저장 중 오류가 발생했습니다.');
-            return;
-          }
-          alert('저장되었습니다.');
+          tbody.appendChild(tr);
         });
       } catch (e) {
         console.error(e);
@@ -297,10 +279,38 @@ users.forEach(user => {
         td.className = 'empty';
         td.textContent = '서버와 통신 중 오류가 발생했습니다.';
         tr.appendChild(td);
-        document.getElementById('userTbody').appendChild(tr);
+        tbody.appendChild(tr);
       }
     }
 
+    // 테이블 안에서 "저장" 버튼 클릭 처리
+    document.getElementById('userTbody').addEventListener('click', async (e) => {
+      if (!e.target.classList.contains('btnSaveRow')) return;
+
+      const id = e.target.getAttribute('data-id');
+      const amountInput = document.querySelector(`.inpAmount[data-id="${id}"]`);
+      const statusSelect = document.querySelector(`.selStatus[data-id="${id}"]`);
+      const approvedSelect = document.querySelector(`.selApproved[data-id="${id}"]`);
+
+      const amount = Number(amountInput.value || 0);
+      const status = statusSelect.value;
+      const approved = approvedSelect.value === 'true';
+
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ amount, status, approved })
+        .eq('id', id);
+
+      if (updateError) {
+        console.error(updateError);
+        alert('저장 중 오류가 발생했습니다.');
+        return;
+      }
+
+      alert('저장되었습니다.');
+    });
+
+    // 관리자 로그아웃
     document.getElementById('btnAdminLogout').addEventListener('click', () => {
       localStorage.removeItem('neoai_admin_logged_in');
       localStorage.removeItem('neoai_admin_user');
@@ -308,9 +318,9 @@ users.forEach(user => {
       window.location.href = 'login.html';
     });
 
+    // 초기 실행
     checkAdmin();
     loadUsers();
   </script>
 </body>
 </html>
-
