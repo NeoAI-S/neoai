@@ -7,7 +7,7 @@
   <style>
     * { box-sizing: border-box; }
 
-    /* 👇 눈누 SUIT 웹폰트 */
+    /* 눈누 SUIT 웹폰트 */
     @font-face {
       font-family: 'SUIT-Regular';
       src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2')
@@ -182,11 +182,83 @@
       background: #e5e7eb;
     }
 
+    .approved-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      gap: 6px;
+    }
+    .approved-pill span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+    }
+    .approved-yes {
+      background: rgba(34, 197, 94, 0.12);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.6);
+    }
+    .approved-yes span.dot { background: #22c55e; }
+    .approved-no {
+      background: rgba(248, 113, 113, 0.12);
+      color: #fecaca;
+      border: 1px solid rgba(248, 113, 113, 0.6);
+    }
+    .approved-no span.dot { background: #f97373; }
+
     .info-text {
       font-size: 12px;
       color: #9ca3af;
       margin-top: 10px;
       line-height: 1.6;
+    }
+
+    /* 진행 단계 카드 */
+    .steps-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .step {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.88);
+      font-size: 12px;
+      color: #9ca3af;
+      position: relative;
+    }
+    .step-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+    .step.active {
+      border-color: #f97316;
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.35);
+      color: #e5e7eb;
+    }
+    .step-tag {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      color: #9ca3af;
+    }
+    .step.active .step-tag {
+      background: #f97316;
+      border-color: #fed7aa;
+      color: #0b1120;
     }
 
     /* 소개 섹션 */
@@ -242,6 +314,29 @@
       margin-top: 4px;
     }
 
+    .intro-cols {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+      font-size: 12px;
+    }
+    @media (max-width: 720px) {
+      .intro-cols { grid-template-columns: minmax(0, 1fr); }
+    }
+    .intro-box {
+      padding: 10px 11px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(75, 85, 99, 0.8);
+    }
+    .intro-box-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #e5e7eb;
+    }
+
     .hidden { display: none; }
   </style>
 </head>
@@ -258,7 +353,7 @@
         </nav>
       </header>
 
-      <!-- AI 투자현황 섹션 -->
+      <!-- AI 투자현황 메인 카드 -->
       <section id="sectionStatus" class="card">
         <div class="section-title">AI 투자현황</div>
         <div class="section-sub" id="nameLine"></div>
@@ -272,9 +367,48 @@
             <div class="value-label">진행 상태</div>
             <div id="statusBadge"></div>
           </div>
+          <div class="value-box">
+            <div class="value-label">승인 상태</div>
+            <div id="approvedBadge"></div>
+          </div>
         </div>
 
         <div class="info-text" id="approvalInfo"></div>
+      </section>
+
+      <!-- AI 세션 진행 단계 카드 -->
+      <section id="sectionStatusExtra" class="card">
+        <div class="section-title">AI 세션 진행 단계</div>
+        <div class="section-sub">
+          네오AI는 아래 3단계를 거쳐 세션을 운용합니다. 현재 단계는 강조된 카드로 표시됩니다.
+        </div>
+
+        <div class="steps-row">
+          <div class="step" data-step="wait">
+            <div class="step-title">1단계 · 대기중</div>
+            <div class="step-tag">READY</div>
+            <div>
+              관리자 승인과 투자금 확정 전 단계입니다.<br/>
+              계좌·금액이 확정되면 다음 단계로 이동합니다.
+            </div>
+          </div>
+          <div class="step" data-step="run">
+            <div class="step-title">2단계 · 진행중</div>
+            <div class="step-tag">RUNNING</div>
+            <div>
+              AI가 시장 데이터를 분석해 분산 투자를 실행하는 구간입니다.<br/>
+              구간 내에서 포트폴리오가 자동으로 조정됩니다.
+            </div>
+          </div>
+          <div class="step" data-step="done">
+            <div class="step-title">3단계 · 진행 완료</div>
+            <div class="step-tag">CLOSE</div>
+            <div>
+              해당 세션의 운용이 종료된 상태입니다.<br/>
+              수익·손실 정산 및 다음 세션 준비에 활용됩니다.
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- 소개 섹션 -->
@@ -291,15 +425,45 @@ AI 투자 프로세서입니다.
 사용자는 투자 금액과 기간만 정하면,
 AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동으로 수행하도록 설계되어 있습니다.
             </p>
+
+            <div class="intro-cols">
+              <div class="intro-box">
+                <div class="intro-box-title">AI가 하는 일 3단계</div>
+                <ul class="intro-points">
+                  <li>1. 시장·뉴스·지표 데이터 스캔</li>
+                  <li>2. 포트폴리오 구성 및 분산 투자</li>
+                  <li>3. 손익·리스크 모니터링 및 재학습</li>
+                </ul>
+              </div>
+              <div class="intro-box">
+                <div class="intro-box-title">이런 분께 잘 맞아요</div>
+                <ul class="intro-points">
+                  <li>· 단기 구간 단위로 운용하고 싶은 분</li>
+                  <li>· 포트폴리오 분산이 번거로운 분</li>
+                  <li>· AI 기반 의사결정을 체험해 보고 싶은 분</li>
+                </ul>
+              </div>
+            </div>
           </div>
           <div>
-            <ul class="intro-points">
-              <li>· 경제 지표 / 뉴스 / 시황 데이터를 실시간 분석</li>
-              <li>· 최대 30개 내외 종목으로 AI 분산 투자</li>
-              <li>· 최소 1시간 ~ 최대 12일 구간별 운용</li>
-              <li>· 구간별 성과를 반복 학습해 전략 고도화</li>
-              <li>· 유저는 “얼마를, 얼마나 맡길지”만 결정</li>
-            </ul>
+            <div class="intro-box">
+              <div class="intro-box-title">운용 기본 원칙</div>
+              <ul class="intro-points">
+                <li>· 최소 1시간 ~ 최대 12일 단위로 세션 운용</li>
+                <li>· 세션마다 목표 수익률·리스크 한도 설정</li>
+                <li>· 과거 성과·실시간 데이터를 함께 반영</li>
+              </ul>
+            </div>
+
+            <div class="intro-box" style="margin-top:10px;">
+              <div class="intro-box-title">주의사항</div>
+              <ul class="intro-points">
+                <li>· AI 투자라고 해서 손실이 아예 없는 것은 아닙니다.</li>
+                <li>· 과거 수익률이 미래 수익을 보장하지 않습니다.</li>
+                <li>· 세션별 진행상태·금액은 관리자 페이지 기준으로 반영됩니다.</li>
+              </ul>
+            </div>
+
             <div style="margin-top:10px;">
               <span class="intro-tag">인공지능 분석</span>
               <span class="intro-tag">포트폴리오 분산</span>
@@ -366,6 +530,41 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       badge.appendChild(wrapper);
     }
 
+    function renderApproved(approved) {
+      const box = document.getElementById('approvedBadge');
+      box.innerHTML = '';
+
+      const pill = document.createElement('span');
+      pill.classList.add('approved-pill');
+      const dot = document.createElement('span');
+      dot.classList.add('dot');
+      const text = document.createElement('span');
+
+      if (approved) {
+        pill.classList.add('approved-yes');
+        text.textContent = '승인 완료';
+      } else {
+        pill.classList.add('approved-no');
+        text.textContent = '승인 대기';
+      }
+
+      pill.appendChild(dot);
+      pill.appendChild(text);
+      box.appendChild(pill);
+    }
+
+    function renderSteps(status) {
+      const steps = document.querySelectorAll('.step');
+      steps.forEach(step => step.classList.remove('active'));
+
+      let key = 'wait';
+      if (status === '진행중') key = 'run';
+      else if (status === '진행 완료') key = 'done';
+
+      const target = document.querySelector(`.step[data-step="${key}"]`);
+      if (target) target.classList.add('active');
+    }
+
     async function loadStatus() {
       const amountText = document.getElementById('amountText');
       const approvalInfo = document.getElementById('approvalInfo');
@@ -379,7 +578,6 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       }
 
       try {
-        // username 기준으로 조회 (id 타입 문제 방지)
         const { data, error } = await supabase
           .from('users')
           .select('amount, status, approved, name, username')
@@ -390,6 +588,9 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
           console.error('Supabase error:', error);
           amountText.textContent = '- 원';
           approvalInfo.textContent = '투자 정보 조회 중 오류가 발생했습니다.';
+          renderStatus('대기중');
+          renderApproved(false);
+          renderSteps('대기중');
           return;
         }
 
@@ -397,11 +598,15 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
           amountText.textContent = '- 원';
           approvalInfo.textContent = '등록된 투자 정보가 없습니다.';
           renderStatus('대기중');
+          renderApproved(false);
+          renderSteps('대기중');
           return;
         }
 
         amountText.textContent = formatAmount(data.amount);
         renderStatus(data.status);
+        renderApproved(data.approved);
+        renderSteps(data.status);
 
         if (!data.approved) {
           approvalInfo.textContent =
@@ -414,6 +619,9 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         console.error('JS error:', e);
         amountText.textContent = '- 원';
         approvalInfo.textContent = '투자 정보 조회 중 오류가 발생했습니다.';
+        renderStatus('대기중');
+        renderApproved(false);
+        renderSteps('대기중');
       }
     }
 
@@ -421,12 +629,14 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     const tabStatus = document.getElementById('tabStatus');
     const tabIntro = document.getElementById('tabIntro');
     const sectionStatus = document.getElementById('sectionStatus');
+    const sectionStatusExtra = document.getElementById('sectionStatusExtra');
     const sectionIntro = document.getElementById('sectionIntro');
 
     tabStatus.addEventListener('click', () => {
       tabStatus.classList.add('active');
       tabIntro.classList.remove('active');
       sectionStatus.classList.remove('hidden');
+      sectionStatusExtra.classList.remove('hidden');
       sectionIntro.classList.add('hidden');
     });
 
@@ -435,6 +645,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       tabStatus.classList.remove('active');
       sectionIntro.classList.remove('hidden');
       sectionStatus.classList.add('hidden');
+      sectionStatusExtra.classList.add('hidden');
     });
 
     document.getElementById('btnLogout').addEventListener('click', () => {
