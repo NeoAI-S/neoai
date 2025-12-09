@@ -407,7 +407,7 @@
       <section id="sectionStatusExtra" class="card">
         <div class="section-title">AI 세션 진행 단계</div>
         <div class="section-sub">
-          네오AI는 아래 3단계를 기준으로 세션을 운용합니다. 현재 상태에 따라 강조된 단계가 바뀝니다.
+          네오AI는 아래 3단계를 거쳐 세션을 운용합니다.
         </div>
 
         <div class="steps-row">
@@ -415,24 +415,24 @@
             <div class="step-title">1단계 · 대기중</div>
             <div class="step-tag">READY</div>
             <div>
-              AI 투자 대기 단계입니다.<br/>
-              투자가 준비 완료되면 다음 단계로 이동합니다.
+              투자금 확정 전 단계입니다.<br/>
+              투자가 확정되면 다음 단계로 이동합니다.
             </div>
           </div>
           <div class="step" data-step="run">
             <div class="step-title">2단계 · 진행중</div>
             <div class="step-tag">RUNNING</div>
             <div>
-              설정된 금액과 세계 시장에 맞춰 AI가 분산 투자를 수행하는 구간입니다.<br/>
+              설정된 금액과 기간에 맞춰 AI가 분산 투자를 수행하는 구간입니다.<br/>
               포트폴리오 구성과 비중 조정이 자동으로 이뤄집니다.
             </div>
           </div>
           <div class="step" data-step="done">
             <div class="step-title">3단계 · 진행 완료</div>
-            <div class="step-tag">CLOSE</div>
+            <div class="step-tag">COMPLETE</div>
             <div>
-              투자 운용이 종료된 상태입니다.<br/>
-              손익 결과가 정산되고, 데이터가 다음 전략 학습에 활용됩니다.
+              투자 운용이 완료된 상태입니다.<br/>
+              수익 정산을 준비합니다.
             </div>
           </div>
         </div>
@@ -464,14 +464,14 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
             </div>
           </div>
           <div>
-            <!-- 투자 예시 시나리오 (전문적으로 상세) -->
+            <!-- 투자 예시 시나리오 (전문 운영 관점) -->
             <div class="intro-box">
               <div class="intro-box-title">투자 예시 시나리오 (전문 운영 관점)</div>
               <p class="intro-text" style="margin-top:4px;">
-<span class="scenario-highlight">예시 · 50,000원을 최소 1시간 ~ 최대 12일 동안 AI에 맡기는 경우</span>
+<span class="scenario-highlight">예시 · 50,000원을 6시간 동안 AI에 맡기는 경우</span>
 
 1) <strong>세션 설정</strong>  
- · 유저가 50,000원을 투자하고, 최소 1시간 ~ 최대 12일 진행됩니다 .  
+ · 유저가 50,000원을 투자하고, 약 6시간 운용 구간을 선택합니다.  
  · 관리자는 세션을 "진행중" 상태로 전환하며, 네오AI는 해당 금액을 운용대상으로 인식합니다.
 
 2) <strong>시장·종목 스캔</strong>  
@@ -484,12 +484,12 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
  · 각 종목별 예상 수익·리스크에 따라 비중이 자동으로 조정됩니다.
 
 4) <strong>세션 중 리스크 관리</strong>  
- · 운용 구간(최소 1시간 ~ 최대 12일) 동안 실시간 가격 변화를 모니터링하며,  
+ · 운용 구간(6시간) 동안 실시간 가격 변화를 모니터링하며,  
    사전 설정된 손실 한도 또는 급격한 변동이 발생할 경우 비중을 축소하거나 현금 비중을 늘립니다.  
  · 과도한 집중이 발생하지 않도록, 종목당·섹터당 비중 상한을 유지합니다.
 
 5) <strong>세션 종료 및 정산</strong>  
- · 최소 1시간 ~ 최대 12일 구간이 종료되면, 해당 세션은 "진행 완료" 상태로 전환됩니다.  
+ · 6시간 구간이 종료되면, 해당 세션은 "진행 완료" 상태로 전환됩니다.  
  · 포트폴리오 전체 평가금액이 계산되고, 수익 또는 손실 결과가 정리됩니다.  
  · 이때의 성과 데이터는 다음 세션의 전략 고도화에 사용되며, 어떤 조건·종목 조합이 유리했는지 재학습에 반영됩니다.
 
@@ -543,7 +543,6 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 
     function maskPhone(phone) {
       if (!phone) return '-';
-      // 01012345678 → 010-****-5678 정도
       const digits = phone.replace(/[^0-9]/g, '');
       if (digits.length < 8) return phone;
       const head = digits.slice(0, 3);
@@ -553,7 +552,6 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 
     function maskBank(bank) {
       if (!bank) return '-';
-      // 뒷 4자리만 노출
       const cleaned = bank.replace(/\s+/g, ' ');
       const parts = cleaned.split(' ');
       const last = parts[parts.length - 1];
@@ -685,10 +683,10 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 
         if (!data.approved) {
           approvalInfo.textContent =
-            `${displayName ? displayName + '님은 ' : ''}현재 승인 대기 중입니다. 승인 완료 후부터 AI 투자 진행이 시작됩니다.`;
+            `${displayName ? displayName + '님은 ' : ''}현재 관리자 승인 대기 중입니다. 승인 완료 후부터 AI 투자 진행이 시작됩니다.`;
         } else {
           approvalInfo.textContent =
-            `${displayName ? displayName + '님의 ' : ''}AI 투자 진행 상황은 투자 이후 변경되며, 로그인 시점 기준으로 최신 상태가 반영됩니다.`;
+            `${displayName ? displayName + '님의 ' : ''}AI 투자 진행 상황입니다. 매일 최신 상태가 반영됩니다.`;
         }
       } catch (e) {
         console.error('JS error:', e);
@@ -738,6 +736,3 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
   </script>
 </body>
 </html>
-
-
-
