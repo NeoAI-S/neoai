@@ -7,45 +7,65 @@
   <style>
     * { box-sizing: border-box; }
 
-    /* 👇 눈누 기초고딕 웹폰트 (Noonnu Basic Gothic) */
+    /* 👇 눈누 SUIT 웹폰트 */
     @font-face {
-      font-family: 'NoonnuBasicGothic';
-      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noon-2410@1.0/NoonnuBasicGothicRegular.woff2') format('woff2');
+      font-family: 'SUIT-Regular';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2')
+           format('woff2');
       font-weight: normal;
+      font-style: normal;
       font-display: swap;
     }
 
     body {
       margin: 0;
-      font-family: 'NoonnuBasicGothic', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: 'SUIT-Regular', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-height: 100vh;
+      color: #e5e7eb;
       background:
-        radial-gradient(circle at 0% 0%, rgba(129, 140, 248, 0.35), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(244, 114, 182, 0.3), transparent 55%),
-        linear-gradient(135deg, #f9fafb, #eef2ff);
-      color: #0f172a;
+        radial-gradient(circle at 0% 0%, rgba(94, 234, 212, 0.25), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(129, 140, 248, 0.4), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(251, 113, 133, 0.3), transparent 55%),
+        linear-gradient(135deg, #020617, #020617);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px 12px 28px;
     }
 
     .shell {
+      width: 100%;
       max-width: 960px;
-      margin: 0 auto;
-      padding: 22px 16px 40px;
+    }
+
+    .frame {
+      border-radius: 26px;
+      background: rgba(15, 23, 42, 0.83);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(148, 163, 184, 0.65);
+      box-shadow:
+        0 28px 80px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.8);
+      padding: 18px 20px 20px;
     }
 
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .logo {
       font-weight: 800;
-      font-size: 19px;
+      font-size: 18px;
       letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f9fafb;
     }
     .logo span {
-      color: #0f172a;
+      color: #a5b4fc;
       font-weight: 900;
       letter-spacing: 0.24em;
     }
@@ -59,41 +79,43 @@
       padding: 7px 14px;
       border-radius: 999px;
       border: 1px solid transparent;
-      background: rgba(15, 23, 42, 0.02);
+      background: rgba(15, 23, 42, 0.4);
+      color: #e5e7eb;
       cursor: pointer;
       font-size: 13px;
-      transition: all 0.15s ease;
+      transition: all 0.16s ease;
     }
     .nav button.active {
-      background: #0f172a;
-      color: #f9fafb;
-      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.35);
+      background: #f97316;
+      color: #0b1120;
+      box-shadow: 0 14px 34px rgba(248, 113, 113, 0.4);
       transform: translateY(-1px);
     }
     .nav button:hover:not(.active) {
-      background: rgba(15, 23, 42, 0.06);
+      background: rgba(148, 163, 184, 0.16);
     }
 
     .card {
-      border-radius: 22px;
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 22px 45px rgba(15, 23, 42, 0.22);
-      padding: 20px 18px 18px;
-      margin-bottom: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(251, 113, 133, 0.26), transparent 60%),
+                  rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(75, 85, 99, 0.7);
+      box-shadow: 0 20px 55px rgba(15, 23, 42, 0.9);
+      padding: 18px 18px 18px;
+      margin-bottom: 12px;
     }
 
     .section-title {
       font-size: 15px;
       font-weight: 700;
       margin-bottom: 4px;
+      color: #f9fafb;
     }
 
     .section-sub {
       font-size: 12px;
-      color: #6b7280;
+      color: #9ca3af;
       margin-bottom: 14px;
     }
 
@@ -105,20 +127,21 @@
     }
     .value-box {
       flex: 1;
-      min-width: 160px;
+      min-width: 170px;
       padding: 14px 14px;
       border-radius: 16px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(55, 65, 81, 0.9);
     }
     .value-label {
       font-size: 12px;
-      color: #6b7280;
+      color: #9ca3af;
       margin-bottom: 4px;
     }
     .value-main {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 700;
+      color: #e5e7eb;
     }
 
     .status-pill {
@@ -135,30 +158,33 @@
       border-radius: 999px;
     }
     .status-wait {
-      background: #fef3c7;
-      color: #92400e;
+      background: rgba(250, 204, 21, 0.12);
+      color: #facc15;
+      border: 1px solid rgba(250, 204, 21, 0.5);
     }
     .status-wait .status-dot {
-      background: #f59e0b;
+      background: #facc15;
     }
     .status-run {
-      background: #dcfce7;
-      color: #166534;
+      background: rgba(52, 211, 153, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.5);
     }
     .status-run .status-dot {
       background: #22c55e;
     }
     .status-done {
-      background: #e5e7eb;
-      color: #374151;
+      background: rgba(148, 163, 184, 0.22);
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.6);
     }
     .status-done .status-dot {
-      background: #6b7280;
+      background: #e5e7eb;
     }
 
     .info-text {
       font-size: 12px;
-      color: #6b7280;
+      color: #9ca3af;
       margin-top: 10px;
       line-height: 1.6;
     }
@@ -170,33 +196,33 @@
       gap: 18px;
     }
     @media (max-width: 720px) {
-      .intro-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      .intro-grid { grid-template-columns: minmax(0, 1fr); }
     }
+
     .intro-badge {
       display: inline-flex;
       padding: 4px 11px;
       border-radius: 999px;
       font-size: 11px;
-      background: rgba(79, 70, 229, 0.08);
-      color: #4f46e5;
+      background: rgba(59, 130, 246, 0.18);
+      color: #60a5fa;
       margin-bottom: 10px;
     }
     .intro-title {
       font-size: 18px;
       font-weight: 700;
       margin-bottom: 8px;
+      color: #f9fafb;
     }
     .intro-text {
       font-size: 13px;
-      color: #4b5563;
+      color: #d1d5db;
       line-height: 1.7;
       white-space: pre-line;
     }
     .intro-points {
       font-size: 12px;
-      color: #374151;
+      color: #e5e7eb;
       list-style: none;
       padding: 0;
       margin: 0;
@@ -208,9 +234,10 @@
       display: inline-block;
       padding: 4px 9px;
       border-radius: 999px;
-      background: #fef3c7;
+      background: rgba(236, 72, 153, 0.15);
+      border: 1px solid rgba(236, 72, 153, 0.4);
       font-size: 11px;
-      color: #92400e;
+      color: #f9a8d4;
       margin-right: 4px;
       margin-top: 4px;
     }
@@ -220,65 +247,68 @@
 </head>
 <body>
   <div class="shell">
-    <header class="topbar">
-      <div class="logo"><span>NEO AI</span> PROCESSOR</div>
-      <nav class="nav">
-        <!-- 순서: AI 투자현황, 소개, 로그아웃 -->
-        <button id="tabStatus" class="active">AI 투자현황</button>
-        <button id="tabIntro">소개</button>
-        <button id="btnLogout">로그아웃</button>
-      </nav>
-    </header>
+    <div class="frame">
+      <header class="topbar">
+        <div class="logo"><span>NEO AI</span> PROCESSOR</div>
+        <nav class="nav">
+          <!-- 순서: AI 투자현황, 소개, 로그아웃 -->
+          <button id="tabStatus" class="active">AI 투자현황</button>
+          <button id="tabIntro">소개</button>
+          <button id="btnLogout">로그아웃</button>
+        </nav>
+      </header>
 
-    <!-- AI 투자현황 섹션 -->
-    <section id="sectionStatus" class="card">
-      <div class="section-title">AI 투자현황</div>
+      <!-- AI 투자현황 섹션 -->
+      <section id="sectionStatus" class="card">
+        <div class="section-title">AI 투자현황</div>
+        <div class="section-sub" id="nameLine"></div>
 
-      <div class="value-row">
-        <div class="value-box">
-          <div class="value-label">AI투자중인 금액</div>
-          <div class="value-main" id="amountText">- 원</div>
+        <div class="value-row">
+          <div class="value-box">
+            <div class="value-label">AI투자중인 금액</div>
+            <div class="value-main" id="amountText">- 원</div>
+          </div>
+          <div class="value-box">
+            <div class="value-label">진행 상태</div>
+            <div id="statusBadge"></div>
+          </div>
         </div>
-        <div class="value-box">
-          <div class="value-label">진행 상태</div>
-          <div id="statusBadge"></div>
-        </div>
-      </div>
 
-      <div class="info-text" id="approvalInfo"></div>
-    </section>
+        <div class="info-text" id="approvalInfo"></div>
+      </section>
 
-    <!-- 소개 섹션 -->
-    <section id="sectionIntro" class="card hidden">
-      <div class="intro-badge">AI 기반 자동 투자 프로세스</div>
-      <div class="intro-grid">
-        <div>
-          <div class="intro-title">네오AI, 스스로 판단하고 분산 투자하는 인공지능</div>
-          <p class="intro-text">
+      <!-- 소개 섹션 -->
+      <section id="sectionIntro" class="card hidden">
+        <div class="intro-badge">AI 기반 자동 투자 프로세스</div>
+        <div class="intro-grid">
+          <div>
+            <div class="intro-title">네오AI, 스스로 판단하고 분산 투자하는 인공지능</div>
+            <p class="intro-text">
 네오AI는 대량의 시장 데이터와 딥러닝 알고리즘을 활용해서
 시장 흐름을 분석하고, 여러 종목과 자산군에 자동으로 분산 투자하는
 AI 투자 프로세서입니다.
 
-사용자는 투자 금액과 기간만 설정하면,
+사용자는 투자 금액과 기간만 정하면,
 AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동으로 수행하도록 설계되어 있습니다.
-          </p>
-        </div>
-        <div>
-          <ul class="intro-points">
-            <li>· 경제 지표 / 뉴스 / 시황 데이터를 실시간 분석</li>
-            <li>· 최대 30개 내외 종목으로 AI 분산 투자</li>
-            <li>· 최소 1시간 ~ 최대 12일 구간별 운용</li>
-            <li>· 구간별 성과를 반복 학습해 전략 고도화</li>
-            <li>· 유저는 “얼마를, 얼마나 맡길지”만 결정</li>
-          </ul>
-          <div style="margin-top:10px;">
-            <span class="intro-tag">인공지능 분석</span>
-            <span class="intro-tag">포트폴리오 분산</span>
-            <span class="intro-tag">AI 리스크 관리</span>
+            </p>
+          </div>
+          <div>
+            <ul class="intro-points">
+              <li>· 경제 지표 / 뉴스 / 시황 데이터를 실시간 분석</li>
+              <li>· 최대 30개 내외 종목으로 AI 분산 투자</li>
+              <li>· 최소 1시간 ~ 최대 12일 구간별 운용</li>
+              <li>· 구간별 성과를 반복 학습해 전략 고도화</li>
+              <li>· 유저는 “얼마를, 얼마나 맡길지”만 결정</li>
+            </ul>
+            <div style="margin-top:10px;">
+              <span class="intro-tag">인공지능 분석</span>
+              <span class="intro-tag">포트폴리오 분산</span>
+              <span class="intro-tag">AI 리스크 관리</span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 
   <!-- Supabase + 대시보드 로직 -->
@@ -316,10 +346,8 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 
       const wrapper = document.createElement('span');
       wrapper.classList.add('status-pill');
-
       const dot = document.createElement('span');
       dot.classList.add('status-dot');
-
       const text = document.createElement('span');
 
       if (!status || status === '대기중') {
@@ -341,36 +369,51 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     async function loadStatus() {
       const amountText = document.getElementById('amountText');
       const approvalInfo = document.getElementById('approvalInfo');
+      const nameLine = document.getElementById('nameLine');
+
+      const displayName = (currentUser && (currentUser.name || currentUser.username)) || '';
+      if (displayName) {
+        nameLine.textContent = `${displayName}님의 AI 투자 진행 정보입니다.`;
+      } else {
+        nameLine.textContent = 'AI 투자 진행 정보입니다.';
+      }
 
       try {
+        // username 기준으로 조회 (id 타입 문제 방지)
         const { data, error } = await supabase
           .from('users')
           .select('amount, status, approved, name, username')
-          .eq('id', currentUser.id)
-          .single();
+          .eq('username', currentUser.username)
+          .maybeSingle();
 
-        if (error || !data) {
-          console.error(error);
+        if (error) {
+          console.error('Supabase error:', error);
           amountText.textContent = '- 원';
           approvalInfo.textContent = '투자 정보 조회 중 오류가 발생했습니다.';
+          return;
+        }
+
+        if (!data) {
+          amountText.textContent = '- 원';
+          approvalInfo.textContent = '등록된 투자 정보가 없습니다.';
+          renderStatus('대기중');
           return;
         }
 
         amountText.textContent = formatAmount(data.amount);
         renderStatus(data.status);
 
-        const displayName = data.name || data.username || '';
-
         if (!data.approved) {
           approvalInfo.textContent =
             `${displayName ? displayName + '님은 ' : ''}현재 관리자 승인 대기 중입니다. 승인 완료 후부터 AI 투자 진행이 시작됩니다.`;
         } else {
           approvalInfo.textContent =
-            `${displayName ? displayName + '님의 ' : ''}AI 투자 진행 상황은 매일 최신 상태가 반영됩니다.`;
+            `${displayName ? displayName + '님의 ' : ''}AI 투자 진행 상황은 관리자에서 변경되며, 로그인 시점 기준으로 최신 상태가 반영됩니다.`;
         }
       } catch (e) {
-        console.error(e);
-        approvalInfo.textContent = '서버와 통신 중 오류가 발생했습니다.';
+        console.error('JS error:', e);
+        amountText.textContent = '- 원';
+        approvalInfo.textContent = '투자 정보 조회 중 오류가 발생했습니다.';
       }
     }
 
@@ -405,5 +448,3 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
   </script>
 </body>
 </html>
-
-
