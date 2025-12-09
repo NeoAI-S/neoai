@@ -28,7 +28,7 @@
       margin-bottom: 18px;
     }
     .logo span {
-      color: #111827;          /* 글자 선명하게 보이게 수정 */
+      color: #111827;
       font-weight: 900;
       letter-spacing: 0.18em;
     }
@@ -172,6 +172,7 @@
             <th>아이디</th>
             <th>이름</th>
             <th>휴대폰</th>
+            <th>출금 계좌</th>
             <th>AI투자중인 금액</th>
             <th>진행 상태</th>
             <th>승인 상태</th>
@@ -185,7 +186,7 @@
 
       <div class="note">
         · 금액은 숫자만 입력 (예: 50000 → 50,000원)<br />
-        · “진행중 / 진행 완료” 및 “승인 대기 / 승인 완료”를 수정하면, 유저 페이지 새 접속 시 반영됩니다.<br />
+        · “대기중 / 진행중 / 진행 완료” 및 “승인 대기 / 승인 완료”를 수정하면, 유저 페이지 새 접속 시 반영됩니다.<br />
         · 관리자 계정은 users 테이블에서 role='admin' 으로 직접 관리합니다.
       </div>
     </section>
@@ -198,7 +199,6 @@
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // 관리자 로그인 여부 체크
     function checkAdmin() {
       const flag = localStorage.getItem('neoai_admin_logged_in');
       if (flag !== 'true') {
@@ -207,7 +207,6 @@
       }
     }
 
-    // 회원 목록 불러오기
     async function loadUsers() {
       const tbody = document.getElementById('userTbody');
       tbody.innerHTML = '';
@@ -215,14 +214,14 @@
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('id, username, name, phone, amount, status, approved, role')
+          .select('id, username, name, phone, bank_account, amount, status, approved, role')
           .order('created_at', { ascending: true });
 
         if (error) {
           console.error(error);
           const tr = document.createElement('tr');
           const td = document.createElement('td');
-          td.colSpan = 7;
+          td.colSpan = 8;
           td.className = 'empty';
           td.textContent = '회원 목록을 불러올 수 없습니다.';
           tr.appendChild(td);
@@ -233,7 +232,7 @@
         if (!data || data.length === 0) {
           const tr = document.createElement('tr');
           const td = document.createElement('td');
-          td.colSpan = 7;
+          td.colSpan = 8;
           td.className = 'empty';
           td.textContent = '등록된 회원이 없습니다.';
           tr.appendChild(td);
@@ -241,9 +240,6 @@
           return;
         }
 
-        // 여기서 필터링 방식 선택:
-        // 1) 모든 유저 보기: const users = data;
-        // 2) admin 계정 빼고 보기:
         const users = data.filter(u => u.role !== 'admin');
 
         users.forEach(user => {
@@ -253,9 +249,11 @@
             <td>${user.username || ''}</td>
             <td>${user.name || ''}</td>
             <td>${user.phone || ''}</td>
+            <td>${user.bank_account || ''}</td>
             <td><input type="number" min="0" value="${user.amount || 0}" data-id="${user.id}" class="inpAmount" /></td>
             <td>
               <select data-id="${user.id}" class="selStatus">
+                <option value="대기중" ${(!user.status || user.status === '대기중') ? 'selected' : ''}>대기중</option>
                 <option value="진행중" ${user.status === '진행중' ? 'selected' : ''}>진행중</option>
                 <option value="진행 완료" ${user.status === '진행 완료' ? 'selected' : ''}>진행 완료</option>
               </select>
@@ -275,7 +273,7 @@
         console.error(e);
         const tr = document.createElement('tr');
         const td = document.createElement('td');
-        td.colSpan = 7;
+        td.colSpan = 8;
         td.className = 'empty';
         td.textContent = '서버와 통신 중 오류가 발생했습니다.';
         tr.appendChild(td);
@@ -283,7 +281,6 @@
       }
     }
 
-    // 테이블 안에서 "저장" 버튼 클릭 처리
     document.getElementById('userTbody').addEventListener('click', async (e) => {
       if (!e.target.classList.contains('btnSaveRow')) return;
 
@@ -310,7 +307,6 @@
       alert('저장되었습니다.');
     });
 
-    // 관리자 로그아웃
     document.getElementById('btnAdminLogout').addEventListener('click', () => {
       localStorage.removeItem('neoai_admin_logged_in');
       localStorage.removeItem('neoai_admin_user');
@@ -318,7 +314,6 @@
       window.location.href = 'login.html';
     });
 
-    // 초기 실행
     checkAdmin();
     loadUsers();
   </script>
