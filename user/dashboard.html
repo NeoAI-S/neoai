@@ -179,7 +179,7 @@
           <strong>진행 기간 &amp; 수익 목표</strong><br />
           · 진행 기간: 최소 1시간 ~ 최대 12일 범위 내 전략 운영을 가정합니다.<br />
           · 수익률 목표: 전략에 따라 50% 수준부터 고수익 전략까지 다양한 구간을 제공합니다.<br />
-          ※ 실제 수익은 시장 상황에 따라 달라질 수 있으며, 원금 손실 가능성이 존재합니다.
+      
         </div>
         <p class="muted">이 페이지의 내용은 NEO AI 서비스 콘셉트를 설명하기 위한 예시 텍스트입니다.</p>
       </section>
@@ -191,9 +191,6 @@
         <p><span class="label">진행 상태 :</span>
            <span class="status-pill" id="statusPill">-</span></p>
 
-        <div class="highlight-box">
-          · 진행 상태는 관리자 페이지에서 “진행중 / 진행 완료”로 변경됩니다.<br />
-          · 금액 및 상태가 변경되면, 이 화면에서 접속 시 최신 정보가 반영됩니다.
         </div>
 
         <div class="error" id="errorBox"></div>
@@ -252,7 +249,7 @@
 
         localStorage.setItem('neoai_current_user', JSON.stringify(data));
 
-        greeting.innerHTML = `<span>${data.name}</span> 님, NEO AI 투자 프로세서에 접속하셨습니다.`;
+        
         amountText.textContent = formatMoney(data.amount);
         statusPill.textContent = data.status;
         statusPill.className =
@@ -291,3 +288,4 @@
   </script>
 </body>
 </html>
+
