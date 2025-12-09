@@ -1,8 +1,8 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>NEO AI - 대시보드</title>
+  <title>NEO AI ADMIN - 회원 & 투자 관리</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * { box-sizing: border-box; }
@@ -11,281 +11,316 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      background: radial-gradient(circle at top, #eef2ff 0, #f9fafb 45%, #e5e7eb 100%);
+      background: linear-gradient(135deg, #fefce8, #eff6ff);
       color: #111827;
     }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 20px;
-      border-bottom: 1px solid #e5e7eb;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(10px);
+    .sidebar {
+      width: 230px;
+      background: #ffffff;
+      border-right: 1px solid #e5e7eb;
+      padding: 20px 16px;
+      box-shadow: 8px 0 24px rgba(148, 163, 184, 0.2);
     }
     .logo {
       font-weight: 800;
+      font-size: 17px;
       letter-spacing: 0.14em;
-      font-size: 15px;
+      margin-bottom: 18px;
     }
     .logo span {
-      background: linear-gradient(120deg, #0ea5e9, #6366f1, #f97316);
-      -webkit-background-clip: text;
-      color: transparent;
+      color: #111827;          /* 글자 선명하게 보이게 수정 */
+      font-weight: 900;
+      letter-spacing: 0.18em;
     }
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 13px;
-    }
-    nav button {
-      background: transparent;
-      border: none;
-      font-size: 13px;
-      cursor: pointer;
-      color: #6b7280;
-      padding: 4px 8px;
-      border-radius: 999px;
-    }
-    nav button.active {
-      color: #111827;
-      background: #e0ecff;
-    }
-    .logout-btn {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      background: #ffffff;
-      color: #111827;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .logout-btn:hover {
-      background: #f3f4f6;
-    }
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-    }
-    .card {
-      width: 100%;
-      max-width: 720px;
-      border-radius: 20px;
-      padding: 24px 24px 22px;
-      border: 1px solid #e5e7eb;
-      background:
-        radial-gradient(circle at top left, rgba(244, 244, 255, 0.9), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(255, 251, 235, 0.9), transparent 55%),
-        #ffffff;
-      box-shadow: 0 18px 42px rgba(148, 163, 184, 0.35);
-    }
-    .greeting {
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-    .greeting span {
-      font-weight: 700;
-    }
-    .section {
-      margin-top: 12px;
-      font-size: 14px;
-    }
-    .section h2 {
-      font-size: 15px;
-      margin-bottom: 8px;
-      color: #111827;
-    }
-    .section p {
-      margin: 4px 0;
-      line-height: 1.6;
-      color: #4b5563;
-      font-size: 13px;
-    }
-    .highlight-box {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      font-size: 12px;
-      color: #4b5563;
-    }
-    .label {
-      display: inline-block;
-      width: 150px;
-      color: #6b7280;
-      font-size: 13px;
-    }
-    .value {
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .status-pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-    }
-    .status-running {
-      background: rgba(59, 130, 246, 0.1);
-      color: #1d4ed8;
-    }
-    .status-done {
-      background: rgba(22, 163, 74, 0.1);
-      color: #15803d;
-    }
-    .error {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #dc2626;
-      text-align: center;
-    }
-    .muted {
-      font-size: 12px;
+    .menu-title {
+      font-size: 11px;
+      text-transform: uppercase;
       color: #9ca3af;
+      margin: 12px 6px 6px;
+    }
+    .nav-item {
+      display: block;
+      padding: 7px 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #374151;
+      font-size: 13px;
+      margin: 2px 0;
+    }
+    .nav-item.active,
+    .nav-item:hover {
+      background: #fef3c7;
+    }
+    .logout-admin {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #6b7280;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .main {
+      flex: 1;
+      padding: 20px 22px 24px;
+    }
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .main-header h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+    .main-header small {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 10px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 14px 32px rgba(148, 163, 184, 0.35);
+    }
+    thead {
+      background: #f9fafb;
+    }
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+    th {
+      color: #6b7280;
+      font-weight: 500;
+    }
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+    input[type="number"] {
+      width: 110px;
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      color: #111827;
+      font-size: 12px;
+    }
+    select {
+      padding: 4px 6px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      color: #111827;
+      font-size: 12px;
+    }
+    .btn-save {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6366f1, #0ea5e9);
+      color: #f9fafb;
+    }
+    .btn-save:hover {
+      filter: brightness(1.03);
+    }
+    .note {
+      font-size: 12px;
+      color: #6b7280;
       margin-top: 8px;
+    }
+    .empty {
+      padding: 10px;
+      font-size: 13px;
+      text-align: center;
+      color: #9ca3af;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo"><span>NEO AI</span> PROCESSOR</div>
-    <nav>
-      <button id="tabIntro" class="active">소개</button>
-      <button id="tabStatus">AI 투자현황</button>
-      <button class="logout-btn" id="btnLogout">로그아웃</button>
-    </nav>
-  </header>
+  <aside class="sidebar">
+    <div class="logo"><span>NEO AI</span><br />ADMIN</div>
 
-  <main>
-    <div class="card">
-      <div class="greeting" id="greetingText">유저 정보를 불러오는 중...</div>
+    <div class="menu-title">메인</div>
+    <a href="dashboard.html" class="nav-item active">회원 & 투자 관리</a>
 
-      <section class="section" id="introSection">
-        <h2>NEO AI 투자 프로세스 소개</h2>
-        <p><strong>AI 기반 투자 프로세스</strong>로, 스스로 시장을 분석하고 투자 구간을 판단하는 인공지능 시스템을 지향합니다.</p>
-        <p>인공지능 분석 · 포트폴리오 분산 · AI 리스크 관리 기능을 통해
-           다양한 시장 데이터를 모니터링하고 전략별 포지션을 설계합니다.</p>
-        <div class="highlight-box">
-          <strong>AI 투자는 무엇인가요?</strong><br />
-          · NEO AI의 장기간 연구를 바탕으로 설계된 자체 AI 투자 시스템입니다.<br />
-          · 기존 단순 알고리즘이 아닌 딥러닝 기반 분석으로 경제·시장 데이터를 학습합니다.<br />
-          · 시장 국면에 맞춰 포트폴리오를 분산 설계하여 보다 안정적인 수익을 목표로 합니다.<br /><br />
-          <strong>진행 기간 &amp; 수익 목표</strong><br />
-          · 진행 기간: 최소 1시간 ~ 최대 12일 범위 내 전략 운영을 가정합니다.<br />
-          · 수익률 목표: 전략에 따라 50% 수준부터 고수익 전략까지 다양한 구간을 제공합니다.<br />
-      
-        </div>
-        <p class="muted">이 페이지의 내용은 NEO AI 서비스 콘셉트를 설명하기 위한 예시 텍스트입니다.</p>
-      </section>
+    <div class="logout-admin" id="btnAdminLogout">관리자 로그아웃</div>
+  </aside>
 
-      <section class="section" id="statusSection" style="display:none;">
-        <h2>내 AI 투자현황</h2>
-        <p><span class="label">AI 투자중인 금액 :</span>
-           <span class="value" id="amountText">-</span></p>
-        <p><span class="label">진행 상태 :</span>
-           <span class="status-pill" id="statusPill">-</span></p>
-
-        </div>
-
-        <div class="error" id="errorBox"></div>
-      </section>
+  <main class="main">
+    <div class="main-header">
+      <div>
+        <h1>회원 & AI 투자 관리</h1>
+        <small>회원가입 승인과 <strong>AI투자중인 금액 / 진행 상태</strong>를 수정합니다.</small>
+      </div>
     </div>
+
+    <section>
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>휴대폰</th>
+            <th>AI투자중인 금액</th>
+            <th>진행 상태</th>
+            <th>승인 상태</th>
+            <th>저장</th>
+          </tr>
+        </thead>
+        <tbody id="userTbody">
+          <!-- JS에서 행 생성 -->
+        </tbody>
+      </table>
+
+      <div class="note">
+        · 금액은 숫자만 입력 (예: 50000 → 50,000원)<br />
+        · “진행중 / 진행 완료” 및 “승인 대기 / 승인 완료”를 수정하면, 유저 페이지 새 접속 시 반영됩니다.<br />
+        · 관리자 계정은 users 테이블에서 role='admin' 으로 직접 관리합니다.
+      </div>
+    </section>
   </main>
 
-  <!-- Supabase + 대시보드 로직 -->
+  <!-- Supabase + 관리자 대시보드 로직 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    function formatMoney(n) {
-      const num = Number(n) || 0;
-      return num.toLocaleString('ko-KR') + '원';
+    // 관리자 로그인 여부 체크
+    function checkAdmin() {
+      const flag = localStorage.getItem('neoai_admin_logged_in');
+      if (flag !== 'true') {
+        alert('관리자 로그인이 필요합니다.');
+        window.location.href = 'login.html';
+      }
     }
 
-    async function loadUser() {
-      const raw = localStorage.getItem('neoai_current_user');
-      const greeting = document.getElementById('greetingText');
-      const amountText = document.getElementById('amountText');
-      const statusPill = document.getElementById('statusPill');
-      const errorBox = document.getElementById('errorBox');
-
-      if (!raw) {
-        alert('로그인이 필요합니다.');
-        window.location.href = 'index.html';
-        return;
-      }
-
-      const savedUser = JSON.parse(raw);
+    // 회원 목록 불러오기
+    async function loadUsers() {
+      const tbody = document.getElementById('userTbody');
+      tbody.innerHTML = '';
 
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('id, username, name, amount, status, approved')
-          .eq('id', savedUser.id)
-          .single();
+          .select('id, username, name, phone, amount, status, approved, role')
+          .order('created_at', { ascending: true });
 
-        if (error || !data) {
-          errorBox.textContent = '유저 정보를 불러오지 못했습니다. 다시 로그인해주세요.';
-          setTimeout(() => {
-            localStorage.removeItem('neoai_current_user');
-            window.location.href = 'index.html';
-          }, 1500);
+        if (error) {
+          console.error(error);
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 7;
+          td.className = 'empty';
+          td.textContent = '회원 목록을 불러올 수 없습니다.';
+          tr.appendChild(td);
+          tbody.appendChild(tr);
           return;
         }
 
-        if (!data.approved) {
-          errorBox.textContent = '관리자 승인 대기 중입니다.';
-        } else {
-          errorBox.textContent = '';
+        if (!data || data.length === 0) {
+          const tr = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 7;
+          td.className = 'empty';
+          td.textContent = '등록된 회원이 없습니다.';
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+          return;
         }
 
-        localStorage.setItem('neoai_current_user', JSON.stringify(data));
+        // 여기서 필터링 방식 선택:
+        // 1) 모든 유저 보기: const users = data;
+        // 2) admin 계정 빼고 보기:
+        const users = data.filter(u => u.role !== 'admin');
 
-        
-        amountText.textContent = formatMoney(data.amount);
-        statusPill.textContent = data.status;
-        statusPill.className =
-          'status-pill ' + (data.status === '진행 완료' ? 'status-done' : 'status-running');
+        users.forEach(user => {
+          const tr = document.createElement('tr');
+
+          tr.innerHTML = `
+            <td>${user.username || ''}</td>
+            <td>${user.name || ''}</td>
+            <td>${user.phone || ''}</td>
+            <td><input type="number" min="0" value="${user.amount || 0}" data-id="${user.id}" class="inpAmount" /></td>
+            <td>
+              <select data-id="${user.id}" class="selStatus">
+                <option value="진행중" ${user.status === '진행중' ? 'selected' : ''}>진행중</option>
+                <option value="진행 완료" ${user.status === '진행 완료' ? 'selected' : ''}>진행 완료</option>
+              </select>
+            </td>
+            <td>
+              <select data-id="${user.id}" class="selApproved">
+                <option value="false" ${!user.approved ? 'selected' : ''}>승인 대기</option>
+                <option value="true" ${user.approved ? 'selected' : ''}>승인 완료</option>
+              </select>
+            </td>
+            <td><button data-id="${user.id}" class="btnSaveRow">저장</button></td>
+          `;
+
+          tbody.appendChild(tr);
+        });
       } catch (e) {
         console.error(e);
-        errorBox.textContent = '서버와 통신 중 오류가 발생했습니다.';
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 7;
+        td.className = 'empty';
+        td.textContent = '서버와 통신 중 오류가 발생했습니다.';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
       }
     }
 
-    // 탭 전환
-    const tabIntro = document.getElementById('tabIntro');
-    const tabStatus = document.getElementById('tabStatus');
-    const introSection = document.getElementById('introSection');
-    const statusSection = document.getElementById('statusSection');
+    // 테이블 안에서 "저장" 버튼 클릭 처리
+    document.getElementById('userTbody').addEventListener('click', async (e) => {
+      if (!e.target.classList.contains('btnSaveRow')) return;
 
-    tabIntro.addEventListener('click', () => {
-      tabIntro.classList.add('active');
-      tabStatus.classList.remove('active');
-      introSection.style.display = 'block';
-      statusSection.style.display = 'none';
-    });
-    tabStatus.addEventListener('click', () => {
-      tabStatus.classList.add('active');
-      tabIntro.classList.remove('active');
-      introSection.style.display = 'none';
-      statusSection.style.display = 'block';
+      const id = e.target.getAttribute('data-id');
+      const amountInput = document.querySelector(`.inpAmount[data-id="${id}"]`);
+      const statusSelect = document.querySelector(`.selStatus[data-id="${id}"]`);
+      const approvedSelect = document.querySelector(`.selApproved[data-id="${id}"]`);
+
+      const amount = Number(amountInput.value || 0);
+      const status = statusSelect.value;
+      const approved = approvedSelect.value === 'true';
+
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ amount, status, approved })
+        .eq('id', id);
+
+      if (updateError) {
+        console.error(updateError);
+        alert('저장 중 오류가 발생했습니다.');
+        return;
+      }
+
+      alert('저장되었습니다.');
     });
 
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      localStorage.removeItem('neoai_current_user');
-      window.location.href = 'index.html';
+    // 관리자 로그아웃
+    document.getElementById('btnAdminLogout').addEventListener('click', () => {
+      localStorage.removeItem('neoai_admin_logged_in');
+      localStorage.removeItem('neoai_admin_user');
+      alert('관리자 로그아웃 되었습니다.');
+      window.location.href = 'login.html';
     });
 
-    loadUser();
+    // 초기 실행
+    checkAdmin();
+    loadUsers();
   </script>
 </body>
 </html>
-
