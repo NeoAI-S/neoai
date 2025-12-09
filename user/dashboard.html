@@ -21,12 +21,11 @@
       margin: 0;
       font-family: 'SUIT-Regular', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-height: 100vh;
-      color: #e5e7eb;
+      color: #0f172a;
       background:
-        radial-gradient(circle at 0% 0%, rgba(94, 234, 212, 0.25), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(129, 140, 248, 0.4), transparent 55%),
-        radial-gradient(circle at 0% 100%, rgba(251, 113, 133, 0.3), transparent 55%),
-        linear-gradient(135deg, #020617, #020617);
+        radial-gradient(circle at 0% 0%, rgba(129, 140, 248, 0.25), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(52, 211, 153, 0.2), transparent 55%),
+        linear-gradient(135deg, #eef2ff, #fefce8);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -35,37 +34,37 @@
 
     .shell {
       width: 100%;
-      max-width: 960px;
+      max-width: 1000px;
     }
 
     .frame {
       border-radius: 26px;
-      background: rgba(15, 23, 42, 0.83);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(148, 163, 184, 0.65);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
       box-shadow:
-        0 28px 80px rgba(15, 23, 42, 0.9),
-        0 0 0 1px rgba(15, 23, 42, 0.8);
-      padding: 18px 20px 20px;
+        0 20px 60px rgba(148, 163, 184, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.8);
+      padding: 18px 20px 22px;
     }
 
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .logo {
       font-weight: 800;
-      font-size: 18px;
+      font-size: 19px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: #f9fafb;
+      color: #111827;
     }
     .logo span {
-      color: #a5b4fc;
+      color: #4f46e5;
       font-weight: 900;
       letter-spacing: 0.24em;
     }
@@ -73,49 +72,47 @@
     .nav {
       display: flex;
       gap: 8px;
-      font-size: 13px;
+      font-size: 14px;
     }
     .nav button {
-      padding: 7px 14px;
+      padding: 7px 15px;
       border-radius: 999px;
       border: 1px solid transparent;
-      background: rgba(15, 23, 42, 0.4);
-      color: #e5e7eb;
+      background: #f3f4f6;
+      color: #111827;
       cursor: pointer;
       font-size: 13px;
       transition: all 0.16s ease;
     }
     .nav button.active {
-      background: #f97316;
-      color: #0b1120;
-      box-shadow: 0 14px 34px rgba(248, 113, 113, 0.4);
+      background: #111827;
+      color: #f9fafb;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.35);
       transform: translateY(-1px);
     }
     .nav button:hover:not(.active) {
-      background: rgba(148, 163, 184, 0.16);
+      background: #e5e7eb;
     }
 
     .card {
       border-radius: 20px;
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 55%),
-                  radial-gradient(circle at bottom right, rgba(251, 113, 133, 0.26), transparent 60%),
-                  rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(75, 85, 99, 0.7);
-      box-shadow: 0 20px 55px rgba(15, 23, 42, 0.9);
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 16px 40px rgba(148, 163, 184, 0.25);
       padding: 18px 18px 18px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
     .section-title {
-      font-size: 15px;
+      font-size: 18px;
       font-weight: 700;
-      margin-bottom: 4px;
-      color: #f9fafb;
+      margin-bottom: 6px;
+      color: #111827;
     }
 
     .section-sub {
-      font-size: 12px;
-      color: #9ca3af;
+      font-size: 13px;
+      color: #6b7280;
       margin-bottom: 14px;
     }
 
@@ -123,25 +120,25 @@
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
-      margin-top: 8px;
+      margin-top: 6px;
     }
     .value-box {
       flex: 1;
-      min-width: 170px;
+      min-width: 180px;
       padding: 14px 14px;
       border-radius: 16px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
     }
     .value-label {
       font-size: 12px;
-      color: #9ca3af;
+      color: #6b7280;
       margin-bottom: 4px;
     }
     .value-main {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
-      color: #e5e7eb;
+      color: #111827;
     }
 
     .status-pill {
@@ -158,29 +155,23 @@
       border-radius: 999px;
     }
     .status-wait {
-      background: rgba(250, 204, 21, 0.12);
-      color: #facc15;
-      border: 1px solid rgba(250, 204, 21, 0.5);
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #facc15;
     }
-    .status-wait .status-dot {
-      background: #facc15;
-    }
+    .status-wait .status-dot { background: #facc15; }
     .status-run {
-      background: rgba(52, 211, 153, 0.15);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.5);
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #22c55e;
     }
-    .status-run .status-dot {
-      background: #22c55e;
-    }
+    .status-run .status-dot { background: #22c55e; }
     .status-done {
-      background: rgba(148, 163, 184, 0.22);
-      color: #e5e7eb;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-    }
-    .status-done .status-dot {
       background: #e5e7eb;
+      color: #374151;
+      border: 1px solid #9ca3af;
     }
+    .status-done .status-dot { background: #6b7280; }
 
     .approved-pill {
       display: inline-flex;
@@ -196,23 +187,46 @@
       border-radius: 999px;
     }
     .approved-yes {
-      background: rgba(34, 197, 94, 0.12);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.6);
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #22c55e;
     }
     .approved-yes span.dot { background: #22c55e; }
     .approved-no {
-      background: rgba(248, 113, 113, 0.12);
-      color: #fecaca;
-      border: 1px solid rgba(248, 113, 113, 0.6);
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #f97373;
     }
     .approved-no span.dot { background: #f97373; }
 
     .info-text {
-      font-size: 12px;
-      color: #9ca3af;
+      font-size: 13px;
+      color: #6b7280;
       margin-top: 10px;
       line-height: 1.6;
+    }
+
+    /* 내 계정 정보 카드 */
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      font-size: 13px;
+    }
+    @media (max-width: 720px) {
+      .account-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .acct-label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 2px;
+    }
+    .acct-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: #111827;
     }
 
     /* 진행 단계 카드 */
@@ -224,47 +238,47 @@
     }
     .step {
       flex: 1;
-      min-width: 120px;
-      padding: 10px 10px;
+      min-width: 160px;
+      padding: 10px 11px;
       border-radius: 14px;
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
       font-size: 12px;
-      color: #9ca3af;
+      color: #4b5563;
       position: relative;
     }
     .step-title {
       font-size: 13px;
       font-weight: 600;
       margin-bottom: 4px;
-      color: #e5e7eb;
-    }
-    .step.active {
-      border-color: #f97316;
-      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.35);
-      color: #e5e7eb;
+      color: #111827;
     }
     .step-tag {
       position: absolute;
       top: 8px;
       right: 10px;
       font-size: 10px;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.8);
-      color: #9ca3af;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      color: #6b7280;
+    }
+    .step.active {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.25);
+      background: #eef2ff;
     }
     .step.active .step-tag {
-      background: #f97316;
-      border-color: #fed7aa;
-      color: #0b1120;
+      background: #4f46e5;
+      border-color: #4f46e5;
+      color: #e5e7eb;
     }
 
     /* 소개 섹션 */
     .intro-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
       gap: 18px;
     }
     @media (max-width: 720px) {
@@ -276,25 +290,39 @@
       padding: 4px 11px;
       border-radius: 999px;
       font-size: 11px;
-      background: rgba(59, 130, 246, 0.18);
-      color: #60a5fa;
+      background: #eef2ff;
+      color: #4f46e5;
       margin-bottom: 10px;
     }
     .intro-title {
       font-size: 18px;
       font-weight: 700;
       margin-bottom: 8px;
-      color: #f9fafb;
+      color: #111827;
     }
     .intro-text {
-      font-size: 13px;
-      color: #d1d5db;
+      font-size: 14px;
+      color: #4b5563;
       line-height: 1.7;
       white-space: pre-line;
     }
+
+    .intro-box {
+      padding: 12px 12px;
+      border-radius: 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      margin-top: 10px;
+    }
+    .intro-box-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #111827;
+    }
     .intro-points {
-      font-size: 12px;
-      color: #e5e7eb;
+      font-size: 13px;
+      color: #374151;
       list-style: none;
       padding: 0;
       margin: 0;
@@ -302,39 +330,9 @@
     .intro-points li {
       margin-bottom: 6px;
     }
-    .intro-tag {
-      display: inline-block;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(236, 72, 153, 0.15);
-      border: 1px solid rgba(236, 72, 153, 0.4);
-      font-size: 11px;
-      color: #f9a8d4;
-      margin-right: 4px;
-      margin-top: 4px;
-    }
-
-    .intro-cols {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 14px;
-      font-size: 12px;
-    }
-    @media (max-width: 720px) {
-      .intro-cols { grid-template-columns: minmax(0, 1fr); }
-    }
-    .intro-box {
-      padding: 10px 11px;
-      border-radius: 14px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(75, 85, 99, 0.8);
-    }
-    .intro-box-title {
-      font-size: 13px;
+    .scenario-highlight {
       font-weight: 600;
-      margin-bottom: 4px;
-      color: #e5e7eb;
+      color: #4f46e5;
     }
 
     .hidden { display: none; }
@@ -376,11 +374,40 @@
         <div class="info-text" id="approvalInfo"></div>
       </section>
 
+      <!-- 내 계정 정보 카드 -->
+      <section id="sectionAccount" class="card">
+        <div class="section-title">내 계정 정보</div>
+        <div class="section-sub">
+          네오AI 투자 프로세서에서 사용하는 기본 회원 정보를 확인할 수 있습니다.
+        </div>
+        <div class="account-grid">
+          <div>
+            <div class="acct-label">이름</div>
+            <div class="acct-value" id="acctName">-</div>
+          </div>
+          <div>
+            <div class="acct-label">아이디</div>
+            <div class="acct-value" id="acctUsername">-</div>
+          </div>
+          <div>
+            <div class="acct-label">휴대폰 번호</div>
+            <div class="acct-value" id="acctPhone">-</div>
+          </div>
+          <div>
+            <div class="acct-label">출금 계좌</div>
+            <div class="acct-value" id="acctBank">-</div>
+          </div>
+        </div>
+        <div class="info-text" style="margin-top:12px;">
+          출금 계좌는 본인 확인 및 출금 처리 시에만 사용되며, 관리자 페이지에서만 조회·관리됩니다.
+        </div>
+      </section>
+
       <!-- AI 세션 진행 단계 카드 -->
       <section id="sectionStatusExtra" class="card">
         <div class="section-title">AI 세션 진행 단계</div>
         <div class="section-sub">
-          네오AI는 아래 3단계를 거쳐 세션을 운용합니다. 현재 단계는 강조된 카드로 표시됩니다.
+          네오AI는 아래 3단계를 기준으로 세션을 운용합니다. 현재 상태에 따라 강조된 단계가 바뀝니다.
         </div>
 
         <div class="steps-row">
@@ -389,15 +416,15 @@
             <div class="step-tag">READY</div>
             <div>
               관리자 승인과 투자금 확정 전 단계입니다.<br/>
-              계좌·금액이 확정되면 다음 단계로 이동합니다.
+              입금·계좌 확인이 완료되면 AI 세션이 준비됩니다.
             </div>
           </div>
           <div class="step" data-step="run">
             <div class="step-title">2단계 · 진행중</div>
             <div class="step-tag">RUNNING</div>
             <div>
-              AI가 시장 데이터를 분석해 분산 투자를 실행하는 구간입니다.<br/>
-              구간 내에서 포트폴리오가 자동으로 조정됩니다.
+              설정된 금액과 기간에 맞춰 AI가 분산 투자를 수행하는 구간입니다.<br/>
+              포트폴리오 구성과 비중 조정이 자동으로 이뤄집니다.
             </div>
           </div>
           <div class="step" data-step="done">
@@ -405,7 +432,7 @@
             <div class="step-tag">CLOSE</div>
             <div>
               해당 세션의 운용이 종료된 상태입니다.<br/>
-              수익·손실 정산 및 다음 세션 준비에 활용됩니다.
+              손익 결과가 정산되고, 데이터가 다음 전략 학습에 활용됩니다.
             </div>
           </div>
         </div>
@@ -418,56 +445,66 @@
           <div>
             <div class="intro-title">네오AI, 스스로 판단하고 분산 투자하는 인공지능</div>
             <p class="intro-text">
-네오AI는 대량의 시장 데이터와 딥러닝 알고리즘을 활용해서
+네오AI는 대량의 시장 데이터와 딥러닝 알고리즘을 활용해
 시장 흐름을 분석하고, 여러 종목과 자산군에 자동으로 분산 투자하는
 AI 투자 프로세서입니다.
 
-사용자는 투자 금액과 기간만 정하면,
+사용자는 투자 금액과 운용 구간만 정하면,
 AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동으로 수행하도록 설계되어 있습니다.
             </p>
 
-            <div class="intro-cols">
-              <div class="intro-box">
-                <div class="intro-box-title">AI가 하는 일 3단계</div>
-                <ul class="intro-points">
-                  <li>1. 시장·뉴스·지표 데이터 스캔</li>
-                  <li>2. 포트폴리오 구성 및 분산 투자</li>
-                  <li>3. 손익·리스크 모니터링 및 재학습</li>
-                </ul>
-              </div>
-              <div class="intro-box">
-                <div class="intro-box-title">이런 분께 잘 맞아요</div>
-                <ul class="intro-points">
-                  <li>· 단기 구간 단위로 운용하고 싶은 분</li>
-                  <li>· 포트폴리오 분산이 번거로운 분</li>
-                  <li>· AI 기반 의사결정을 체험해 보고 싶은 분</li>
-                </ul>
-              </div>
+            <div class="intro-box">
+              <div class="intro-box-title">AI가 하는 일</div>
+              <ul class="intro-points">
+                <li>· 경제 지표, 뉴스, 시황 데이터를 종합적으로 스캔</li>
+                <li>· 최대 30개 내외 종목으로 포트폴리오 자동 구성</li>
+                <li>· 최소 1시간 ~ 최대 12일 단위로 세션 운용</li>
+                <li>· 손익·변동성 데이터를 기반으로 전략을 반복 학습</li>
+              </ul>
             </div>
           </div>
           <div>
+            <!-- 투자 예시 시나리오 (전문적으로 상세) -->
             <div class="intro-box">
-              <div class="intro-box-title">운용 기본 원칙</div>
-              <ul class="intro-points">
-                <li>· 최소 1시간 ~ 최대 12일 단위로 세션 운용</li>
-                <li>· 세션마다 목표 수익률·리스크 한도 설정</li>
-                <li>· 과거 성과·실시간 데이터를 함께 반영</li>
-              </ul>
+              <div class="intro-box-title">투자 예시 시나리오 (전문 운영 관점)</div>
+              <p class="intro-text" style="margin-top:4px;">
+<span class="scenario-highlight">예시 · 50,000원을 6시간 동안 AI에 맡기는 경우</span>
+
+1) <strong>세션 설정</strong>  
+ · 유저가 50,000원을 투자하고, 약 6시간 운용 구간을 선택합니다.  
+ · 관리자는 세션을 "진행중" 상태로 전환하며, 네오AI는 해당 금액을 운용대상으로 인식합니다.
+
+2) <strong>시장·종목 스캔</strong>  
+ · 네오AI는 최근 수 시간~수 일간의 가격 흐름, 거래량, 변동성, 뉴스·이슈 등 데이터를 수집합니다.  
+ · 과거 학습 데이터와 현재 시장 상황을 비교해, 단기 구간에서 효율이 높은 섹터·종목을 선별합니다.
+
+3) <strong>포트폴리오 구성</strong>  
+ · 전체 50,000원 중 일부는 기본 안전 구간, 일부는 공격 구간으로 나누어 비중을 설정합니다.  
+ · 예를 들어, 변동성이 낮은 자산 60% + 변동성이 높은 자산 40% 조합으로 10~20개 내외 종목을 선정할 수 있습니다.  
+ · 각 종목별 예상 수익·리스크에 따라 비중이 자동으로 조정됩니다.
+
+4) <strong>세션 중 리스크 관리</strong>  
+ · 운용 구간(6시간) 동안 실시간 가격 변화를 모니터링하며,  
+   사전 설정된 손실 한도 또는 급격한 변동이 발생할 경우 비중을 축소하거나 현금 비중을 늘립니다.  
+ · 과도한 집중이 발생하지 않도록, 종목당·섹터당 비중 상한을 유지합니다.
+
+5) <strong>세션 종료 및 정산</strong>  
+ · 6시간 구간이 종료되면, 해당 세션은 "진행 완료" 상태로 전환됩니다.  
+ · 포트폴리오 전체 평가금액이 계산되고, 수익 또는 손실 결과가 정리됩니다.  
+ · 이때의 성과 데이터는 다음 세션의 전략 고도화에 사용되며, 어떤 조건·종목 조합이 유리했는지 재학습에 반영됩니다.
+
+이 과정에서 유저는 투자 금액과 세션 운용 여부만 확인하고,  
+실제 종목 선택·비중 조정·리스크 관리는 모두 네오AI가 담당하는 구조입니다.
+              </p>
             </div>
 
             <div class="intro-box" style="margin-top:10px;">
-              <div class="intro-box-title">주의사항</div>
+              <div class="intro-box-title">이런 분께 적합합니다</div>
               <ul class="intro-points">
-                <li>· AI 투자라고 해서 손실이 아예 없는 것은 아닙니다.</li>
-                <li>· 과거 수익률이 미래 수익을 보장하지 않습니다.</li>
-                <li>· 세션별 진행상태·금액은 관리자 페이지 기준으로 반영됩니다.</li>
+                <li>· 세부 종목 선택보다는 전체 전략·결과에 집중하고 싶은 분</li>
+                <li>· 단기 구간별(수시간~수일) 운용을 선호하는 분</li>
+                <li>· AI 기반 의사결정과 분산 투자를 한 번에 경험해 보고 싶은 분</li>
               </ul>
-            </div>
-
-            <div style="margin-top:10px;">
-              <span class="intro-tag">인공지능 분석</span>
-              <span class="intro-tag">포트폴리오 분산</span>
-              <span class="intro-tag">AI 리스크 관리</span>
             </div>
           </div>
         </div>
@@ -502,6 +539,28 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     function formatAmount(value) {
       if (value == null || isNaN(value)) return '- 원';
       return Number(value).toLocaleString('ko-KR') + ' 원';
+    }
+
+    function maskPhone(phone) {
+      if (!phone) return '-';
+      // 01012345678 → 010-****-5678 정도
+      const digits = phone.replace(/[^0-9]/g, '');
+      if (digits.length < 8) return phone;
+      const head = digits.slice(0, 3);
+      const tail = digits.slice(-4);
+      return `${head}-****-${tail}`;
+    }
+
+    function maskBank(bank) {
+      if (!bank) return '-';
+      // 뒷 4자리만 노출
+      const cleaned = bank.replace(/\s+/g, ' ');
+      const parts = cleaned.split(' ');
+      const last = parts[parts.length - 1];
+      const digits = last.replace(/[^0-9]/g, '');
+      if (!digits || digits.length < 4) return bank;
+      const tail = digits.slice(-4);
+      return `${parts.slice(0, -1).join(' ')} ***${tail}`;
     }
 
     function renderStatus(status) {
@@ -565,6 +624,19 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       if (target) target.classList.add('active');
     }
 
+    function fillAccountInfo(userFromDb) {
+      const merged = { ...currentUser, ...userFromDb };
+
+      document.getElementById('acctName').textContent =
+        merged.name || '-';
+      document.getElementById('acctUsername').textContent =
+        merged.username || '-';
+      document.getElementById('acctPhone').textContent =
+        merged.phone ? maskPhone(merged.phone) : '-';
+      document.getElementById('acctBank').textContent =
+        merged.bank_account ? maskBank(merged.bank_account) : '-';
+    }
+
     async function loadStatus() {
       const amountText = document.getElementById('amountText');
       const approvalInfo = document.getElementById('approvalInfo');
@@ -580,7 +652,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('amount, status, approved, name, username')
+          .select('amount, status, approved, name, username, phone, bank_account')
           .eq('username', currentUser.username)
           .maybeSingle();
 
@@ -591,6 +663,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
           renderStatus('대기중');
           renderApproved(false);
           renderSteps('대기중');
+          fillAccountInfo({});
           return;
         }
 
@@ -600,6 +673,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
           renderStatus('대기중');
           renderApproved(false);
           renderSteps('대기중');
+          fillAccountInfo({});
           return;
         }
 
@@ -607,6 +681,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         renderStatus(data.status);
         renderApproved(data.approved);
         renderSteps(data.status);
+        fillAccountInfo(data);
 
         if (!data.approved) {
           approvalInfo.textContent =
@@ -622,6 +697,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         renderStatus('대기중');
         renderApproved(false);
         renderSteps('대기중');
+        fillAccountInfo({});
       }
     }
 
@@ -629,6 +705,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     const tabStatus = document.getElementById('tabStatus');
     const tabIntro = document.getElementById('tabIntro');
     const sectionStatus = document.getElementById('sectionStatus');
+    const sectionAccount = document.getElementById('sectionAccount');
     const sectionStatusExtra = document.getElementById('sectionStatusExtra');
     const sectionIntro = document.getElementById('sectionIntro');
 
@@ -636,6 +713,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       tabStatus.classList.add('active');
       tabIntro.classList.remove('active');
       sectionStatus.classList.remove('hidden');
+      sectionAccount.classList.remove('hidden');
       sectionStatusExtra.classList.remove('hidden');
       sectionIntro.classList.add('hidden');
     });
@@ -645,6 +723,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       tabStatus.classList.remove('active');
       sectionIntro.classList.remove('hidden');
       sectionStatus.classList.add('hidden');
+      sectionAccount.classList.add('hidden');
       sectionStatusExtra.classList.add('hidden');
     });
 
