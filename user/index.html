@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>NEO AI 프로세서 - 로그인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;              /* ✅ 브라우저 전체 높이 채우기 */
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    display: flex;
+    justify-content: center;    /* ✅ 가로 중앙 */
+    align-items: center;        /* ✅ 세로 중앙 */
+    background: radial-gradient(circle at top, #eef2ff 0, #f9fafb 45%, #e5e7eb 100%);
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 420px;
+    padding: 26px 24px 22px;
+    border-radius: 18px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  }
+
+  .logo {
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.18em;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .logo span {
+    color: #111827;         /* 진한 검정 */
+    font-weight: 900;
+    letter-spacing: 0.18em;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 22px;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #374151;
+  }
+
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    color: #111827;
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
+    background: #ffffff;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  button {
+    flex: 1;
+    padding: 10px 0;
+    border-radius: 999px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-login {
+    background: linear-gradient(135deg, #6366f1, #0ea5e9);
+    color: #f9fafb;
+  }
+
+  .btn-signup {
+    background: #ffffff;
+    color: #111827;
+    border: 1px solid #d1d5db;
+  }
+
+  .btn-login:hover { filter: brightness(1.03); }
+  .btn-signup:hover { background: #f3f4f6; }
+
+  .error {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #dc2626;
+    min-height: 16px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="logo"><span>NEO AI</span> PROCESSOR</div>
+    <div class="subtitle">AI 투자 프로세스를 이용하려면 로그인이 필요합니다.</div>
+
+    <label for="loginId">아이디</label>
+    <input type="text" id="loginId" placeholder="아이디를 입력하세요" />
+
+    <label for="loginPw">비밀번호</label>
+    <input type="password" id="loginPw" placeholder="비밀번호를 입력하세요" />
+
+    <div class="btn-row">
+      <button class="btn-login" id="btnLogin">로그인</button>
+      <button class="btn-signup" id="btnSignup">회원가입</button>
+    </div>
+
+    <div class="error" id="errorBox"></div>
+  </div>
+
+  <!-- Supabase + 로그인 로직 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
+    const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function login() {
+      const username = document.getElementById('loginId').value.trim();
+      const password = document.getElementById('loginPw').value.trim();
+      const errorBox = document.getElementById('errorBox');
+      errorBox.textContent = '';
+
+      if (!username || !password) {
+        errorBox.textContent = '아이디와 비밀번호를 입력해주세요.';
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('username', username)
+          .eq('password', password)
+          .single();
+
+        if (error || !data) {
+          errorBox.textContent = '아이디 또는 비밀번호가 잘못되었습니다.';
+          return;
+        }
+
+        if (!data.approved) {
+          errorBox.textContent = '관리자 승인 대기 중입니다.';
+          return;
+        }
+
+        delete data.password; // 비밀번호는 저장 X
+        localStorage.setItem('neoai_current_user', JSON.stringify(data));
+        window.location.href = 'dashboard.html';
+      } catch (e) {
+        console.error(e);
+        errorBox.textContent = '서버와 통신 중 오류가 발생했습니다.';
+      }
+    }
+
+    document.getElementById('btnLogin').addEventListener('click', login);
+    document.getElementById('btnSignup').addEventListener('click', () => {
+      window.location.href = 'signup.html';
+    });
+  </script>
+</body>
+</html>

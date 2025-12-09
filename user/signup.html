@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>NEO AI - 회원가입</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #eef2ff 0, #f9fafb 45%, #e5e7eb 100%);
+      color: #111827;
+    }
+    .wrapper {
+      width: 100%;
+      max-width: 480px;
+      padding: 26px 24px 22px;
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: 0.18em;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .logo span {
+      background: linear-gradient(120deg, #0ea5e9, #6366f1, #f97316);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #374151;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      color: #111827;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
+      background: #ffffff;
+    }
+    .terms {
+      margin-top: 6px;
+      margin-bottom: 4px;
+      font-size: 11px;
+      color: #6b7280;
+      line-height: 1.5;
+      background: #f9fafb;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      max-height: 130px;
+      overflow-y: auto;
+    }
+    .checkbox-line {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      margin: 6px 0 10px;
+      color: #4b5563;
+    }
+    .checkbox-line input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    button {
+      flex: 1;
+      padding: 10px 0;
+      border-radius: 999px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, #6366f1, #0ea5e9);
+      color: #f9fafb;
+    }
+    .btn-cancel {
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #d1d5db;
+    }
+    .btn-submit:hover { filter: brightness(1.03); }
+    .btn-cancel:hover { background: #f3f4f6; }
+    .error {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #dc2626;
+      min-height: 16px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="logo"><span>NEO AI</span> JOIN</div>
+    <div class="subtitle">AI 투자 프로세스를 이용할 기본 정보를 입력해주세요.</div>
+
+    <label for="username">아이디</label>
+    <input type="text" id="username" placeholder="로그인에 사용할 아이디" />
+
+    <label for="password">비밀번호</label>
+    <input type="password" id="password" placeholder="비밀번호" />
+
+    <label for="password2">비밀번호 확인</label>
+    <input type="password" id="password2" placeholder="비밀번호를 다시 입력" />
+
+    <label for="name">이름 / 닉네임</label>
+    <input type="text" id="name" placeholder="이름 또는 닉네임" />
+
+    <label for="phone">휴대폰 번호</label>
+    <input type="tel" id="phone" placeholder="010-0000-0000" />
+
+    <div class="terms">
+      <strong>[NEO AI 투자 프로세스 안내]</strong><br />
+      · 인공지능 분석, 포트폴리오 분산, AI 리스크 관리를 통해 자동화된 투자 프로세스를 제공합니다.<br />
+      · 딥러닝 기반 알고리즘이 경제·시장 데이터를 분석해 투자 구간을 판단합니다.<br />
+      · 사용자는 계정으로 접속해 자신의 AI 투자 현황을 확인할 수 있습니다.
+      <br /><br />
+      <strong>[개인정보 수집 및 이용 안내]</strong><br />
+      · 수집 항목: 아이디, 비밀번호, 이름, 휴대폰 번호<br />
+      · 이용 목적: 회원 식별, 서비스 제공, 문의 응대<br />
+      · 보유 기간: 회원 탈퇴 시까지
+    </div>
+    <div class="checkbox-line">
+      <input type="checkbox" id="agree" />
+      <label for="agree">위 이용 안내 및 개인정보 수집·이용에 동의합니다.</label>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-submit" id="btnSubmit">회원가입</button>
+      <button class="btn-cancel" id="btnCancel">취소</button>
+    </div>
+
+    <div class="error" id="errorBox"></div>
+  </div>
+
+  <!-- Supabase + 회원가입 로직 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
+    const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function register() {
+      const username = document.getElementById('username').value.trim();
+      const pw       = document.getElementById('password').value.trim();
+      const pw2      = document.getElementById('password2').value.trim();
+      const name     = document.getElementById('name').value.trim();
+      const phone    = document.getElementById('phone').value.trim();
+      const agree    = document.getElementById('agree').checked;
+      const errorBox = document.getElementById('errorBox');
+
+      errorBox.textContent = '';
+
+      if (!username || !pw || !pw2 || !name || !phone) {
+        errorBox.textContent = '모든 필드를 입력해주세요.';
+        return;
+      }
+      if (pw !== pw2) {
+        errorBox.textContent = '비밀번호가 일치하지 않습니다.';
+        return;
+      }
+      if (!agree) {
+        errorBox.textContent = '약관 동의가 필요합니다.';
+        return;
+      }
+
+      try {
+        const { data: exist } = await supabase
+          .from('users')
+          .select('id')
+          .eq('username', username)
+          .maybeSingle();
+
+        if (exist) {
+          errorBox.textContent = '이미 사용 중인 아이디입니다.';
+          return;
+        }
+
+        const { error } = await supabase
+          .from('users')
+          .insert({
+            username,
+            password: pw,
+            name,
+            phone,
+            amount: 0,
+            status: '진행중',
+            approved: false,
+            role: 'user'
+          });
+
+        if (error) {
+          console.error(error);
+          errorBox.textContent = '회원가입 중 오류가 발생했습니다.';
+          return;
+        }
+
+        alert('회원가입 완료! 관리자 승인 후 로그인할 수 있습니다.');
+        window.location.href = 'index.html';
+      } catch (e) {
+        console.error(e);
+        errorBox.textContent = '서버와 통신 중 오류가 발생했습니다.';
+      }
+    }
+
+    document.getElementById('btnSubmit').addEventListener('click', register);
+    document.getElementById('btnCancel').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
