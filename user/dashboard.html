@@ -99,7 +99,7 @@
       background: #ffffff;
       border: 1px solid #e5e7eb;
       box-shadow: 0 16px 40px rgba(148, 163, 184, 0.25);
-      padding: 18px;
+      padding: 18px 18px 18px;
       margin-bottom: 14px;
     }
 
@@ -125,7 +125,7 @@
     .value-box {
       flex: 1;
       min-width: 180px;
-      padding: 14px;
+      padding: 14px 14px;
       border-radius: 16px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
@@ -139,6 +139,16 @@
       font-size: 22px;
       font-weight: 700;
       color: #111827;
+    }
+
+    /* ✅ 긍정적인 금액 강조 색상 */
+    .amount-positive {
+      color: #059669; /* emerald-600 느낌 */
+      font-weight: 800;
+      text-shadow: 0 0 4px rgba(16, 185, 129, 0.25);
+    }
+    .amount-muted {
+      color: #4b5563;
     }
 
     .status-pill {
@@ -180,7 +190,7 @@
       line-height: 1.6;
     }
 
-    /* 내 계정 정보 카드 */
+    /* 내 정보 카드 */
     .account-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -203,69 +213,26 @@
       color: #111827;
     }
 
-    .acct-settings {
-      position: absolute;
-      top: 14px;
-      right: 16px;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 16px;
-      color: #9ca3af;
-      padding: 0;
+    .account-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
     }
-    .acct-settings:hover {
+    .btn-gear {
+      border: none;
+      background: #f3f4f6;
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       color: #4b5563;
     }
-
-    .account-card-inner {
-      position: relative;
-    }
-
-    .account-edit {
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px dashed #e5e7eb;
-      font-size: 13px;
-    }
-    .account-edit label {
-      display: block;
-      font-size: 12px;
-      color: #6b7280;
-      margin: 6px 0 2px;
-    }
-    .account-edit input {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid #d1d5db;
-      font-size: 13px;
-    }
-    .account-edit input:focus {
-      outline: none;
-      border-color: #6366f1;
-      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.3);
-    }
-    .edit-btn-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      justify-content: flex-end;
-    }
-    .edit-btn-row button {
-      border-radius: 999px;
-      border: none;
-      padding: 6px 12px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .btn-save {
-      background: linear-gradient(135deg, #6366f1, #0ea5e9);
-      color: #f9fafb;
-    }
-    .btn-cancel {
-      background: #f3f4f6;
-      color: #111827;
+    .btn-gear:hover {
+      background: #e5e7eb;
     }
 
     /* 진행 단계 카드 */
@@ -374,6 +341,74 @@
       color: #4f46e5;
     }
 
+    /* 설정 모달 */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+    }
+    .modal {
+      width: 100%;
+      max-width: 360px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.45);
+      border: 1px solid #e5e7eb;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .modal label {
+      display: block;
+      font-size: 13px;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      color: #374151;
+    }
+    .modal input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      font-size: 13px;
+    }
+    .modal input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
+      background: #ffffff;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .btn-secondary, .btn-primary {
+      border-radius: 999px;
+      border: none;
+      font-size: 13px;
+      padding: 7px 14px;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #0ea5e9);
+      color: #f9fafb;
+      font-weight: 600;
+    }
+
     .hidden { display: none; }
   </style>
 </head>
@@ -383,7 +418,7 @@
       <header class="topbar">
         <div class="logo"><span>NEO AI</span> PROCESSOR</div>
         <nav class="nav">
-          <!-- 메뉴: AI 투자현황 / 소개 / 내 정보 / 로그아웃 -->
+          <!-- 순서: AI 투자현황, 소개, 내 정보, 로그아웃 -->
           <button id="tabStatus" class="active">AI 투자현황</button>
           <button id="tabIntro">소개</button>
           <button id="tabAccount">내 정보</button>
@@ -391,174 +426,112 @@
         </nav>
       </header>
 
-      <!-- ========== AI 투자현황 탭 ========== -->
-      <div id="pageStatus">
-        <!-- AI 투자현황 메인 카드 -->
-        <section id="sectionStatus" class="card">
-          <div class="section-title">AI 투자현황</div>
-          <div class="section-sub" id="nameLine"></div>
-
-          <div class="value-row">
-            <div class="value-box">
-              <div class="value-label">AI투자중인 금액</div>
-              <div class="value-main" id="amountText">- 원</div>
-            </div>
-            <div class="value-box">
-              <div class="value-label">진행 상태</div>
-              <div id="statusBadge"></div>
-            </div>
-          </div>
-
-          <div class="info-text" id="approvalInfo"></div>
-        </section>
+      <!-- 1. AI 투자현황: 실시간 수익 + 진행 단계 -->
+      <section id="sectionStatus" class="card">
+        <div class="section-title">AI 투자현황</div>
+        <div class="section-sub" id="nameLine"></div>
 
         <!-- 실시간 수익 현황 카드 -->
-        <section id="sectionProfit" class="card">
-          <div class="section-title">실시간 수익 현황</div>
-          <div class="section-sub">네오 AI 투자 프로세서 기준 현재 운용 중인 금액과 실현 수익입니다.</div>
-
-          <div class="value-row">
-            <div class="value-box">
-              <div class="value-label">투자중인 금액</div>
-              <div class="value-main" id="profitInvesting">- 원</div>
-            </div>
-            <div class="value-box">
-              <div class="value-label">수익 실현중인 금액</div>
-              <div class="value-main" id="profitRealized">- 원</div>
-            </div>
-            <div class="value-box">
-              <div class="value-label">총 금액</div>
-              <div class="value-main" id="profitTotal">- 원</div>
-            </div>
+        <div class="value-row">
+          <div class="value-box">
+            <div class="value-label">투자중인 금액</div>
+            <div class="value-main amount-muted" id="amountInvestText">- 원</div>
           </div>
-        </section>
-
-        <!-- AI 세션 진행 단계 카드 -->
-        <section id="sectionStatusExtra" class="card">
-          <div class="section-title">AI 세션 진행 단계</div>
-          <div class="section-sub">
-            네오AI는 아래 3단계를 거쳐 세션을 운용합니다.
+          <div class="value-box">
+            <div class="value-label">수익 실현중인 금액</div>
+            <!-- ✅ 강조 색상 클래스 적용 -->
+            <div class="value-main amount-muted" id="realizedAmountText">- 원</div>
           </div>
-
-          <div class="steps-row">
-            <div class="step" data-step="wait">
-              <div class="step-title">1단계 · 대기중</div>
-              <div class="step-tag">READY</div>
-              <div>
-                네오AI 프로세스 준비 단계입니다.<br/>
-                투자가 확정되면 다음 단계로 이동합니다.
-              </div>
-            </div>
-            <div class="step" data-step="run">
-              <div class="step-title">2단계 · 진행중</div>
-              <div class="step-tag">RUNNING</div>
-              <div>
-                설정된 금액에 맞춰 AI가 분산 투자를 수행하는 구간입니다.<br/>
-                포트폴리오 구성과 비중 조정이 자동으로 이뤄집니다.
-              </div>
-            </div>
-            <div class="step" data-step="done">
-              <div class="step-title">3단계 · 진행 완료</div>
-              <div class="step-tag">COMPLETE</div>
-              <div>
-                투자 운용이 완료된 상태입니다.<br/>
-                수익 정산을 준비합니다.
-              </div>
-            </div>
+          <div class="value-box">
+            <div class="value-label">총 금액 (투자중 + 실현)</div>
+            <!-- ✅ 강조 색상 클래스 적용 -->
+            <div class="value-main amount-muted" id="totalAmountText">- 원</div>
           </div>
-        </section>
-      </div>
+        </div>
 
-      <!-- ========== 내 정보 탭 ========== -->
-      <div id="pageAccount" class="hidden">
-        <section id="sectionAccount" class="card">
-          <div class="account-card-inner">
-            <div class="section-title">내 정보</div>
-            <div class="section-sub">
-              네오 AI 투자 프로세서
-            </div>
+        <div class="info-text">
+          투자중인 금액과 실현된 수익을 합산한 총 금액이 표시됩니다.
+        </div>
 
-            <button class="acct-settings" id="btnEditAccount" type="button">⚙</button>
+        <div style="margin-top:18px;">
+          <div class="value-label" style="margin-bottom:4px;">진행 상태</div>
+          <div id="statusBadge"></div>
+        </div>
+      </section>
 
-            <div class="account-grid">
-              <div>
-                <div class="acct-label">이름</div>
-                <div class="acct-value" id="acctName">-</div>
-              </div>
-              <div>
-                <div class="acct-label">투자중인 금액</div>
-                <div class="acct-value" id="acctamountText">-</div>
-              </div>
-              <div>
-                <div class="acct-label">출금 계좌</div>
-                <div class="acct-value" id="acctBank">-</div>
-              </div>
-            </div>
+      <!-- AI 세션 진행 단계 -->
+      <section id="sectionStatusExtra" class="card">
+        <div class="section-title">AI 세션 진행 단계</div>
+        <div class="section-sub">
+          네오AI는 아래 3단계를 거쳐 세션을 운용합니다.
+        </div>
 
-            <div class="info-text" style="margin-top:12px;">
-              출금 계좌는 본인 확인 및 출금 처리 시에만 사용됩니다.
-            </div>
-
-            <!-- 설정 편집 영역 -->
-            <div id="accountEdit" class="account-edit hidden">
-              <div class="info-text" style="margin-top:0; margin-bottom:4px;">
-                비밀번호와 출금 계좌를 수정할 수 있습니다.
-              </div>
-              <label for="editPassword">새 비밀번호</label>
-              <input type="password" id="editPassword" placeholder="변경하지 않으려면 비워두세요" />
-
-              <label for="editBank">출금 계좌 (예: OO은행 123-456-789012)</label>
-              <input type="text" id="editBank" placeholder="예: 국민 123-456-789012" />
-
-              <div class="edit-btn-row">
-                <button type="button" class="btn-cancel" id="btnCancelAccount">취소</button>
-                <button type="button" class="btn-save" id="btnSaveAccount">저장</button>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- ========== 소개 탭 ========== -->
-      <div id="pageIntro" class="hidden">
-        <section id="sectionIntro" class="card">
-          <div class="intro-badge">AI 기반 자동 투자 프로세스</div>
-          <div class="intro-grid">
+        <div class="steps-row">
+          <div class="step" data-step="wait">
+            <div class="step-title">1단계 · 대기중</div>
+            <div class="step-tag">READY</div>
             <div>
-              <div class="intro-title">네오AI, 스스로 판단하고 분산 투자하는 인공지능</div>
-              <p class="intro-text">
+              투자금 확정 전 단계입니다.<br/>
+              투자가 확정되면 다음 단계로 이동합니다.
+            </div>
+          </div>
+          <div class="step" data-step="run">
+            <div class="step-title">2단계 · 진행중</div>
+            <div class="step-tag">RUNNING</div>
+            <div>
+              설정된 금액에 맞춰 AI가 분산 투자를 수행하는 구간입니다.<br/>
+              포트폴리오 구성과 비중 조정이 자동으로 이뤄집니다.
+            </div>
+          </div>
+          <div class="step" data-step="done">
+            <div class="step-title">3단계 · 진행 완료</div>
+            <div class="step-tag">COMPLETE</div>
+            <div>
+              투자 운용이 완료된 상태입니다.<br/>
+              수익 정산을 준비합니다.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. 소개 섹션 -->
+      <section id="sectionIntro" class="card hidden">
+        <div class="intro-badge">AI 기반 자동 투자 프로세스</div>
+        <div class="intro-grid">
+          <div>
+            <div class="intro-title">네오AI, 스스로 판단하고 분산 투자하는 인공지능</div>
+            <p class="intro-text">
 네오AI는 대량의 시장 데이터와 딥러닝 알고리즘을 활용해
 시장 흐름을 분석하고, 여러 종목과 자산군에 자동으로 분산 투자하는
 AI 투자 프로세서입니다.
 
 사용자는 투자 금액만 정하면,
 AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동으로 수행하도록 설계되어 있습니다.
-              </p>
+            </p>
 
-              <div class="intro-box">
-                <div class="intro-box-title">AI가 하는 일</div>
-                <ul class="intro-points">
-                  <li>· 경제 지표, 뉴스, 시황 데이터를 종합적으로 스캔</li>
-                  <li>· 최대 30개 내외 종목으로 포트폴리오 자동 구성</li>
-                  <li>· 최소 1일 ~ 최대 30일 단위로 세션 운용</li>
-                  <li>· 손익·변동성 데이터를 기반으로 전략을 반복 학습</li>
-                </ul>
-              </div>
+            <div class="intro-box">
+              <div class="intro-box-title">AI가 하는 일</div>
+              <ul class="intro-points">
+                <li>· 경제 지표, 뉴스, 시황 데이터를 종합적으로 스캔</li>
+                <li>· 최대 30개 내외 종목으로 포트폴리오 자동 구성</li>
+                <li>· 최소 1일 ~ 최대 30일 단위로 세션 운용</li>
+                <li>· 손익·변동성 데이터를 기반으로 전략을 반복 학습</li>
+              </ul>
             </div>
-            <div>
-              <!-- 투자 예시 시나리오 (전문 운영 관점) -->
-              <div class="intro-box">
-                <div class="intro-box-title">투자 예시 시나리오 (전문 운영 관점)</div>
-                <p class="intro-text" style="margin-top:4px;">
+          </div>
+          <div>
+            <div class="intro-box">
+              <div class="intro-box-title">투자 예시 시나리오 (전문 운영 관점)</div>
+              <p class="intro-text" style="margin-top:4px;">
 <span class="scenario-highlight">예시 · 50,000원을 AI에 맡기는 경우</span>
 
 1) <strong>세션 설정</strong>  
- · 유저가 50,000원을 투자하고, 약  1일 ~ 최대 30일 AI에게 맡깁니다.  
+ · 유저가 50,000원을 투자하고, 약 1일 ~ 최대 30일 AI에게 맡깁니다.  
  · "진행중" 상태로 전환되며, 네오AI는 해당 금액을 운용대상으로 인식합니다.
 
 2) <strong>시장·종목 스캔</strong>  
  · 네오AI는 최근 수 시간~30일간의 가격 흐름, 거래량, 변동성, 뉴스·이슈 등 데이터를 수집합니다.  
- · 과거 학습 데이터와 현재 시장 상황을 비교해, 단기 구간에서 효율이 높은 섹터·종목을 선별합니다.
+ · 과거 학습 데이터와 현재 시장 상황을 비교해, 효율이 높은 섹터·종목을 선별합니다.
 
 3) <strong>포트폴리오 구성</strong>  
  · 전체 50,000원 중 일부는 기본 안전 구간, 일부는 공격 구간으로 나누어 비중을 설정합니다.  
@@ -577,20 +550,83 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 
 이 과정에서 유저는 투자 금액과 세션 운용 여부만 확인하고,  
 실제 종목 선택·비중 조정·리스크 관리는 모두 네오AI가 담당하는 구조입니다.
-                </p>
-              </div>
+              </p>
+            </div>
 
-              <div class="intro-box" style="margin-top:10px;">
-                <div class="intro-box-title">이런 분께 적합합니다</div>
-                <ul class="intro-points">
-                  <li>· 세부 종목 선택보다는 전체 전략·결과에 집중하고 싶은 분</li>
-                  <li>· 단기 구간별(1일 ~ 최대 30일) 운용을 선호하는 분</li>
-                  <li>· AI 기반 의사결정과 분산 투자를 한 번에 경험해 보고 싶은 분</li>
-                </ul>
-              </div>
+            <div class="intro-box" style="margin-top:10px;">
+              <div class="intro-box-title">이런 분께 적합합니다</div>
+              <ul class="intro-points">
+                <li>· 세부 종목 선택보다는 전체 전략·결과에 집중하고 싶은 분</li>
+                <li>· 단기 구간별(1일 ~ 최대 30일) 운용을 선호하는 분</li>
+                <li>· AI 기반 의사결정과 분산 투자를 한 번에 경험해 보고 싶은 분</li>
+              </ul>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
+
+      <!-- 3. 내 정보 섹션 -->
+      <section id="sectionAccount" class="card hidden">
+        <div class="account-header-row">
+          <div>
+            <div class="section-title">내 정보</div>
+            <div class="section-sub">네오 AI 투자 프로세서에서 사용하는 기본 회원 정보입니다.</div>
+          </div>
+          <button class="btn-gear" id="btnOpenSettings">⚙ 설정</button>
+        </div>
+
+        <div class="account-grid">
+          <div>
+            <div class="acct-label">이름</div>
+            <div class="acct-value" id="acctName">-</div>
+          </div>
+          <div>
+            <div class="acct-label">아이디</div>
+            <div class="acct-value" id="acctUsername">-</div>
+          </div>
+          <div>
+            <div class="acct-label">휴대폰</div>
+            <div class="acct-value" id="acctPhone">-</div>
+          </div>
+          <div>
+            <div class="acct-label">투자중인 금액</div>
+            <div class="acct-value" id="acctAmount">-</div>
+          </div>
+          <div>
+            <div class="acct-label">수익 실현중인 금액</div>
+            <div class="acct-value" id="acctRealized">-</div>
+          </div>
+          <div>
+            <div class="acct-label">출금 계좌</div>
+            <!-- ✅ 전체 노출 (마스킹 X) -->
+            <div class="acct-value" id="acctBank">-</div>
+          </div>
+        </div>
+
+        <div class="info-text" style="margin-top:12px;">
+          출금 계좌는 본인 확인 및 출금 처리 시에만 사용되며, 관리자 페이지에서만 조회·관리됩니다.
+        </div>
+      </section>
+
+      <!-- 설정 모달 -->
+      <div id="settingsModal" class="modal-backdrop hidden">
+        <div class="modal">
+          <div class="modal-title">내 정보 수정</div>
+          <p class="section-sub" style="margin-bottom:4px;">
+            비밀번호와 출금 계좌 정보를 변경할 수 있습니다.
+          </p>
+
+          <label for="editPassword">새 비밀번호</label>
+          <input type="password" id="editPassword" placeholder="변경하지 않으려면 비워두세요" />
+
+          <label for="editBank">출금 계좌</label>
+          <input type="text" id="editBank" placeholder="예: 국민 123456-01-123456" />
+
+          <div class="modal-actions">
+            <button class="btn-secondary" id="btnCancelSettings">취소</button>
+            <button class="btn-primary" id="btnSaveSettings">저장하기</button>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -623,6 +659,15 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     function formatAmount(value) {
       if (value == null || isNaN(value)) return '- 원';
       return Number(value).toLocaleString('ko-KR') + ' 원';
+    }
+
+    function maskPhone(phone) {
+      if (!phone) return '-';
+      const digits = phone.replace(/[^0-9]/g, '');
+      if (digits.length < 8) return phone;
+      const head = digits.slice(0, 3);
+      const tail = digits.slice(-4);
+      return `${head}-****-${tail}`;
     }
 
     function renderStatus(status) {
@@ -659,170 +704,192 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       if (status === '진행중') key = 'run';
       else if (status === '진행 완료') key = 'done';
 
-      const target = document.querySelector(`.step[data-step="${key}"]`);
+      const target = document.querySelector(\`.step[data-step="\${key}"]\`);
       if (target) target.classList.add('active');
     }
 
     function fillAccountInfo(userFromDb) {
       const merged = { ...currentUser, ...userFromDb };
 
-      const nameEl = document.getElementById('acctName');
-      if (nameEl) nameEl.textContent = merged.name || merged.username || '-';
-
-      const amtEl = document.getElementById('acctamountText');
-      if (amtEl) amtEl.textContent = formatAmount(merged.amount);
-
-      const bankEl = document.getElementById('acctBank');
-      if (bankEl) bankEl.textContent = merged.bank_account || '-';
-    }
-
-    function renderProfit(amount, realized) {
-      const a = Number(amount || 0);
-      const r = Number(realized || 0);
-      document.getElementById('profitInvesting').textContent = formatAmount(a);
-      document.getElementById('profitRealized').textContent = formatAmount(r);
-      document.getElementById('profitTotal').textContent = formatAmount(a + r);
+      document.getElementById('acctName').textContent =
+        merged.name || '-';
+      document.getElementById('acctUsername').textContent =
+        merged.username || '-';
+      document.getElementById('acctPhone').textContent =
+        merged.phone ? maskPhone(merged.phone) : '-';
+      document.getElementById('acctAmount').textContent =
+        formatAmount(merged.amount || 0);
+      document.getElementById('acctRealized').textContent =
+        formatAmount(merged.realized_amount || 0);
+      document.getElementById('acctBank').textContent =
+        merged.bank_account || '-';
     }
 
     async function loadStatus() {
-      const amountText = document.getElementById('amountText');
-      const approvalInfo = document.getElementById('approvalInfo');
       const nameLine = document.getElementById('nameLine');
+      const investEl = document.getElementById('amountInvestText');
+      const realizedEl = document.getElementById('realizedAmountText');
+      const totalEl = document.getElementById('totalAmountText');
 
-      const displayName = (currentUser && (currentUser.name || currentUser.username)) || '';
+      const displayName =
+        (currentUser && (currentUser.name || currentUser.username)) || '';
+
+      if (displayName) {
+        nameLine.textContent =
+          \`\${displayName}님의 AI 투자 진행 정보입니다.\`;
+      } else {
+        nameLine.textContent = 'AI 투자 진행 정보입니다.';
+      }
 
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('amount, realized_amount, status, name, username, bank_account')
-          .eq('username', currentUser.username);
+          .select('amount, realized_amount, status, name, username, phone, bank_account')
+          .eq('username', currentUser.username)
+          .maybeSingle();
 
         if (error) {
           console.error('Supabase error:', error);
-          amountText.textContent = '- 원';
+        }
+
+        if (!data) {
+          investEl.textContent = '- 원';
+          realizedEl.textContent = '- 원';
+          totalEl.textContent = '- 원';
+
+          investEl.classList.add('amount-muted');
+          realizedEl.classList.add('amount-muted');
+          totalEl.classList.add('amount-muted');
+
           renderStatus('대기중');
           renderSteps('대기중');
           fillAccountInfo({});
-          renderProfit(0, 0);
-          approvalInfo.textContent = '현재 투자 정보가 등록되어 있지 않습니다.';
-          nameLine.textContent = displayName
-            ? `${displayName}님의 AI 투자 진행 정보입니다.`
-            : 'AI 투자 진행 정보입니다.';
           return;
         }
 
-        if (!data || data.length === 0) {
-          amountText.textContent = '- 원';
-          renderStatus('대기중');
-          renderSteps('대기중');
-          fillAccountInfo({});
-          renderProfit(0, 0);
-          approvalInfo.textContent = '현재 투자 정보가 등록되어 있지 않습니다.';
-          nameLine.textContent = displayName
-            ? `${displayName}님의 AI 투자 진행 정보입니다.`
-            : 'AI 투자 진행 정보입니다.';
-          return;
-        }
+        const amount = Number(data.amount || 0);
+        const realized = Number(data.realized_amount || 0);
+        const total = amount + realized;
 
-        const row = data[0];
+        investEl.textContent = formatAmount(amount);
+        realizedEl.textContent = formatAmount(realized);
+        totalEl.textContent = formatAmount(total);
 
-        amountText.textContent = formatAmount(row.amount);
-        renderStatus(row.status);
-        renderSteps(row.status);
-        fillAccountInfo(row);
-        renderProfit(row.amount, row.realized_amount);
+        // 기본 색상 제거 후 다시 적용
+        [realizedEl, totalEl].forEach(el => {
+          el.classList.remove('amount-muted', 'amount-positive');
+        });
 
-        const nameForLine = row.name || displayName;
-        if (nameForLine) {
-          nameLine.textContent = `${nameForLine}님의 AI 투자 진행 정보입니다.`;
-        } else {
-          nameLine.textContent = 'AI 투자 진행 정보입니다.';
-        }
+        if (realized > 0) realizedEl.classList.add('amount-positive');
+        else realizedEl.classList.add('amount-muted');
 
-        approvalInfo.textContent =
-          `${nameForLine || ''} AI 투자 진행 상황입니다. 매일 최신 상태가 반영됩니다.`.trim();
+        if (total > 0) totalEl.classList.add('amount-positive');
+        else totalEl.classList.add('amount-muted');
+
+        investEl.classList.add('amount-muted');
+
+        renderStatus(data.status);
+        renderSteps(data.status);
+        fillAccountInfo(data);
       } catch (e) {
         console.error('JS error:', e);
-        amountText.textContent = '- 원';
+        investEl.textContent = '- 원';
+        realizedEl.textContent = '- 원';
+        totalEl.textContent = '- 원';
+        investEl.classList.add('amount-muted');
+        realizedEl.classList.add('amount-muted');
+        totalEl.classList.add('amount-muted');
         renderStatus('대기중');
         renderSteps('대기중');
         fillAccountInfo({});
-        renderProfit(0, 0);
-        approvalInfo.textContent = '현재 투자 정보가 등록되어 있지 않습니다.';
-        nameLine.textContent = displayName
-          ? `${displayName}님의 AI 투자 진행 정보입니다.`
-          : 'AI 투자 진행 정보입니다.';
       }
     }
 
     // 탭 전환
-    const tabStatus = document.getElementById('tabStatus');
-    const tabIntro = document.getElementById('tabIntro');
-    const tabAccount = document.getElementById('tabAccount');
+    const tabStatus   = document.getElementById('tabStatus');
+    const tabIntro    = document.getElementById('tabIntro');
+    const tabAccount  = document.getElementById('tabAccount');
+    const sectionStatus      = document.getElementById('sectionStatus');
+    const sectionStatusExtra = document.getElementById('sectionStatusExtra');
+    const sectionIntro       = document.getElementById('sectionIntro');
+    const sectionAccount     = document.getElementById('sectionAccount');
 
-    const pageStatus = document.getElementById('pageStatus');
-    const pageIntro = document.getElementById('pageIntro');
-    const pageAccount = document.getElementById('pageAccount');
-
-    function activateTab(tab) {
-      tabStatus.classList.remove('active');
+    tabStatus.addEventListener('click', () => {
+      tabStatus.classList.add('active');
       tabIntro.classList.remove('active');
       tabAccount.classList.remove('active');
-      pageStatus.classList.add('hidden');
-      pageIntro.classList.add('hidden');
-      pageAccount.classList.add('hidden');
 
-      if (tab === 'status') {
-        tabStatus.classList.add('active');
-        pageStatus.classList.remove('hidden');
-      } else if (tab === 'intro') {
-        tabIntro.classList.add('active');
-        pageIntro.classList.remove('hidden');
-      } else {
-        tabAccount.classList.add('active');
-        pageAccount.classList.remove('hidden');
-      }
-    }
-
-    tabStatus.addEventListener('click', () => activateTab('status'));
-    tabIntro.addEventListener('click', () => activateTab('intro'));
-    tabAccount.addEventListener('click', () => activateTab('account'));
-
-    // 계정 편집
-    const btnEditAccount = document.getElementById('btnEditAccount');
-    const accountEdit = document.getElementById('accountEdit');
-    const btnSaveAccount = document.getElementById('btnSaveAccount');
-    const btnCancelAccount = document.getElementById('btnCancelAccount');
-    const editPassword = document.getElementById('editPassword');
-    const editBank = document.getElementById('editBank');
-
-    btnEditAccount.addEventListener('click', () => {
-      accountEdit.classList.toggle('hidden');
+      sectionStatus.classList.remove('hidden');
+      sectionStatusExtra.classList.remove('hidden');
+      sectionIntro.classList.add('hidden');
+      sectionAccount.classList.add('hidden');
     });
 
-    btnCancelAccount.addEventListener('click', () => {
-      editPassword.value = '';
-      editBank.value = '';
-      accountEdit.classList.add('hidden');
+    tabIntro.addEventListener('click', () => {
+      tabIntro.classList.add('active');
+      tabStatus.classList.remove('active');
+      tabAccount.classList.remove('active');
+
+      sectionIntro.classList.remove('hidden');
+      sectionStatus.classList.add('hidden');
+      sectionStatusExtra.classList.add('hidden');
+      sectionAccount.classList.add('hidden');
     });
 
-    btnSaveAccount.addEventListener('click', async () => {
-      const updates = {};
-      const newPw = editPassword.value.trim();
-      const newBank = editBank.value.trim();
+    tabAccount.addEventListener('click', () => {
+      tabAccount.classList.add('active');
+      tabStatus.classList.remove('active');
+      tabIntro.classList.remove('active');
 
-      if (newPw) updates.password = newPw;
-      if (newBank) updates.bank_account = newBank;
+      sectionAccount.classList.remove('hidden');
+      sectionStatus.classList.add('hidden');
+      sectionStatusExtra.classList.add('hidden');
+      sectionIntro.classList.add('hidden');
+    });
 
-      if (Object.keys(updates).length === 0) {
-        alert('변경된 내용이 없습니다.');
+    // 로그아웃
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      localStorage.removeItem('neoai_current_user');
+      alert('로그아웃 되었습니다.');
+      window.location.href = 'index.html';
+    });
+
+    // 설정 모달 로직
+    const settingsModal = document.getElementById('settingsModal');
+    const btnOpenSettings = document.getElementById('btnOpenSettings');
+    const btnCancelSettings = document.getElementById('btnCancelSettings');
+    const btnSaveSettings = document.getElementById('btnSaveSettings');
+
+    btnOpenSettings.addEventListener('click', () => {
+      settingsModal.classList.remove('hidden');
+      document.getElementById('editPassword').value = '';
+      document.getElementById('editBank').value =
+        (currentUser && currentUser.bank_account) || '';
+    });
+
+    btnCancelSettings.addEventListener('click', () => {
+      settingsModal.classList.add('hidden');
+    });
+
+    btnSaveSettings.addEventListener('click', async () => {
+      const newPw = document.getElementById('editPassword').value.trim();
+      const newBank = document.getElementById('editBank').value.trim();
+
+      const payload = {};
+      if (newPw) payload.password = newPw;
+      payload.bank_account = newBank || null;
+
+      if (!currentUser || !currentUser.id) {
+        alert('사용자 정보를 확인할 수 없습니다.');
         return;
       }
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('users')
-        .update(updates)
-        .eq('username', currentUser.username);
+        .update(payload)
+        .eq('id', currentUser.id)
+        .select('*')
+        .maybeSingle();
 
       if (error) {
         console.error(error);
@@ -830,22 +897,11 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         return;
       }
 
-      // 로컬 정보 갱신
-      currentUser = { ...currentUser, ...updates };
+      currentUser = { ...currentUser, ...data };
       localStorage.setItem('neoai_current_user', JSON.stringify(currentUser));
-      fillAccountInfo(updates);
+      fillAccountInfo(data);
+      settingsModal.classList.add('hidden');
       alert('정보가 저장되었습니다.');
-      editPassword.value = '';
-      editBank.value = '';
-      accountEdit.classList.add('hidden');
-      // 상태 다시 로딩 (금액/계좌 반영)
-      loadStatus();
-    });
-
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      localStorage.removeItem('neoai_current_user');
-      alert('로그아웃 되었습니다.');
-      window.location.href = 'index.html';
     });
 
     requireLogin();
