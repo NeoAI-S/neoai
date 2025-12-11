@@ -141,9 +141,9 @@
       color: #111827;
     }
 
-    /* ✅ 긍정적인 금액 강조 색상 */
+    /* 긍정적인 금액 강조 색상 */
     .amount-positive {
-      color: #059669; /* emerald-600 느낌 */
+      color: #059669; /* 에메랄드 계열 */
       font-weight: 800;
       text-shadow: 0 0 4px rgba(16, 185, 129, 0.25);
     }
@@ -418,7 +418,7 @@
       <header class="topbar">
         <div class="logo"><span>NEO AI</span> PROCESSOR</div>
         <nav class="nav">
-          <!-- 순서: AI 투자현황, 소개, 내 정보, 로그아웃 -->
+          <!-- AI 투자현황 / 소개 / 내 정보 / 로그아웃 -->
           <button id="tabStatus" class="active">AI 투자현황</button>
           <button id="tabIntro">소개</button>
           <button id="tabAccount">내 정보</button>
@@ -426,12 +426,20 @@
         </nav>
       </header>
 
-      <!-- 1. AI 투자현황: 실시간 수익 + 진행 단계 -->
+      <!-- 1. AI 투자현황 (이름 + 진행 상태) -->
       <section id="sectionStatus" class="card">
         <div class="section-title">AI 투자현황</div>
         <div class="section-sub" id="nameLine"></div>
 
-        <!-- 실시간 수익 현황 카드 -->
+        <div class="value-label" style="margin-top:6px;margin-bottom:4px;">진행 상태</div>
+        <div id="statusBadge"></div>
+      </section>
+
+      <!-- 2. 가운데 카드 : 실시간 수익 현황 -->
+      <section id="sectionRealtime" class="card">
+        <div class="section-title">실시간 수익 현황</div>
+        <div class="section-sub">네오 AI 투자 프로세서 기준, 현재 세션의 실시간 금액 정보입니다.</div>
+
         <div class="value-row">
           <div class="value-box">
             <div class="value-label">투자중인 금액</div>
@@ -439,27 +447,20 @@
           </div>
           <div class="value-box">
             <div class="value-label">수익 실현중인 금액</div>
-            <!-- ✅ 강조 색상 클래스 적용 -->
             <div class="value-main amount-muted" id="realizedAmountText">- 원</div>
           </div>
           <div class="value-box">
             <div class="value-label">총 금액 (투자중 + 실현)</div>
-            <!-- ✅ 강조 색상 클래스 적용 -->
             <div class="value-main amount-muted" id="totalAmountText">- 원</div>
           </div>
         </div>
 
         <div class="info-text">
-          투자중인 금액과 실현된 수익을 합산한 총 금액이 표시됩니다.
-        </div>
-
-        <div style="margin-top:18px;">
-          <div class="value-label" style="margin-bottom:4px;">진행 상태</div>
-          <div id="statusBadge"></div>
+          투자중인 금액과 실현된 수익을 합산한 금액이 총 금액으로 표시됩니다.
         </div>
       </section>
 
-      <!-- AI 세션 진행 단계 -->
+      <!-- 3. AI 세션 진행 단계 -->
       <section id="sectionStatusExtra" class="card">
         <div class="section-title">AI 세션 진행 단계</div>
         <div class="section-sub">
@@ -494,7 +495,7 @@
         </div>
       </section>
 
-      <!-- 2. 소개 섹션 -->
+      <!-- 소개 섹션 -->
       <section id="sectionIntro" class="card hidden">
         <div class="intro-badge">AI 기반 자동 투자 프로세스</div>
         <div class="intro-grid">
@@ -565,7 +566,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         </div>
       </section>
 
-      <!-- 3. 내 정보 섹션 -->
+      <!-- 내 정보 섹션 -->
       <section id="sectionAccount" class="card hidden">
         <div class="account-header-row">
           <div>
@@ -598,7 +599,6 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
           </div>
           <div>
             <div class="acct-label">출금 계좌</div>
-            <!-- ✅ 전체 노출 (마스킹 X) -->
             <div class="acct-value" id="acctBank">-</div>
           </div>
         </div>
@@ -704,7 +704,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       if (status === '진행중') key = 'run';
       else if (status === '진행 완료') key = 'done';
 
-      const target = document.querySelector(\`.step[data-step="\${key}"]\`);
+      const target = document.querySelector(`.step[data-step="${key}"]`);
       if (target) target.classList.add('active');
     }
 
@@ -726,17 +726,17 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     }
 
     async function loadStatus() {
-      const nameLine = document.getElementById('nameLine');
-      const investEl = document.getElementById('amountInvestText');
+      const nameLine   = document.getElementById('nameLine');
+      const investEl   = document.getElementById('amountInvestText');
       const realizedEl = document.getElementById('realizedAmountText');
-      const totalEl = document.getElementById('totalAmountText');
+      const totalEl    = document.getElementById('totalAmountText');
 
       const displayName =
         (currentUser && (currentUser.name || currentUser.username)) || '';
 
       if (displayName) {
         nameLine.textContent =
-          \`\${displayName}님의 AI 투자 진행 정보입니다.\`;
+          `${displayName}님의 AI 투자 진행 정보입니다.`;
       } else {
         nameLine.textContent = 'AI 투자 진행 정보입니다.';
       }
@@ -744,7 +744,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('amount, realized_amount, status, name, username, phone, bank_account')
+          .select('*')
           .eq('username', currentUser.username)
           .maybeSingle();
 
@@ -753,52 +753,48 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         }
 
         if (!data) {
-          investEl.textContent = '- 원';
+          investEl.textContent   = '- 원';
           realizedEl.textContent = '- 원';
-          totalEl.textContent = '- 원';
-
-          investEl.classList.add('amount-muted');
-          realizedEl.classList.add('amount-muted');
-          totalEl.classList.add('amount-muted');
-
+          totalEl.textContent    = '- 원';
+          [investEl, realizedEl, totalEl].forEach(el => {
+            el.classList.add('amount-muted');
+            el.classList.remove('amount-positive');
+          });
           renderStatus('대기중');
           renderSteps('대기중');
           fillAccountInfo({});
           return;
         }
 
-        const amount = Number(data.amount || 0);
+        const amount   = Number(data.amount || 0);
         const realized = Number(data.realized_amount || 0);
-        const total = amount + realized;
+        const total    = amount + realized;
 
-        investEl.textContent = formatAmount(amount);
+        investEl.textContent   = formatAmount(amount);
         realizedEl.textContent = formatAmount(realized);
-        totalEl.textContent = formatAmount(total);
+        totalEl.textContent    = formatAmount(total);
 
-        // 기본 색상 제거 후 다시 적용
-        [realizedEl, totalEl].forEach(el => {
+        // 색상 초기화 후 다시 적용
+        [investEl, realizedEl, totalEl].forEach(el => {
           el.classList.remove('amount-muted', 'amount-positive');
         });
 
-        if (realized > 0) realizedEl.classList.add('amount-positive');
-        else realizedEl.classList.add('amount-muted');
-
-        if (total > 0) totalEl.classList.add('amount-positive');
-        else totalEl.classList.add('amount-muted');
-
         investEl.classList.add('amount-muted');
+        realizedEl.classList.add(realized > 0 ? 'amount-positive' : 'amount-muted');
+        totalEl.classList.add(total > 0 ? 'amount-positive' : 'amount-muted');
 
         renderStatus(data.status);
         renderSteps(data.status);
         fillAccountInfo(data);
       } catch (e) {
         console.error('JS error:', e);
-        investEl.textContent = '- 원';
+        investEl.textContent   = '- 원';
         realizedEl.textContent = '- 원';
-        totalEl.textContent = '- 원';
-        investEl.classList.add('amount-muted');
-        realizedEl.classList.add('amount-muted');
-        totalEl.classList.add('amount-muted');
+        totalEl.textContent    = '- 원';
+        [investEl, realizedEl, totalEl].forEach(el => {
+          el.classList.add('amount-muted');
+          el.classList.remove('amount-positive');
+        });
         renderStatus('대기중');
         renderSteps('대기중');
         fillAccountInfo({});
@@ -806,10 +802,11 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     }
 
     // 탭 전환
-    const tabStatus   = document.getElementById('tabStatus');
-    const tabIntro    = document.getElementById('tabIntro');
-    const tabAccount  = document.getElementById('tabAccount');
+    const tabStatus      = document.getElementById('tabStatus');
+    const tabIntro       = document.getElementById('tabIntro');
+    const tabAccount     = document.getElementById('tabAccount');
     const sectionStatus      = document.getElementById('sectionStatus');
+    const sectionRealtime    = document.getElementById('sectionRealtime');
     const sectionStatusExtra = document.getElementById('sectionStatusExtra');
     const sectionIntro       = document.getElementById('sectionIntro');
     const sectionAccount     = document.getElementById('sectionAccount');
@@ -820,6 +817,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       tabAccount.classList.remove('active');
 
       sectionStatus.classList.remove('hidden');
+      sectionRealtime.classList.remove('hidden');
       sectionStatusExtra.classList.remove('hidden');
       sectionIntro.classList.add('hidden');
       sectionAccount.classList.add('hidden');
@@ -832,6 +830,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 
       sectionIntro.classList.remove('hidden');
       sectionStatus.classList.add('hidden');
+      sectionRealtime.classList.add('hidden');
       sectionStatusExtra.classList.add('hidden');
       sectionAccount.classList.add('hidden');
     });
@@ -843,6 +842,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 
       sectionAccount.classList.remove('hidden');
       sectionStatus.classList.add('hidden');
+      sectionRealtime.classList.add('hidden');
       sectionStatusExtra.classList.add('hidden');
       sectionIntro.classList.add('hidden');
     });
@@ -855,10 +855,10 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     });
 
     // 설정 모달 로직
-    const settingsModal = document.getElementById('settingsModal');
-    const btnOpenSettings = document.getElementById('btnOpenSettings');
+    const settingsModal     = document.getElementById('settingsModal');
+    const btnOpenSettings   = document.getElementById('btnOpenSettings');
     const btnCancelSettings = document.getElementById('btnCancelSettings');
-    const btnSaveSettings = document.getElementById('btnSaveSettings');
+    const btnSaveSettings   = document.getElementById('btnSaveSettings');
 
     btnOpenSettings.addEventListener('click', () => {
       settingsModal.classList.remove('hidden');
@@ -872,7 +872,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     });
 
     btnSaveSettings.addEventListener('click', async () => {
-      const newPw = document.getElementById('editPassword').value.trim();
+      const newPw  = document.getElementById('editPassword').value.trim();
       const newBank = document.getElementById('editBank').value.trim();
 
       const payload = {};
