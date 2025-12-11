@@ -143,7 +143,7 @@
 
     /* 긍정적인 금액 강조 색상 */
     .amount-positive {
-      color: #059669; /* 에메랄드 계열 */
+      color: #059669;
       font-weight: 800;
       text-shadow: 0 0 4px rgba(16, 185, 129, 0.25);
     }
@@ -418,7 +418,6 @@
       <header class="topbar">
         <div class="logo"><span>NEO AI</span> PROCESSOR</div>
         <nav class="nav">
-          <!-- AI 투자현황 / 소개 / 내 정보 / 로그아웃 -->
           <button id="tabStatus" class="active">AI 투자현황</button>
           <button id="tabIntro">소개</button>
           <button id="tabAccount">내 정보</button>
@@ -426,16 +425,24 @@
         </nav>
       </header>
 
-      <!-- 1. AI 투자현황 (이름 + 진행 상태) -->
+      <!-- 1. AI 투자현황 : 예전처럼 금액 + 진행 상태 -->
       <section id="sectionStatus" class="card">
         <div class="section-title">AI 투자현황</div>
         <div class="section-sub" id="nameLine"></div>
 
-        <div class="value-label" style="margin-top:6px;margin-bottom:4px;">진행 상태</div>
-        <div id="statusBadge"></div>
+        <div class="value-row">
+          <div class="value-box">
+            <div class="value-label">AI투자중인 금액</div>
+            <div class="value-main" id="amountText">- 원</div>
+          </div>
+          <div class="value-box">
+            <div class="value-label">진행 상태</div>
+            <div id="statusBadge"></div>
+          </div>
+        </div>
       </section>
 
-      <!-- 2. 가운데 카드 : 실시간 수익 현황 -->
+      <!-- 2. 실시간 수익 현황 -->
       <section id="sectionRealtime" class="card">
         <div class="section-title">실시간 수익 현황</div>
         <div class="section-sub">네오 AI 투자 프로세서 기준, 현재 세션의 실시간 금액 정보입니다.</div>
@@ -727,6 +734,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 
     async function loadStatus() {
       const nameLine   = document.getElementById('nameLine');
+      const amountText = document.getElementById('amountText');
       const investEl   = document.getElementById('amountInvestText');
       const realizedEl = document.getElementById('realizedAmountText');
       const totalEl    = document.getElementById('totalAmountText');
@@ -753,9 +761,10 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         }
 
         if (!data) {
-          investEl.textContent   = '- 원';
-          realizedEl.textContent = '- 원';
-          totalEl.textContent    = '- 원';
+          amountText.textContent   = '- 원';
+          investEl.textContent     = '- 원';
+          realizedEl.textContent   = '- 원';
+          totalEl.textContent      = '- 원';
           [investEl, realizedEl, totalEl].forEach(el => {
             el.classList.add('amount-muted');
             el.classList.remove('amount-positive');
@@ -770,15 +779,17 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         const realized = Number(data.realized_amount || 0);
         const total    = amount + realized;
 
+        // 상단 카드 금액
+        amountText.textContent = formatAmount(amount);
+
+        // 가운데 카드 금액들
         investEl.textContent   = formatAmount(amount);
         realizedEl.textContent = formatAmount(realized);
         totalEl.textContent    = formatAmount(total);
 
-        // 색상 초기화 후 다시 적용
         [investEl, realizedEl, totalEl].forEach(el => {
           el.classList.remove('amount-muted', 'amount-positive');
         });
-
         investEl.classList.add('amount-muted');
         realizedEl.classList.add(realized > 0 ? 'amount-positive' : 'amount-muted');
         totalEl.classList.add(total > 0 ? 'amount-positive' : 'amount-muted');
@@ -788,9 +799,10 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         fillAccountInfo(data);
       } catch (e) {
         console.error('JS error:', e);
-        investEl.textContent   = '- 원';
-        realizedEl.textContent = '- 원';
-        totalEl.textContent    = '- 원';
+        amountText.textContent   = '- 원';
+        investEl.textContent     = '- 원';
+        realizedEl.textContent   = '- 원';
+        totalEl.textContent      = '- 원';
         [investEl, realizedEl, totalEl].forEach(el => {
           el.classList.add('amount-muted');
           el.classList.remove('amount-positive');
@@ -872,7 +884,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     });
 
     btnSaveSettings.addEventListener('click', async () => {
-      const newPw  = document.getElementById('editPassword').value.trim();
+      const newPw   = document.getElementById('editPassword').value.trim();
       const newBank = document.getElementById('editBank').value.trim();
 
       const payload = {};
