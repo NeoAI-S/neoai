@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -14,6 +15,7 @@
       background: linear-gradient(135deg, #fefce8, #eff6ff);
       color: #111827;
     }
+
     .sidebar {
       width: 230px;
       background: #ffffff;
@@ -28,9 +30,9 @@
       margin-bottom: 18px;
     }
     .logo span {
-      color: #111827;
-      font-weight: 900;
-      letter-spacing: 0.18em;
+      background: linear-gradient(120deg, #f97316, #ec4899);
+      -webkit-background-clip: text;
+      color: transparent;
     }
     .menu-title {
       font-size: 11px;
@@ -104,6 +106,7 @@
     tbody tr:last-child td {
       border-bottom: none;
     }
+
     input[type="number"] {
       width: 110px;
       padding: 4px 6px;
@@ -121,7 +124,7 @@
       color: #111827;
       font-size: 12px;
     }
-    .btn-save {
+    .btn-save-row {
       padding: 5px 10px;
       border-radius: 999px;
       border: none;
@@ -131,7 +134,7 @@
       background: linear-gradient(135deg, #6366f1, #0ea5e9);
       color: #f9fafb;
     }
-    .btn-save:hover {
+    .btn-save-row:hover {
       filter: brightness(1.03);
     }
     .note {
@@ -161,19 +164,19 @@
     <div class="main-header">
       <div>
         <h1>회원 & AI 투자 관리</h1>
-        <small>회원가입 승인과 <strong>AI투자중인 금액 / 진행 상태</strong>를 수정합니다.</small>
+        <small>회원가입 승인과 <strong>AI투자중인 금액 / 실현 수익 / 진행 상태</strong>를 수정합니다.</small>
       </div>
     </div>
 
     <section>
-      <table id="userTable">
+      <table>
         <thead>
           <tr>
             <th>아이디</th>
             <th>이름</th>
             <th>휴대폰</th>
-            <th>출금 계좌</th>
-            <th>AI투자중인 금액</th>
+            <th>투자중인 금액</th>
+            <th>실현 수익</th>
             <th>진행 상태</th>
             <th>승인 상태</th>
             <th>저장</th>
@@ -186,7 +189,8 @@
 
       <div class="note">
         · 금액은 숫자만 입력 (예: 50000 → 50,000원)<br />
-        · “대기중 / 진행중 / 진행 완료” 및 “승인 대기 / 승인 완료”를 수정하면, 유저 페이지 새 접속 시 반영됩니다.<br />
+        · 진행 상태: <strong>대기중 / 진행중 / 진행 완료</strong><br />
+        · 승인 상태: <strong>승인 대기 / 승인 완료</strong><br />
         · 관리자 계정은 users 테이블에서 role='admin' 으로 직접 관리합니다.
       </div>
     </section>
@@ -214,11 +218,11 @@
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('id, username, name, phone, bank_account, amount, status, approved, role')
+          .select('id, username, name, phone, amount, realized_amount, status, approved, role')
+          .neq('role', 'admin')         // 관리자 계정 제외
           .order('created_at', { ascending: true });
 
-        if (error) {
-          console.error(error);
+        if (error || !data) {
           const tr = document.createElement('tr');
           const td = document.createElement('td');
           td.colSpan = 8;
@@ -229,7 +233,7 @@
           return;
         }
 
-        if (!data || data.length === 0) {
+        if (!data.length) {
           const tr = document.createElement('tr');
           const td = document.createElement('td');
           td.colSpan = 8;
@@ -240,20 +244,28 @@
           return;
         }
 
-        const users = data.filter(u => u.role !== 'admin');
-
-        users.forEach(user => {
+        data.forEach(user => {
           const tr = document.createElement('tr');
 
           tr.innerHTML = `
             <td>${user.username || ''}</td>
             <td>${user.name || ''}</td>
             <td>${user.phone || ''}</td>
-            <td>${user.bank_account || ''}</td>
-            <td><input type="number" min="0" value="${user.amount || 0}" data-id="${user.id}" class="inpAmount" /></td>
+            <td>
+              <input type="number" min="0"
+                     value="${user.amount || 0}"
+                     data-id="${user.id}"
+                     class="inpAmount" />
+            </td>
+            <td>
+              <input type="number" min="0"
+                     value="${user.realized_amount || 0}"
+                     data-id="${user.id}"
+                     class="inpRealized" />
+            </td>
             <td>
               <select data-id="${user.id}" class="selStatus">
-                <option value="대기중" ${(!user.status || user.status === '대기중') ? 'selected' : ''}>대기중</option>
+                <option value="대기중" ${user.status === '대기중' ? 'selected' : ''}>대기중</option>
                 <option value="진행중" ${user.status === '진행중' ? 'selected' : ''}>진행중</option>
                 <option value="진행 완료" ${user.status === '진행 완료' ? 'selected' : ''}>진행 완료</option>
               </select>
@@ -264,7 +276,9 @@
                 <option value="true" ${user.approved ? 'selected' : ''}>승인 완료</option>
               </select>
             </td>
-            <td><button data-id="${user.id}" class="btnSaveRow">저장</button></td>
+            <td>
+              <button type="button" data-id="${user.id}" class="btn-save-row">저장</button>
+            </td>
           `;
 
           tbody.appendChild(tr);
@@ -281,29 +295,31 @@
       }
     }
 
+    // 저장 버튼(행 단위) 이벤트 - 한 번만 등록
     document.getElementById('userTbody').addEventListener('click', async (e) => {
-      if (!e.target.classList.contains('btnSaveRow')) return;
+      if (!e.target.classList.contains('btn-save-row')) return;
 
       const id = e.target.getAttribute('data-id');
-      const amountInput = document.querySelector(`.inpAmount[data-id="${id}"]`);
-      const statusSelect = document.querySelector(`.selStatus[data-id="${id}"]`);
-      const approvedSelect = document.querySelector(`.selApproved[data-id="${id}"]`);
+      const amountInput   = document.querySelector('.inpAmount[data-id="' + id + '"]');
+      const realizedInput = document.querySelector('.inpRealized[data-id="' + id + '"]');
+      const statusSelect  = document.querySelector('.selStatus[data-id="' + id + '"]');
+      const approvedSelect= document.querySelector('.selApproved[data-id="' + id + '"]');
 
-      const amount = Number(amountInput.value || 0);
-      const status = statusSelect.value;
+      const amount   = Number(amountInput.value || 0);
+      const realized = Number(realizedInput.value || 0);
+      const status   = statusSelect.value;
       const approved = approvedSelect.value === 'true';
 
-      const { error: updateError } = await supabase
+      const { error } = await supabase
         .from('users')
-        .update({ amount, status, approved })
+        .update({ amount, realized_amount: realized, status, approved })
         .eq('id', id);
 
-      if (updateError) {
-        console.error(updateError);
+      if (error) {
+        console.error(error);
         alert('저장 중 오류가 발생했습니다.');
         return;
       }
-
       alert('저장되었습니다.');
     });
 
