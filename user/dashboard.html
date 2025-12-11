@@ -99,7 +99,7 @@
       background: #ffffff;
       border: 1px solid #e5e7eb;
       box-shadow: 0 16px 40px rgba(148, 163, 184, 0.25);
-      padding: 18px 18px 18px;
+      padding: 18px;
       margin-bottom: 14px;
     }
 
@@ -125,7 +125,7 @@
     .value-box {
       flex: 1;
       min-width: 180px;
-      padding: 14px 14px;
+      padding: 14px;
       border-radius: 16px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
@@ -172,32 +172,6 @@
       border: 1px solid #9ca3af;
     }
     .status-done .status-dot { background: #6b7280; }
-
-    .approved-pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      gap: 6px;
-    }
-    .approved-pill span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-    }
-    .approved-yes {
-      background: #dcfce7;
-      color: #166534;
-      border: 1px solid #22c55e;
-    }
-    .approved-yes span.dot { background: #22c55e; }
-    .approved-no {
-      background: #fee2e2;
-      color: #b91c1c;
-      border: 1px solid #f97373;
-    }
-    .approved-no span.dot { background: #f97373; }
 
     .info-text {
       font-size: 13px;
@@ -365,12 +339,10 @@
             <div class="value-label">진행 상태</div>
             <div id="statusBadge"></div>
           </div>
-          <div class="value-box">
-            <div class="value-label">승인 상태</div>
-            <div id="approvedBadge"></div>
-          </div>
+          <!-- ✅ 승인 상태 박스 제거 완료 -->
         </div>
 
+        <!-- ✅ 더 이상 에러 문구 안 쓰고, 부드러운 안내만 -->
         <div class="info-text" id="approvalInfo"></div>
       </section>
 
@@ -378,7 +350,7 @@
       <section id="sectionAccount" class="card">
         <div class="section-title">내 정보</div>
         <div class="section-sub">
-          네오 AI 투자 프로세서 
+          네오 AI 투자 프로세서
         </div>
         <div class="account-grid">
           <div>
@@ -389,7 +361,7 @@
             <div class="acct-label">투자중인 금액</div>
             <div class="acct-value" id="acctamountText">-</div>
           </div>
-            <div>
+          <div>
             <div class="acct-label">출금 계좌</div>
             <div class="acct-value" id="acctBank">-</div>
           </div>
@@ -434,7 +406,7 @@
         </div>
       </section>
 
-      <!-- 소개 섹션 -->
+      <!-- 소개 섹션 (네가 준 내용 그대로 유지) -->
       <section id="sectionIntro" class="card hidden">
         <div class="intro-badge">AI 기반 자동 투자 프로세스</div>
         <div class="intro-grid">
@@ -454,7 +426,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
               <ul class="intro-points">
                 <li>· 경제 지표, 뉴스, 시황 데이터를 종합적으로 스캔</li>
                 <li>· 최대 30개 내외 종목으로 포트폴리오 자동 구성</li>
-                <li>· 최소 1시간 ~ 최대 12일 단위로 세션 운용</li>
+                <li>· 최소 1일 ~ 최대 30일 단위로 세션 운용</li>
                 <li>· 손익·변동성 데이터를 기반으로 전략을 반복 학습</li>
               </ul>
             </div>
@@ -467,7 +439,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 <span class="scenario-highlight">예시 · 50,000원을 AI에 맡기는 경우</span>
 
 1) <strong>세션 설정</strong>  
- · 유저가 50,000원을 투자하고, 약  1시간 ~ 최대 12일 AI에게 맡깁니다.  
+ · 유저가 50,000원을 투자하고, 약  1일 ~ 최대 30일 AI에게 맡깁니다.  
  · "진행중" 상태로 전환되며, 네오AI는 해당 금액을 운용대상으로 인식합니다.
 
 2) <strong>시장·종목 스캔</strong>  
@@ -480,7 +452,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
  · 각 종목별 예상 수익·리스크에 따라 비중이 자동으로 조정됩니다.
 
 4) <strong>세션 중 리스크 관리</strong>  
- · 운용 구간(1시간 ~ 최대 12일) 동안 실시간 가격 변화를 모니터링하며,  
+ · 운용 구간 동안 실시간 가격 변화를 모니터링하며,  
    사전 설정된 손실 한도 또는 급격한 변동이 발생할 경우 비중을 축소하거나 현금 비중을 늘립니다.  
  · 과도한 집중이 발생하지 않도록, 종목당·섹터당 비중 상한을 유지합니다.
 
@@ -498,7 +470,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
               <div class="intro-box-title">이런 분께 적합합니다</div>
               <ul class="intro-points">
                 <li>· 세부 종목 선택보다는 전체 전략·결과에 집중하고 싶은 분</li>
-                <li>· 단기 구간별(1시간 ~ 최대 12일) 운용을 선호하는 분</li>
+                <li>· 단기 구간별(1일 ~ 최대 30일) 운용을 선호하는 분</li>
                 <li>· AI 기반 의사결정과 분산 투자를 한 번에 경험해 보고 싶은 분</li>
               </ul>
             </div>
@@ -535,15 +507,6 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     function formatAmount(value) {
       if (value == null || isNaN(value)) return '- 원';
       return Number(value).toLocaleString('ko-KR') + ' 원';
-    }
-
-    function maskPhone(phone) {
-      if (!phone) return '-';
-      const digits = phone.replace(/[^0-9]/g, '');
-      if (digits.length < 8) return phone;
-      const head = digits.slice(0, 3);
-      const tail = digits.slice(-4);
-      return `${head}-****-${tail}`;
     }
 
     function maskBank(bank) {
@@ -583,29 +546,6 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       badge.appendChild(wrapper);
     }
 
-    function renderApproved(approved) {
-      const box = document.getElementById('approvedBadge');
-      box.innerHTML = '';
-
-      const pill = document.createElement('span');
-      pill.classList.add('approved-pill');
-      const dot = document.createElement('span');
-      dot.classList.add('dot');
-      const text = document.createElement('span');
-
-      if (approved) {
-        pill.classList.add('approved-yes');
-        text.textContent = '승인 완료';
-      } else {
-        pill.classList.add('approved-no');
-        text.textContent = '승인 대기';
-      }
-
-      pill.appendChild(dot);
-      pill.appendChild(text);
-      box.appendChild(pill);
-    }
-
     function renderSteps(status) {
       const steps = document.querySelectorAll('.step');
       steps.forEach(step => step.classList.remove('active'));
@@ -621,14 +561,14 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     function fillAccountInfo(userFromDb) {
       const merged = { ...currentUser, ...userFromDb };
 
-      document.getElementById('acctName').textContent =
-        merged.name || '-';
-      document.getElementById('acctUsername').textContent =
-        merged.username || '-';
-      document.getElementById('acctPhone').textContent =
-        merged.phone ? maskPhone(merged.phone) : '-';
-      document.getElementById('acctBank').textContent =
-        merged.bank_account ? maskBank(merged.bank_account) : '-';
+      const nameEl = document.getElementById('acctName');
+      if (nameEl) nameEl.textContent = merged.name || merged.username || '-';
+
+      const amtEl = document.getElementById('acctamountText');
+      if (amtEl) amtEl.textContent = formatAmount(merged.amount);
+
+      const bankEl = document.getElementById('acctBank');
+      if (bankEl) bankEl.textContent = merged.bank_account ? maskBank(merged.bank_account) : '-';
     }
 
     async function loadStatus() {
@@ -637,61 +577,66 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       const nameLine = document.getElementById('nameLine');
 
       const displayName = (currentUser && (currentUser.name || currentUser.username)) || '';
-      if (displayName) {
-        nameLine.textContent = `${displayName}님의 AI 투자 진행 정보입니다.`;
-      } else {
-        nameLine.textContent = 'AI 투자 진행 정보입니다.';
-      }
 
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('amount, status, approved, name, username, phone, bank_account')
-          .eq('username', currentUser.username)
-          .maybeSingle();
+          .select('amount, status, name, username, bank_account')
+          .eq('username', currentUser.username);
 
         if (error) {
           console.error('Supabase error:', error);
           amountText.textContent = '- 원';
-          approvalInfo.textContent = '투자 정보 조회 중 오류가 발생했습니다.';
+          approvalInfo.textContent = '현재 투자 정보가 등록되어 있지 않습니다.';
           renderStatus('대기중');
-          renderApproved(false);
           renderSteps('대기중');
           fillAccountInfo({});
+          nameLine.textContent = displayName
+            ? `${displayName}님의 AI 투자 진행 정보입니다.`
+            : 'AI 투자 진행 정보입니다.';
           return;
         }
 
-        if (!data) {
+        if (!data || data.length === 0) {
           amountText.textContent = '- 원';
-          approvalInfo.textContent = '등록된 투자 정보가 없습니다.';
+          approvalInfo.textContent = '현재 투자 정보가 등록되어 있지 않습니다.';
           renderStatus('대기중');
-          renderApproved(false);
           renderSteps('대기중');
           fillAccountInfo({});
+          nameLine.textContent = displayName
+            ? `${displayName}님의 AI 투자 진행 정보입니다.`
+            : 'AI 투자 진행 정보입니다.';
           return;
         }
 
-        amountText.textContent = formatAmount(data.amount);
-        renderStatus(data.status);
-        renderApproved(data.approved);
-        renderSteps(data.status);
-        fillAccountInfo(data);
+        const row = data[0];
 
-        if (!data.approved) {
-          approvalInfo.textContent =
-            `${displayName ? displayName + '님은 ' : ''}현재 관리자 승인 대기 중입니다. 승인 완료 후부터 AI 투자 진행이 시작됩니다.`;
+        amountText.textContent = formatAmount(row.amount);
+        renderStatus(row.status);
+        renderSteps(row.status);
+        fillAccountInfo(row);
+
+        if (row.name) {
+          nameLine.textContent = `${row.name}님의 AI 투자 진행 정보입니다.`;
+        } else if (displayName) {
+          nameLine.textContent = `${displayName}님의 AI 투자 진행 정보입니다.`;
         } else {
-          approvalInfo.textContent =
-            `${displayName ? displayName + '님의 ' : ''}AI 투자 진행 상황입니다. 매일 최신 상태가 반영됩니다.`;
+          nameLine.textContent = 'AI 투자 진행 정보입니다.';
         }
+
+        // ✅ 승인 대기 문구 대신, 항상 동일한 안내 문구
+        approvalInfo.textContent =
+          `${row.name || displayName || ''} AI 투자 진행 상황입니다. 매일 최신 상태가 반영됩니다.`.trim();
       } catch (e) {
         console.error('JS error:', e);
         amountText.textContent = '- 원';
-        approvalInfo.textContent = '투자 정보 조회 중 오류가 발생했습니다.';
+        approvalInfo.textContent = '현재 투자 정보가 등록되어 있지 않습니다.';
         renderStatus('대기중');
-        renderApproved(false);
         renderSteps('대기중');
         fillAccountInfo({});
+        nameLine.textContent = displayName
+          ? `${displayName}님의 AI 투자 진행 정보입니다.`
+          : 'AI 투자 진행 정보입니다.';
       }
     }
 
@@ -732,7 +677,3 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
   </script>
 </body>
 </html>
-
-
-
-
