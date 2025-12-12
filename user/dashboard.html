@@ -770,18 +770,33 @@ function relativeTime(fromDate) {
     }
 
     // ✅ 배지 렌더(▲/▼/–)
-    function renderDeltaBadge(badgeEl, delta) {
-  badgeEl.className =
-    'delta-badge ' + (delta > 0 ? 'delta-up' : delta < 0 ? 'delta-down' : 'delta-same');
+// - delta가 0이면 "유지" (재조회/새로고침해도 그대로)
+// - delta가 0이 아닌 경우만 갱신 + localStorage에 저장
+function renderDeltaBadge(badgeEl, delta, idForPersist) {
+  // 1) 처음 화면/새로고침 때, 저장된 배지가 있으면 먼저 복원
+  if (idForPersist) restoreBadge(badgeEl, idForPersist);
 
-  if (delta > 0) {
-    badgeEl.textContent = '▲ ' + Math.abs(delta).toLocaleString('ko-KR') + '원';
-  } else if (delta < 0) {
-    badgeEl.textContent = '▼ ' + Math.abs(delta).toLocaleString('ko-KR') + '원';
-  } else {
-    badgeEl.textContent = '– 0원';
+  // 2) 변동이 없으면(0이면) 기존 배지 그대로 유지하고 끝
+  if (!delta) return;
+
+  // 3) 변동이 있을 때만 갱신
+  const cls = 'delta-badge ' + (delta > 0 ? 'delta-up' : 'delta-down');
+  const txt = (delta > 0 ? '▲ ' : '▼ ') + Math.abs(delta).toLocaleString('ko-KR') + '원';
+
+  badgeEl.className = cls;
+  badgeEl.textContent = txt;
+
+  // 4) 새로고침해도 남게 저장
+  if (idForPersist) {
+    try {
+      localStorage.setItem(badgeKey(idForPersist), JSON.stringify({
+        className: cls,
+        text: txt
+      }));
+    } catch (e) {}
   }
 }
+
 
     function renderStatus(status) {
       const badge = document.getElementById('statusBadge');
@@ -1039,10 +1054,11 @@ function relativeTime(fromDate) {
         const deltaTotal = prev.initialized && !prev.suppressDeltaOnce ? (totalAsset - prevAsset) : 0;
 
         // 배지 표시(항상 보이게)
-        renderDeltaBadge(amountBadge, deltaAmount);
-        renderDeltaBadge(investBadge, deltaInvest);
-        renderDeltaBadge(realizedBadge, deltaRealized);
-        renderDeltaBadge(totalBadge, deltaTotal);
+renderDeltaBadge(amountBadge,  deltaAmount,  'amountBadge');
+renderDeltaBadge(investBadge,  deltaInvest,  'amountInvestBadge');
+renderDeltaBadge(realizedBadge,deltaRealized,'realizedBadge');
+renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
+
 
         // 카운트업(숫자만)
         if (!prev.initialized || prev.suppressDeltaOnce) {
@@ -1250,6 +1266,7 @@ function relativeTime(fromDate) {
   </script>
 </body>
 </html>
+
 
 
 
