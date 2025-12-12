@@ -1360,12 +1360,12 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         return;
       }
 
-      const { data, error } = await supabase
-        .from('users')
-        .update(payload)
-        .eq('id', currentUser.id)
-        .select('*')
-        .maybeSingle();
+    const { data, error } = await supabase
+  .from('users')
+  .select('*')
+  .eq('id', currentUser.id)
+  .maybeSingle();
+
 
       if (error) {
         console.error(error);
@@ -1392,5 +1392,6 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
   </script>
 </body>
 </html>
+
 
 
