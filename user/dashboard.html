@@ -358,6 +358,26 @@
     .btn-primary { background: linear-gradient(135deg, #6366f1, #0ea5e9); color:#f9fafb; font-weight:900; }
 
     .hidden { display:none; }
+     @media (max-width: 640px) {
+    .topbar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .nav {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .value-row {
+      flex-direction: column;
+    }
+
+    canvas {
+      height: 140px;
+          }
+  }
   </style>
 </head>
 
@@ -638,29 +658,34 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       return Number(value).toLocaleString('ko-KR') + ' 원';
     }
 
-    function maskPhone(phone) {
-      if (!phone) return '-';
-      const digits = String(phone).replace(/[^0-9]/g, '');
-      if (digits.length < 8) return phone;
-      const head = digits.slice(0, 3);
-      const tail = digits.slice(-4);
-      return \`\${head}-****-\${tail}\`;
-    }
+function maskPhone(phone) {
+  if (!phone) return '-';
+  const digits = String(phone).replace(/[^0-9]/g, '');
+  if (digits.length < 8) return phone;
 
-    function relativeTime(fromDate) {
-      if (!fromDate) return '-';
-      const now = Date.now();
-      const diff = Math.max(0, now - fromDate.getTime());
-      const sec = Math.floor(diff / 1000);
-      if (sec < 10) return '방금';
-      if (sec < 60) return \`\${sec}초 전\`;
-      const min = Math.floor(sec / 60);
-      if (min < 60) return \`\${min}분 전\`;
-      const hr = Math.floor(min / 60);
-      if (hr < 24) return \`\${hr}시간 전\`;
-      const day = Math.floor(hr / 24);
-      return \`\${day}일 전\`;
-    }
+  const head = digits.slice(0, 3);
+  const tail = digits.slice(-4);
+  return head + '-****-' + tail; // ✅ 백틱 제거
+}
+
+
+function relativeTime(fromDate) {
+  if (!fromDate) return '-';
+  const diff = Date.now() - fromDate.getTime();
+  const sec = Math.floor(diff / 1000);
+
+  if (sec < 10) return '방금';
+  if (sec < 60) return sec + '초 전';
+
+  const min = Math.floor(sec / 60);
+  if (min < 60) return min + '분 전';
+
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return hr + '시간 전';
+
+  return Math.floor(hr / 24) + '일 전';
+}
+
 
     function setLastUpdated(date) {
       lastUpdatedAt = date;
@@ -1184,7 +1209,8 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     // 5초마다 "방금/몇분전"만 갱신
     setInterval(() => {
       if (lastUpdatedAt) {
-        document.getElementById('lastUpdatedText').textContent = \`마지막 업데이트: \${relativeTime(lastUpdatedAt)}\`;
+        document.getElementById('lastUpdatedText').textContent =
+  '마지막 업데이트: ' + relativeTime(lastUpdatedAt);
       }
     }, 5000);
 
@@ -1194,4 +1220,5 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
   </script>
 </body>
 </html>
+
 
