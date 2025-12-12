@@ -767,6 +767,8 @@ rtSubscribedUserId = userId;
   }
 }
 
+let timelineExpanded = false; // 접기/펼치기 상태
+
 function renderTimeline(logs) {
   const wrap = document.getElementById('profitTimeline');
   const title = document.getElementById('timelineTitle');
@@ -775,10 +777,9 @@ function renderTimeline(logs) {
 
   if (!wrap) return;
 
-  title.textContent = (profitMode === 'today')
-    ? '수익 로그 (오늘)'
-    : '수익 로그 (최근 60건)';
+  title.textContent = (profitMode === 'today') ? '수익 로그 (오늘)' : '수익 로그 (최근 60건)';
 
+  // logs 없거나 비정상
   if (!Array.isArray(logs) || logs.length === 0) {
     hint.textContent = '기록 없음';
     wrap.innerHTML = `
@@ -790,66 +791,34 @@ function renderTimeline(logs) {
         <div class="timeline-delta timeline-same">-</div>
       </div>
     `;
-    btn.style.display = 'none';
+    if (btn) btn.style.display = 'none';
     return;
   }
 
-  // 최신 → 과거
-  const sorted = [...logs].sort(
-    (a, b) => new Date(b.created_at) - new Date(a.created_at)
-  );
+  // 최신이 위로
+  const arr = [...logs].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-  const visibleCount = timelineExpanded ? sorted.length : 3;
-  const visibleLogs = sorted.slice(0, visibleCount);
+  const visible = timelineExpanded ? arr.length : 3;
+  const showArr = arr.slice(0, visible);
 
   hint.textContent = `총 ${logs.length}건`;
-  btn.style.display = logs.length > 3 ? 'inline-block' : 'none';
-  btn.textContent = timelineExpanded ? '접기' : '펼치기';
+
+  if (btn) {
+    btn.style.display = logs.length > 3 ? 'inline-block' : 'none';
+    btn.textContent = timelineExpanded ? '접기' : '펼치기';
+  }
 
   wrap.innerHTML = '';
 
-  visibleLogs.forEach((r) => {
+  showArr.forEach((r) => {
     const delta = Number(r.amount_delta || 0);
-    const cls =
-      delta > 0 ? 'timeline-up' :
-      delta < 0 ? 'timeline-down' :
-      'timeline-same';
-
-    const sign =
-      delta > 0 ? '▲' :
-      delta < 0 ? '▼' :
-      '–';
-
-    const item = document.createElement('div');
-    item.className = 'timeline-item';
-    item.innerHTML = `
-      <div class="timeline-left">
-        <div class="timeline-time">${formatKST(r.created_at)}</div>
-        <div class="timeline-msg">
-          ${delta > 0 ? '수익 발생' : delta < 0 ? '손실 발생' : '변동 없음'}
-        </div>
-      </div>
-      <div class="timeline-delta ${cls}">
-        ${sign} ${Math.abs(delta).toLocaleString('ko-KR')}원
-      </div>
-    `;
-    wrap.appendChild(item);
-  });
-}
-
-
-  // 최신이 위로 보이게
-  const arr = [...logs].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-
-  arr.slice(0, 20).forEach((r) => { // 일단 UI는 20개만(원하면 늘리면 됨)
-    const delta = Number(r.amount_delta || 0);
-    const item = document.createElement('div');
-    item.className = 'timeline-item';
 
     const cls = delta > 0 ? 'timeline-up' : (delta < 0 ? 'timeline-down' : 'timeline-same');
     const sign = delta > 0 ? '▲' : (delta < 0 ? '▼' : '–');
     const txt = `${sign} ${Math.abs(delta).toLocaleString('ko-KR')}원`;
 
+    const item = document.createElement('div');
+    item.className = 'timeline-item';
     item.innerHTML = `
       <div class="timeline-left">
         <div class="timeline-time">${formatKST(r.created_at)}</div>
@@ -859,6 +828,8 @@ function renderTimeline(logs) {
     `;
     wrap.appendChild(item);
   });
+}
+
 
     function formatAmount(value) {
   if (value == null || isNaN(value)) return '- 원';
@@ -1438,6 +1409,14 @@ renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
       초기 실행
     ========================= */
     requireLogin();
+    const toggleBtn = document.getElementById('btnToggleTimeline');
+if (toggleBtn) {
+  toggleBtn.addEventListener('click', () => {
+    timelineExpanded = !timelineExpanded;
+    loadStatus(); // 다시 렌더
+  });
+}
+
 
     // 탭 클릭
     document.getElementById('tabStatus').addEventListener('click', () => showTab('status'));
@@ -1497,6 +1476,7 @@ document
   </script>
 </body>
 </html>
+
 
 
 
