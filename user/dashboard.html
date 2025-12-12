@@ -520,7 +520,6 @@
   </div>
 </div>
 
-let timelineExpanded = false;
           
         <div class="info-text">
           오늘 수익은 <b>00시</b> 기준으로 계산됩니다.
@@ -682,6 +681,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     /* =========================
       Supabase 연결
     ========================= */
+    let timelineExpanded = false; // 수익 로그 접기/펼치기 상태
     const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -713,7 +713,7 @@ function rtTriggerReload(reason = '') {
       initialized: false,
       suppressDeltaOnce: false, // 모드 전환/초기 표시에서 배지 튐 방지
     };
-
+let rtSubscribedUserId = null;
     /* =========================
       유틸
     ========================= */
@@ -1182,8 +1182,6 @@ function renderDeltaBadge(badgeEl, delta, idForPersist) {
         if (!userRow) throw new Error('users 테이블에서 사용자 데이터를 찾을 수 없습니다.');
         subscribeRealtime(userRow);
 
-        let rtSubscribedUserId = null;
-
         // users 값
         const amount = Number(userRow.amount || 0);
         const realizedTotal = Number(userRow.realized_amount || 0);
@@ -1476,6 +1474,7 @@ document
   </script>
 </body>
 </html>
+
 
 
 
