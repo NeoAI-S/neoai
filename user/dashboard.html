@@ -774,6 +774,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
   <!-- Supabase + 대시보드 로직 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    console.log("loadStatus() called", new Date().toISOString());
     const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -1391,4 +1392,5 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
   </script>
 </body>
 </html>
+
 
