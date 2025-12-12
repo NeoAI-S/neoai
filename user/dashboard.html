@@ -359,25 +359,26 @@
 
     .hidden { display:none; }
      @media (max-width: 640px) {
-    .topbar {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .nav {
-      width: 100%;
-      justify-content: space-between;
-    }
-
-    .value-row {
-      flex-direction: column;
-    }
-
-    canvas {
-      height: 140px;
-          }
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
+
+  .nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .value-row {
+    flex-direction: column;
+  }
+
+  canvas {
+    height: 140px;
+  }
+}
+
   </style>
 </head>
 
@@ -687,9 +688,10 @@ function relativeTime(fromDate) {
 }
 
 
-    function setLastUpdated(date) {
-      lastUpdatedAt = date;
-      document.getElementById('lastUpdatedText').textContent = \`마지막 업데이트: \${relativeTime(lastUpdatedAt)}\`;
+ function setLastUpdated(date) {
+  lastUpdatedAt = date;
+  document.getElementById('lastUpdatedText').textContent =
+    '마지막 업데이트: ' + relativeTime(lastUpdatedAt);
     }
 
     function setRealtimeError(show, msg='') {
@@ -755,11 +757,17 @@ function relativeTime(fromDate) {
 
     // ✅ 배지 렌더(▲/▼/–)
     function renderDeltaBadge(badgeEl, delta) {
-      badgeEl.className = 'delta-badge ' + (delta > 0 ? 'delta-up' : delta < 0 ? 'delta-down' : 'delta-same');
-      if (delta > 0) badgeEl.textContent = \`▲ \${Math.abs(delta).toLocaleString('ko-KR')}원\`;
-      else if (delta < 0) badgeEl.textContent = \`▼ \${Math.abs(delta).toLocaleString('ko-KR')}원\`;
-      else badgeEl.textContent = '– 0원';
-    }
+  badgeEl.className =
+    'delta-badge ' + (delta > 0 ? 'delta-up' : delta < 0 ? 'delta-down' : 'delta-same');
+
+  if (delta > 0) {
+    badgeEl.textContent = '▲ ' + Math.abs(delta).toLocaleString('ko-KR') + '원';
+  } else if (delta < 0) {
+    badgeEl.textContent = '▼ ' + Math.abs(delta).toLocaleString('ko-KR') + '원';
+  } else {
+    badgeEl.textContent = '– 0원';
+  }
+}
 
     function renderStatus(status) {
       const badge = document.getElementById('statusBadge');
@@ -788,13 +796,18 @@ function relativeTime(fromDate) {
     }
 
     function renderSteps(status) {
-      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-      let key = 'wait';
-      if (status === '진행중') key = 'run';
-      else if (status === '진행 완료') key = 'done';
-      const target = document.querySelector(\`.step[data-step="\${key}"]\`);
-      if (target) target.classList.add('active');
-    }
+  document.querySelectorAll('.step').forEach(function (s) {
+    s.classList.remove('active');
+  });
+
+  var key = 'wait';
+  if (status === '진행중') key = 'run';
+  else if (status === '진행 완료') key = 'done';
+
+  var target = document.querySelector('.step[data-step="' + key + '"]');
+  if (target) target.classList.add('active');
+}
+
 
     function fillAccountInfo(userFromDb) {
       const merged = { ...currentUser, ...userFromDb };
@@ -944,7 +957,10 @@ function relativeTime(fromDate) {
 
       const nameLine = document.getElementById('nameLine');
       const displayName = (currentUser && (currentUser.name || currentUser.username)) || '';
-      nameLine.textContent = displayName ? `${displayName}님의 AI 투자 진행 정보입니다.` : 'AI 투자 진행 정보입니다.';
+      nameLine.textContent = displayName
+  ? (displayName + '님의 AI 투자 진행 정보입니다.')
+  : 'AI 투자 진행 정보입니다.';
+
 
       try {
         const { data: userRow, error: userErr } = await supabase
@@ -1220,4 +1236,5 @@ function relativeTime(fromDate) {
   </script>
 </body>
 </html>
+
 
