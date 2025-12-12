@@ -657,7 +657,21 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     function formatAmount(value) {
       if (value == null || isNaN(value)) return '- 원';
       return Number(value).toLocaleString('ko-KR') + ' 원';
+    function badgeKey(id) {
+  return "neoai_badge_" + id + "_" + profitMode; // today/total 모드별로 따로 저장
+}
+
+function restoreBadge(badgeEl, id) {
+  try {
+    const raw = localStorage.getItem(badgeKey(id));
+    if (!raw) return;
+    const obj = JSON.parse(raw);
+    if (obj && obj.text && obj.className) {
+      badgeEl.textContent = obj.text;
+      badgeEl.className = obj.className;
     }
+  } catch (e) {}
+}
 
 function maskPhone(phone) {
   if (!phone) return '-';
@@ -1236,6 +1250,7 @@ function relativeTime(fromDate) {
   </script>
 </body>
 </html>
+
 
 
 
