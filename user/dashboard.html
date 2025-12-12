@@ -1432,14 +1432,6 @@ if (toggleBtn) {
     document.getElementById('btnRefresh').addEventListener('click', loadStatus);
     document.getElementById('btnRetryInline').addEventListener('click', loadStatus);
     
-    // ▶ 수익 로그 펼치기 / 접기 버튼
-document
-  .getElementById('btnToggleTimeline')
-  .addEventListener('click', () => {
-    timelineExpanded = !timelineExpanded;
-    loadStatus(); // 타임라인 다시 렌더
-  });
-
     // 토글(그래프/표시: 초기화 X, DB 기반으로 다시 그림)
     document.getElementById('toggleToday').addEventListener('click', async () => {
       profitMode = 'today';
@@ -1474,6 +1466,7 @@ document
   </script>
 </body>
 </html>
+
 
 
 
