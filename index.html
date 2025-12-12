@@ -4,31 +4,10 @@
   <meta charset="UTF-8" />
   <title>NEO AI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-      font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#0b1220;color:#e5e7eb}
-    .box{max-width:520px;padding:24px 18px;text-align:center}
-    .small{opacity:.75;font-size:13px;margin-top:8px}
-  </style>
+  <!-- ✅ 무조건 user/index.html 로 -->
+  <meta http-equiv="refresh" content="0; url=./user/index.html" />
 </head>
 <body>
-  <div class="box">
-    <div style="font-weight:800;font-size:18px;letter-spacing:.18em">NEO AI</div>
-    <div class="small">페이지로 이동 중입니다…</div>
-  </div>
-
-  <script>
-    // GitHub Pages repo base 자동 계산: /neoai/ 형태
-    (function () {
-      const parts = location.pathname.split('/').filter(Boolean);
-      const repo = parts[0] || '';
-      const BASE = repo ? `/${repo}/` : '/';
-
-      const u = localStorage.getItem('neoai_current_user');
-      // 루트는 "유저 기준"으로만 분기 (어드민은 /admin/login.html로 직접 접속)
-      if (u) location.replace(BASE + 'user/dashboard.html');
-      else   location.replace(BASE + 'user/login.html');
-    })();
-  </script>
+  <p>NEO AI 로 이동 중입니다...</p>
 </body>
 </html>
