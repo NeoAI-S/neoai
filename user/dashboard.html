@@ -728,8 +728,9 @@ function rtTriggerReload(reason = '') {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'profit_logs', filter: `user_id=eq.${userId}` },
         (payload) => {
-          rtTriggerReload('profit_logs INSERT');
-        }
+  console.log('[Realtime] profit_logs INSERT', payload);
+  rtTriggerReload('profit_logs INSERT');
+}
       )
       // 2) users 업데이트 감지 (status, realized_amount, amount 등)
       .on(
@@ -1153,8 +1154,7 @@ function renderDeltaBadge(badgeEl, delta, idForPersist) {
 
         if (userErr) throw userErr;
         if (!userRow) throw new Error('users 테이블에서 사용자 데이터를 찾을 수 없습니다.');
-        // ✅ Realtime 구독 (현재 유저 row 기준)
-subscribeRealtime(userRow);
+        subscribeRealtime(userRow);
 
         // users 값
         const amount = Number(userRow.amount || 0);
@@ -1429,6 +1429,7 @@ renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
   </script>
 </body>
 </html>
+
 
 
 
