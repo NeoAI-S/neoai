@@ -510,12 +510,18 @@
         </div>
         <div class="chart-wrap" style="margin-top:12px;">
   <div class="chart-title-row">
-    <div class="chart-title" id="timelineTitle">수익 로그 (오늘)</div>
+  <div class="chart-title" id="timelineTitle">수익 로그 (오늘)</div>
+
+  <div style="display:flex; align-items:center; gap:8px;">
     <span class="last-updated" id="timelineHint">최근 기록</span>
+    <button id="btnToggleTimeline" class="btn-refresh" type="button">
+      펼치기
+    </button>
   </div>
-  <div id="profitTimeline" style="display:flex; flex-direction:column; gap:8px;"></div>
 </div>
 
+let timelineExpanded = false;
+          
         <div class="info-text">
           오늘 수익은 <b>00시</b> 기준으로 계산됩니다.
         </div>
@@ -765,27 +771,72 @@ function renderTimeline(logs) {
   const wrap = document.getElementById('profitTimeline');
   const title = document.getElementById('timelineTitle');
   const hint = document.getElementById('timelineHint');
+  const btn = document.getElementById('btnToggleTimeline');
 
   if (!wrap) return;
 
-  title.textContent = (profitMode === 'today') ? '수익 로그 (오늘)' : '수익 로그 (최근 60건)';
-  hint.textContent = (logs && logs.length) ? `총 ${logs.length}건` : '기록 없음';
+  title.textContent = (profitMode === 'today')
+    ? '수익 로그 (오늘)'
+    : '수익 로그 (최근 60건)';
+
+  if (!Array.isArray(logs) || logs.length === 0) {
+    hint.textContent = '기록 없음';
+    wrap.innerHTML = `
+      <div class="timeline-item">
+        <div class="timeline-left">
+          <div class="timeline-time">-</div>
+          <div class="timeline-msg">아직 수익 로그가 없습니다.</div>
+        </div>
+        <div class="timeline-delta timeline-same">-</div>
+      </div>
+    `;
+    btn.style.display = 'none';
+    return;
+  }
+
+  // 최신 → 과거
+  const sorted = [...logs].sort(
+    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  );
+
+  const visibleCount = timelineExpanded ? sorted.length : 3;
+  const visibleLogs = sorted.slice(0, visibleCount);
+
+  hint.textContent = `총 ${logs.length}건`;
+  btn.style.display = logs.length > 3 ? 'inline-block' : 'none';
+  btn.textContent = timelineExpanded ? '접기' : '펼치기';
 
   wrap.innerHTML = '';
 
-  if (!Array.isArray(logs) || logs.length === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'timeline-item';
-    empty.innerHTML = `
+  visibleLogs.forEach((r) => {
+    const delta = Number(r.amount_delta || 0);
+    const cls =
+      delta > 0 ? 'timeline-up' :
+      delta < 0 ? 'timeline-down' :
+      'timeline-same';
+
+    const sign =
+      delta > 0 ? '▲' :
+      delta < 0 ? '▼' :
+      '–';
+
+    const item = document.createElement('div');
+    item.className = 'timeline-item';
+    item.innerHTML = `
       <div class="timeline-left">
-        <div class="timeline-time">-</div>
-        <div class="timeline-msg">아직 수익 로그가 없습니다.</div>
+        <div class="timeline-time">${formatKST(r.created_at)}</div>
+        <div class="timeline-msg">
+          ${delta > 0 ? '수익 발생' : delta < 0 ? '손실 발생' : '변동 없음'}
+        </div>
       </div>
-      <div class="timeline-delta timeline-same">-</div>
+      <div class="timeline-delta ${cls}">
+        ${sign} ${Math.abs(delta).toLocaleString('ko-KR')}원
+      </div>
     `;
-    wrap.appendChild(empty);
-    return;
-  }
+    wrap.appendChild(item);
+  });
+}
+
 
   // 최신이 위로 보이게
   const arr = [...logs].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
@@ -1403,6 +1454,14 @@ renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
     // 재조회
     document.getElementById('btnRefresh').addEventListener('click', loadStatus);
     document.getElementById('btnRetryInline').addEventListener('click', loadStatus);
+    
+    // ▶ 수익 로그 펼치기 / 접기 버튼
+document
+  .getElementById('btnToggleTimeline')
+  .addEventListener('click', () => {
+    timelineExpanded = !timelineExpanded;
+    loadStatus(); // 타임라인 다시 렌더
+  });
 
     // 토글(그래프/표시: 초기화 X, DB 기반으로 다시 그림)
     document.getElementById('toggleToday').addEventListener('click', async () => {
@@ -1438,6 +1497,7 @@ renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
   </script>
 </body>
 </html>
+
 
 
 
