@@ -679,7 +679,7 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
+    let currentUser = null;   // ✅ 로그인 유저 정보 (반드시 필요)
     let rtChannel = null;
 let rtDebounceTimer = null;
 
@@ -1161,11 +1161,18 @@ function renderDeltaBadge(badgeEl, delta, idForPersist) {
         const realizedTotal = Number(userRow.realized_amount || 0);
         const totalAsset = amount + realizedTotal;
 
-        // profit_logs
-        const todayLogs = await fetchProfitLogsForToday(userRow.id);
-        const todayProfit = todayLogs.reduce((sum, r) => sum + Number(r.amount_delta || 0), 0);
+       // profit_logs (✅ 선언을 먼저!)
+const todayLogs = await fetchProfitLogsForToday(userRow.id);
+const recentLogs = await fetchProfitLogsRecent(userRow.id, 60);
 
-        // ✅ 타임라인 (오늘/누적에 맞춰 표시)
+// 보여줄 realized
+const todayProfit = todayLogs.reduce((sum, r) => sum + Number(r.amount_delta || 0), 0);
+const realizedShown = (profitMode === 'today') ? todayProfit : realizedTotal;
+
+// (차트 그리는 로직...)
+// drawChart(series);
+
+// ✅ 타임라인은 recentLogs 선언 이후에!
 renderTimeline(profitMode === 'today' ? todayLogs : recentLogs);
         
         const recentLogs = await fetchProfitLogsRecent(userRow.id, 60);
@@ -1429,6 +1436,7 @@ renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
   </script>
 </body>
 </html>
+
 
 
 
