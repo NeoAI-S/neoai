@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <link rel="icon" type="image/png" href="./favicon.png">
   <meta charset="UTF-8" />
   <title>NEO AI 프로세서 - 대시보드</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ✅ 파비콘: 루트에 favicon.png 두면 가장 안전 -->
+  <link rel="icon" type="image/png" href="/favicon.png" />
+
   <style>
     * { box-sizing: border-box; }
 
-    /* 눈누 SUIT 웹폰트 */
     @font-face {
       font-family: 'SUIT-Regular';
-      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2')
-           format('woff2');
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
@@ -52,6 +53,8 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .logo {
@@ -60,6 +63,7 @@
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: #111827;
+      user-select: none;
     }
     .logo span {
       color: #4f46e5;
@@ -71,6 +75,8 @@
       display: flex;
       gap: 8px;
       font-size: 14px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
     .nav button {
       padding: 7px 15px;
@@ -95,7 +101,7 @@
       background: #ffffff;
       border: 1px solid #e5e7eb;
       box-shadow: 0 16px 40px rgba(148, 163, 184, 0.25);
-      padding: 18px 18px 18px;
+      padding: 18px;
       margin-bottom: 14px;
       position: relative;
       overflow: hidden;
@@ -123,7 +129,7 @@
     .value-box {
       flex: 1;
       min-width: 180px;
-      padding: 14px 14px;
+      padding: 14px;
       border-radius: 16px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
@@ -143,9 +149,9 @@
       align-items: center;
       gap: 8px;
       line-height: 1.1;
+      white-space: nowrap;
     }
 
-    /* 긍정적인 금액 강조 색상 */
     .amount-positive {
       color: #059669;
       font-weight: 900;
@@ -153,7 +159,6 @@
     }
     .amount-muted { color: #4b5563; }
 
-    /* ✅ 값 변동 펄스(증가/감소) */
     .pulse-up { animation: pulseUp 700ms ease-out 1; }
     .pulse-down { animation: pulseDown 700ms ease-out 1; }
     @keyframes pulseUp {
@@ -167,7 +172,6 @@
       100% { filter: drop-shadow(0 0 0 rgba(59,130,246,0.0)); transform: translateY(0); }
     }
 
-    /* ✅ 카드 글로우(증가/감소) */
     .cardGlowUp { animation: cardGlowUp 700ms ease-out 1; }
     .cardGlowDown { animation: cardGlowDown 700ms ease-out 1; }
     @keyframes cardGlowUp {
@@ -181,7 +185,6 @@
       100%{ box-shadow: 0 16px 40px rgba(148,163,184,0.25); }
     }
 
-    /* ✅ 총 금액 카드 스윕 */
     .sweep-up::after,
     .sweep-down::after{
       content:"";
@@ -197,11 +200,8 @@
     .sweep-down::after{
       background: linear-gradient(90deg, transparent, rgba(59,130,246,.22), transparent);
     }
-    @keyframes sweep {
-      to { transform: translateX(120%); }
-    }
+    @keyframes sweep { to { transform: translateX(120%); } }
 
-    /* ✅ 로딩 스켈레톤 */
     .skeleton::after{
       content:'';
       position:absolute;
@@ -219,7 +219,6 @@
       100%{ transform: translateX(100%); }
     }
 
-    /* ✅ 미니 증감 배지 */
     .delta-badge{
       font-size: 11px;
       padding: 2px 8px;
@@ -230,7 +229,6 @@
       align-items: center;
       gap: 4px;
       transform: translateY(-1px);
-      white-space: nowrap;
     }
     .delta-up{ background:#fee2e2; color:#dc2626; border-color:#fecaca; }
     .delta-down{ background:#dbeafe; color:#2563eb; border-color:#bfdbfe; }
@@ -245,23 +243,11 @@
       gap: 6px;
     }
     .status-dot { width: 7px; height: 7px; border-radius: 999px; }
-    .status-wait {
-      background: #fef3c7;
-      color: #92400e;
-      border: 1px solid #facc15;
-    }
+    .status-wait { background: #fef3c7; color: #92400e; border: 1px solid #facc15; }
     .status-wait .status-dot { background: #facc15; }
-    .status-run {
-      background: #dcfce7;
-      color: #166534;
-      border: 1px solid #22c55e;
-    }
+    .status-run { background: #dcfce7; color: #166534; border: 1px solid #22c55e; }
     .status-run .status-dot { background: #22c55e; }
-    .status-done {
-      background: #e5e7eb;
-      color: #374151;
-      border: 1px solid #9ca3af;
-    }
+    .status-done { background: #e5e7eb; color: #374151; border: 1px solid #9ca3af; }
     .status-done .status-dot { background: #6b7280; }
 
     .info-text {
@@ -271,113 +257,56 @@
       line-height: 1.6;
     }
 
-    /* 내 정보 카드 */
-    .account-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      font-size: 13px;
-    }
-    @media (max-width: 720px) {
-      .account-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    .acct-label { font-size: 12px; color: #6b7280; margin-bottom: 2px; }
-    .acct-value { font-size: 14px; font-weight: 500; color: #111827; }
-
-    .account-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-    .btn-gear {
-      border: none;
-      background: #f3f4f6;
-      border-radius: 999px;
-      padding: 5px 8px;
-      font-size: 11px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      color: #4b5563;
-    }
-    .btn-gear:hover { background: #e5e7eb; }
-
-    /* 진행 단계 카드 */
-    .steps-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    .steps-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
     .step {
-      flex: 1;
-      min-width: 160px;
-      padding: 10px 11px;
-      border-radius: 14px;
-      border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      font-size: 12px;
-      color: #4b5563;
-      position: relative;
+      flex:1; min-width:160px;
+      padding:10px 11px;
+      border-radius:14px;
+      border:1px solid #e5e7eb;
+      background:#f9fafb;
+      font-size:12px;
+      color:#4b5563;
+      position:relative;
     }
-    .step-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #111827; }
+    .step-title { font-size:13px; font-weight:600; margin-bottom:4px; color:#111827; }
     .step-tag {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      color: #6b7280;
+      position:absolute; top:8px; right:10px;
+      font-size:10px; padding:2px 7px; border-radius:999px;
+      background:#fff; border:1px solid #e5e7eb; color:#6b7280;
     }
     .step.active {
-      border-color: #4f46e5;
-      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.25);
-      background: #eef2ff;
+      border-color:#4f46e5;
+      box-shadow: 0 0 0 1px rgba(79,70,229,0.25);
+      background:#eef2ff;
     }
-    .step.active .step-tag {
-      background: #4f46e5;
-      border-color: #4f46e5;
-      color: #e5e7eb;
-    }
+    .step.active .step-tag { background:#4f46e5; border-color:#4f46e5; color:#e5e7eb; }
 
-    /* 소개 섹션 */
-    .intro-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      gap: 18px;
-    }
-    @media (max-width: 720px) { .intro-grid { grid-template-columns: minmax(0, 1fr); } }
+    .intro-grid { display:grid; grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap:18px; }
+    @media (max-width: 720px){ .intro-grid{ grid-template-columns: 1fr; } }
 
-    .intro-badge {
-      display: inline-flex;
-      padding: 4px 11px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: #eef2ff;
-      color: #4f46e5;
-      margin-bottom: 10px;
-    }
-    .intro-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: #111827; }
-    .intro-text { font-size: 14px; color: #4b5563; line-height: 1.7; white-space: pre-line; }
+    .intro-badge { display:inline-flex; padding:4px 11px; border-radius:999px; font-size:11px; background:#eef2ff; color:#4f46e5; margin-bottom:10px; }
+    .intro-title { font-size:18px; font-weight:700; margin-bottom:8px; color:#111827; }
+    .intro-text { font-size:14px; color:#4b5563; line-height:1.7; white-space:pre-line; margin:0; }
 
-    .intro-box {
-      padding: 12px 12px;
-      border-radius: 16px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      margin-top: 10px;
-    }
-    .intro-box-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #111827; }
-    .intro-points { font-size: 13px; color: #374151; list-style: none; padding: 0; margin: 0; }
-    .intro-points li { margin-bottom: 6px; }
-    .scenario-highlight { font-weight: 600; color: #4f46e5; }
+    .intro-box { padding:12px; border-radius:16px; background:#f9fafb; border:1px solid #e5e7eb; margin-top:10px; }
+    .intro-box-title { font-size:14px; font-weight:600; margin-bottom:6px; color:#111827; }
+    .intro-points { font-size:13px; color:#374151; list-style:none; padding:0; margin:0; }
+    .intro-points li { margin-bottom:6px; }
+    .scenario-highlight { font-weight:600; color:#4f46e5; }
 
-    /* ✅ 실시간 카드 헤더(업데이트/재조회 + 토글) */
+    .account-grid { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:10px; font-size:13px; }
+    @media (max-width: 720px){ .account-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .acct-label { font-size:12px; color:#6b7280; margin-bottom:2px; }
+    .acct-value { font-size:14px; font-weight:500; color:#111827; }
+
+    .account-header-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:10px; flex-wrap:wrap; }
+    .btn-gear {
+      border:none; background:#f3f4f6; border-radius:999px;
+      padding:5px 10px; font-size:12px; cursor:pointer;
+      color:#4b5563;
+    }
+    .btn-gear:hover { background:#e5e7eb; }
+
     .card-head-row{
       display:flex;
       justify-content: space-between;
@@ -393,18 +322,10 @@
       flex-wrap: wrap;
       justify-content:flex-end;
     }
-    .last-updated{
-      font-size: 12px;
-      color:#6b7280;
-    }
+    .last-updated{ font-size: 12px; color:#6b7280; }
     .btn-refresh{
-      border:none;
-      background:#f3f4f6;
-      color:#111827;
-      border-radius:999px;
-      padding:6px 10px;
-      font-size:12px;
-      cursor:pointer;
+      border:none; background:#f3f4f6; color:#111827;
+      border-radius:999px; padding:6px 10px; font-size:12px; cursor:pointer;
     }
     .btn-refresh:hover{ background:#e5e7eb; }
 
@@ -417,14 +338,9 @@
       gap:3px;
     }
     .toggle button{
-      border:none;
-      background:transparent;
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:12px;
-      cursor:pointer;
-      color:#374151;
-      font-weight:700;
+      border:none; background:transparent;
+      padding:6px 10px; border-radius:999px;
+      font-size:12px; cursor:pointer; color:#374151; font-weight:800;
     }
     .toggle button.active{
       background:#111827;
@@ -432,15 +348,6 @@
       box-shadow: 0 8px 18px rgba(15,23,42,0.18);
     }
 
-    .error-inline{
-      margin-top:10px;
-      font-size:12px;
-      color:#b91c1c;
-      display:none;
-    }
-    .error-inline.show{ display:block; }
-
-    /* ✅ 그래프 영역 */
     .chart-wrap{
       margin-top: 12px;
       padding: 12px;
@@ -456,18 +363,17 @@
       margin-bottom: 8px;
       flex-wrap: wrap;
     }
-    .chart-title{
-      font-size: 13px;
-      font-weight: 800;
-      color:#111827;
-    }
-    canvas{
-      width: 100%;
-      height: 120px;
-      display:block;
-    }
+    .chart-title{ font-size: 13px; font-weight: 900; color:#111827; }
+    canvas{ width:100%; height:120px; display:block; }
 
-    /* 설정 모달 */
+    .error-inline{
+      margin-top:10px;
+      font-size:12px;
+      color:#b91c1c;
+      display:none;
+    }
+    .error-inline.show{ display:block; }
+
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -486,7 +392,7 @@
       box-shadow: 0 20px 50px rgba(15, 23, 42, 0.45);
       border: 1px solid #e5e7eb;
     }
-    .modal-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+    .modal-title { font-size: 16px; font-weight: 800; margin-bottom: 10px; }
     .modal label { display: block; font-size: 13px; margin-top: 10px; margin-bottom: 4px; color: #374151; }
     .modal input {
       width: 100%;
@@ -502,12 +408,7 @@
       box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
       background: #ffffff;
     }
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 14px;
-    }
+    .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:14px; }
     .btn-secondary, .btn-primary {
       border-radius: 999px;
       border: none;
@@ -519,7 +420,7 @@
     .btn-primary {
       background: linear-gradient(135deg, #6366f1, #0ea5e9);
       color: #f9fafb;
-      font-weight: 600;
+      font-weight: 800;
     }
 
     .hidden { display: none; }
@@ -532,14 +433,13 @@
       <header class="topbar">
         <div class="logo"><span>NEO AI</span> PROCESSOR</div>
         <nav class="nav">
-          <button id="tabStatus" class="active">AI 투자현황</button>
-          <button id="tabIntro">소개</button>
-          <button id="tabAccount">내 정보</button>
-          <button id="btnLogout">로그아웃</button>
+          <button id="tabStatus" class="active" type="button">AI 투자현황</button>
+          <button id="tabIntro" type="button">소개</button>
+          <button id="tabAccount" type="button">내 정보</button>
+          <button id="btnLogout" type="button">로그아웃</button>
         </nav>
       </header>
 
-      <!-- 1. AI 투자현황 : 금액 + 진행 상태 -->
       <section id="sectionStatus" class="card">
         <div class="section-title">AI 투자현황</div>
         <div class="section-sub" id="nameLine"></div>
@@ -556,14 +456,11 @@
         </div>
       </section>
 
-      <!-- 2. 실시간 수익 현황 -->
       <section id="sectionRealtime" class="card">
         <div class="card-head-row">
           <div>
             <div class="section-title" style="margin-bottom:0;">실시간 수익 현황</div>
-            <div class="section-sub" style="margin-bottom:0;">
-              네오 AI 투자 프로세서 기준, 현재 세션의 실시간 금액 정보입니다.
-            </div>
+            <div class="section-sub" style="margin-bottom:0;">네오 AI 투자 프로세서 기준, 현재 세션의 실시간 금액 정보입니다.</div>
           </div>
 
           <div class="mini-actions">
@@ -571,8 +468,7 @@
               <button id="toggleToday" class="active" type="button">오늘 수익</button>
               <button id="toggleTotal" type="button">누적 수익</button>
             </div>
-
-            <span class="last-updated" id="lastUpdatedText">방금</span>
+            <span class="last-updated" id="lastUpdatedText">마지막 업데이트: -</span>
             <button class="btn-refresh" id="btnRefresh" type="button">재조회</button>
           </div>
         </div>
@@ -600,9 +496,7 @@
           <canvas id="profitChart" width="920" height="160"></canvas>
         </div>
 
-        <div class="info-text">
-          투자중인 금액과 실현된 수익을 합산한 금액이 총 금액으로 표시됩니다.
-        </div>
+        <div class="info-text">투자중인 금액과 실현된 수익을 합산한 금액이 총 금액으로 표시됩니다.</div>
 
         <div class="error-inline" id="realtimeError">
           조회 실패: 네트워크/권한/테이블 컬럼을 확인해주세요.
@@ -610,7 +504,6 @@
         </div>
       </section>
 
-      <!-- 3. AI 세션 진행 단계 -->
       <section id="sectionStatusExtra" class="card">
         <div class="section-title">AI 세션 진행 단계</div>
         <div class="section-sub">네오AI는 아래 3단계를 거쳐 세션을 운용합니다.</div>
@@ -634,7 +527,6 @@
         </div>
       </section>
 
-      <!-- 소개 섹션 -->
       <section id="sectionIntro" class="card hidden">
         <div class="intro-badge">AI 기반 자동 투자 프로세스</div>
         <div class="intro-grid">
@@ -659,37 +551,21 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
               </ul>
             </div>
           </div>
+
           <div>
             <div class="intro-box">
               <div class="intro-box-title">투자 예시 시나리오 (전문 운영 관점)</div>
               <p class="intro-text" style="margin-top:4px;">
 <span class="scenario-highlight">예시 · 50,000원을 AI에 맡기는 경우</span>
 
-1) <strong>세션 설정</strong>
- · 유저가 50,000원을 투자하고, 약 1일 ~ 최대 30일 AI에게 맡깁니다.
- · "진행중" 상태로 전환되며, 네오AI는 해당 금액을 운용대상으로 인식합니다.
+1) 세션 설정 → 진행중 전환
+2) 시장/종목 스캔
+3) 포트폴리오 구성
+4) 리스크 관리
+5) 세션 종료 및 정산
 
-2) <strong>시장·종목 스캔</strong>
- · 네오AI는 최근 수 시간~30일간의 가격 흐름, 거래량, 변동성, 뉴스·이슈 등 데이터를 수집합니다.
- · 과거 학습 데이터와 현재 시장 상황을 비교해, 효율이 높은 섹터·종목을 선별합니다.
-
-3) <strong>포트폴리오 구성</strong>
- · 전체 50,000원 중 일부는 기본 안전 구간, 일부는 공격 구간으로 나누어 비중을 설정합니다.
- · 예를 들어, 변동성이 낮은 자산 60% + 변동성이 높은 자산 40% 조합으로 10~20개 내외 종목을 선정할 수 있습니다.
- · 각 종목별 예상 수익·리스크에 따라 비중이 자동으로 조정됩니다.
-
-4) <strong>세션 중 리스크 관리</strong>
- · 운용 구간 동안 실시간 가격 변화를 모니터링하며,
-   사전 설정된 손실 한도 또는 급격한 변동이 발생할 경우 비중을 축소하거나 현금 비중을 늘립니다.
- · 과도한 집중이 발생하지 않도록, 종목당·섹터당 비중 상한을 유지합니다.
-
-5) <strong>세션 종료 및 정산</strong>
- · 운용 구간이 종료되면, 해당 세션은 "진행 완료" 상태로 전환됩니다.
- · 포트폴리오 전체 평가금액이 계산되고, 수익 결과가 정리됩니다.
- · 이때의 성과 데이터는 다음 세션의 전략 고도화에 사용되며, 어떤 조건·종목 조합이 유리했는지 재학습에 반영됩니다.
-
-이 과정에서 유저는 투자 금액과 세션 운용 여부만 확인하고,
-실제 종목 선택·비중 조정·리스크 관리는 모두 네오AI가 담당하는 구조입니다.
+유저는 투자 금액과 운용 여부만 확인하고,
+실제 종목 선택·비중 조정·리스크 관리는 모두 네오AI가 담당합니다.
               </p>
             </div>
 
@@ -705,7 +581,6 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         </div>
       </section>
 
-      <!-- 내 정보 섹션 -->
       <section id="sectionAccount" class="card hidden">
         <div class="account-header-row">
           <div>
@@ -716,30 +591,12 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         </div>
 
         <div class="account-grid">
-          <div>
-            <div class="acct-label">이름</div>
-            <div class="acct-value" id="acctName">-</div>
-          </div>
-          <div>
-            <div class="acct-label">아이디</div>
-            <div class="acct-value" id="acctUsername">-</div>
-          </div>
-          <div>
-            <div class="acct-label">휴대폰</div>
-            <div class="acct-value" id="acctPhone">-</div>
-          </div>
-          <div>
-            <div class="acct-label">투자중인 금액</div>
-            <div class="acct-value" id="acctAmount">-</div>
-          </div>
-          <div>
-            <div class="acct-label">수익 실현중인 금액</div>
-            <div class="acct-value" id="acctRealized">-</div>
-          </div>
-          <div>
-            <div class="acct-label">출금 계좌</div>
-            <div class="acct-value" id="acctBank">-</div>
-          </div>
+          <div><div class="acct-label">이름</div><div class="acct-value" id="acctName">-</div></div>
+          <div><div class="acct-label">아이디</div><div class="acct-value" id="acctUsername">-</div></div>
+          <div><div class="acct-label">휴대폰</div><div class="acct-value" id="acctPhone">-</div></div>
+          <div><div class="acct-label">투자중인 금액</div><div class="acct-value" id="acctAmount">-</div></div>
+          <div><div class="acct-label">수익 실현중인 금액</div><div class="acct-value" id="acctRealized">-</div></div>
+          <div><div class="acct-label">출금 계좌</div><div class="acct-value" id="acctBank">-</div></div>
         </div>
 
         <div class="info-text" style="margin-top:12px;">
@@ -747,13 +604,10 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         </div>
       </section>
 
-      <!-- 설정 모달 -->
       <div id="settingsModal" class="modal-backdrop hidden">
         <div class="modal">
           <div class="modal-title">내 정보 수정</div>
-          <p class="section-sub" style="margin-bottom:4px;">
-            비밀번호와 출금 계좌 정보를 변경할 수 있습니다.
-          </p>
+          <p class="section-sub" style="margin-bottom:4px;">비밀번호와 출금 계좌 정보를 변경할 수 있습니다.</p>
 
           <label for="editPassword">새 비밀번호</label>
           <input type="password" id="editPassword" placeholder="변경하지 않으려면 비워두세요" />
@@ -771,78 +625,103 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     </div>
   </div>
 
-  <!-- Supabase + 대시보드 로직 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    console.log("loadStatus() called", new Date().toISOString());
-    const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
-    const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    // ====== 설정값 ======
+    var supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
+    var supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
+    var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    let currentUser = null;
+    var currentUser = null;
 
-    // ✅ 이전 값 기억(카운트업/펄스/배지/스윕용)
-    let prevAmount = 0;
-    let prevRealizedToday = 0;
-    let prevRealizedTotal = 0;
-    let prevTotal = 0;
-    let hasPrev = false;
+    // 이전값
+    var prevAmount = 0;
+    var prevRealizedToday = 0;
+    var prevRealizedTotal = 0;
+    var prevTotal = 0;
+    var hasPrev = false;
 
-    // ✅ 토글 상태: 'today' | 'total'
-    let profitMode = 'today';
+    // today | total
+    var profitMode = 'today';
+    var lastUpdatedAt = null;
 
-    // ✅ 업데이트 시간(상대표시용)
-    let lastUpdatedAt = null;
+    var chartState = { points: [], maxPoints: 40 };
 
-    // ✅ 차트 데이터
-    const chartState = {
-      points: [], // number[]
-      maxPoints: 40
-    };
+    // ====== 유틸 ======
+    function qs(id){ return document.getElementById(id); }
 
-    function requireLogin() {
-      const raw = localStorage.getItem('neoai_current_user');
-      if (!raw) {
-        alert('로그인이 필요합니다.');
-        window.location.href = 'index.html';
-        return;
-      }
-      try {
-        currentUser = JSON.parse(raw);
-      } catch {
-        localStorage.removeItem('neoai_current_user');
-        window.location.href = 'index.html';
-      }
-    }
-
-    function formatAmount(value) {
+    function formatAmount(value){
       if (value == null || isNaN(value)) return '- 원';
       return Number(value).toLocaleString('ko-KR') + ' 원';
     }
 
-    function maskPhone(phone) {
+    function maskPhone(phone){
       if (!phone) return '-';
-      const digits = phone.replace(/[^0-9]/g, '');
+      var digits = String(phone).replace(/[^0-9]/g, '');
       if (digits.length < 8) return phone;
-      const head = digits.slice(0, 3);
-      const tail = digits.slice(-4);
-      return `${head}-****-${tail}`;
+      var head = digits.slice(0,3);
+      var tail = digits.slice(-4);
+      return head + '-****-' + tail;
     }
 
-    function renderStatus(status) {
-      const badge = document.getElementById('statusBadge');
+    function relativeTime(fromDate){
+      if (!fromDate) return '-';
+      var now = Date.now();
+      var diff = Math.max(0, now - fromDate.getTime());
+      var sec = Math.floor(diff / 1000);
+      if (sec < 10) return '방금';
+      if (sec < 60) return sec + '초 전';
+      var min = Math.floor(sec / 60);
+      if (min < 60) return min + '분 전';
+      var hr = Math.floor(min / 60);
+      if (hr < 24) return hr + '시간 전';
+      var day = Math.floor(hr / 24);
+      return day + '일 전';
+    }
+
+    function updateLastUpdatedLabel(){
+      var el = qs('lastUpdatedText');
+      el.textContent = '마지막 업데이트: ' + (lastUpdatedAt ? relativeTime(lastUpdatedAt) : '-');
+    }
+
+    function setSkeleton(on){
+      var boxes = [qs('boxTopAmount'), qs('boxInvest'), qs('boxRealized'), qs('boxTotal')];
+      boxes.forEach(function(b){
+        if (!b) return;
+        if (on) b.classList.add('skeleton');
+        else b.classList.remove('skeleton');
+      });
+    }
+
+    function setRealtimeError(show, msg){
+      var box = qs('realtimeError');
+      if (!show){
+        box.classList.remove('show');
+        return;
+      }
+      if (msg) {
+        box.firstChild.nodeValue = msg + ' ';
+      }
+      box.classList.add('show');
+    }
+
+    // ====== UI 렌더 ======
+    function renderStatus(status){
+      var badge = qs('statusBadge');
       badge.innerHTML = '';
 
-      const wrapper = document.createElement('span');
+      var wrapper = document.createElement('span');
       wrapper.classList.add('status-pill');
-      const dot = document.createElement('span');
-      dot.classList.add('status-dot');
-      const text = document.createElement('span');
 
-      if (!status || status === '대기중') {
+      var dot = document.createElement('span');
+      dot.classList.add('status-dot');
+
+      var text = document.createElement('span');
+
+      if (!status || status === '대기중'){
         wrapper.classList.add('status-wait');
         text.textContent = '대기중';
-      } else if (status === '진행중') {
+      } else if (status === '진행중'){
         wrapper.classList.add('status-run');
         text.textContent = '진행중';
       } else {
@@ -855,113 +734,61 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       badge.appendChild(wrapper);
     }
 
-    function renderSteps(status) {
-      const steps = document.querySelectorAll('.step');
-      steps.forEach(step => step.classList.remove('active'));
+    function renderSteps(status){
+      var steps = document.querySelectorAll('.step');
+      steps.forEach(function(step){ step.classList.remove('active'); });
 
-      let key = 'wait';
+      var key = 'wait';
       if (status === '진행중') key = 'run';
       else if (status === '진행 완료') key = 'done';
 
-      const target = document.querySelector(\`.step[data-step="\${key}"]\`);
+      var target = document.querySelector('.step[data-step="' + key + '"]');
       if (target) target.classList.add('active');
     }
 
-    function fillAccountInfo(userFromDb) {
-      const merged = { ...currentUser, ...userFromDb };
-
-      document.getElementById('acctName').textContent = merged.name || '-';
-      document.getElementById('acctUsername').textContent = merged.username || '-';
-      document.getElementById('acctPhone').textContent = merged.phone ? maskPhone(merged.phone) : '-';
-      document.getElementById('acctAmount').textContent = formatAmount(merged.amount || 0);
-      document.getElementById('acctRealized').textContent = formatAmount(merged.realized_amount || 0);
-      document.getElementById('acctBank').textContent = merged.bank_account || '-';
+    function fillAccountInfo(userFromDb){
+      var merged = Object.assign({}, currentUser || {}, userFromDb || {});
+      qs('acctName').textContent = merged.name || '-';
+      qs('acctUsername').textContent = merged.username || '-';
+      qs('acctPhone').textContent = merged.phone ? maskPhone(merged.phone) : '-';
+      qs('acctAmount').textContent = formatAmount(merged.amount || 0);
+      qs('acctRealized').textContent = formatAmount(merged.realized_amount || 0);
+      qs('acctBank').textContent = merged.bank_account || '-';
     }
 
-    // ✅ 상대 시간 표시: "방금", "3분 전", "1시간 전"
-    function relativeTime(fromDate) {
-      if (!fromDate) return '방금';
-      const now = Date.now();
-      const diff = Math.max(0, now - fromDate.getTime());
-      const sec = Math.floor(diff / 1000);
-      if (sec < 10) return '방금';
-      if (sec < 60) return \`\${sec}초 전\`;
-      const min = Math.floor(sec / 60);
-      if (min < 60) return \`\${min}분 전\`;
-      const hr = Math.floor(min / 60);
-      if (hr < 24) return \`\${hr}시간 전\`;
-      const day = Math.floor(hr / 24);
-      return \`\${day}일 전\`;
-    }
-
-    function updateLastUpdatedLabel() {
-      const el = document.getElementById('lastUpdatedText');
-      el.textContent = \`마지막 업데이트: \${relativeTime(lastUpdatedAt)}\`;
-    }
-
-    function setRealtimeError(show, msg = '') {
-      const box = document.getElementById('realtimeError');
-      if (!show) {
-        box.classList.remove('show');
-        return;
-      }
-      if (msg) {
-        // 버튼 앞 텍스트만 교체
-        const btn = document.getElementById('btnRetryInline');
-        box.innerHTML = \`\${msg} <button class="btn-refresh" id="btnRetryInline" type="button">다시 시도</button>\`;
-        document.getElementById('btnRetryInline').addEventListener('click', loadStatus);
-      }
-      box.classList.add('show');
-    }
-
-    function setSkeleton(on) {
-      const boxes = [
-        document.getElementById('boxTopAmount'),
-        document.getElementById('boxInvest'),
-        document.getElementById('boxRealized'),
-        document.getElementById('boxTotal'),
-      ].filter(Boolean);
-
-      boxes.forEach(b => {
-        if (on) b.classList.add('skeleton');
-        else b.classList.remove('skeleton');
-      });
-    }
-
-    // ✅ 카운트업 애니메이션
-    function animateMoney(el, from, to, durationMs = 650) {
+    function animateMoney(el, from, to, durationMs){
       if (!Number.isFinite(from)) from = 0;
       if (!Number.isFinite(to)) to = 0;
+      durationMs = durationMs || 650;
 
-      if (from === to) {
+      if (from === to){
         el.textContent = formatAmount(to);
         return;
       }
 
-      const start = performance.now();
-      const diff = to - from;
+      var start = performance.now();
+      var diff = to - from;
 
-      function tick(now) {
-        const t = Math.min(1, (now - start) / durationMs);
-        const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
-        const val = Math.round(from + diff * eased);
+      function tick(now){
+        var t = Math.min(1, (now - start) / durationMs);
+        var eased = 1 - Math.pow(1 - t, 3);
+        var val = Math.round(from + diff * eased);
         el.textContent = formatAmount(val);
         if (t < 1) requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
     }
 
-    // ✅ 배지 생성(▲/▼/–)
-    function buildDeltaBadge(delta) {
-      const badge = document.createElement('span');
+    function buildDeltaBadge(delta){
+      var badge = document.createElement('span');
       badge.className = 'delta-badge';
 
-      if (delta > 0) {
+      if (delta > 0){
         badge.classList.add('delta-up');
-        badge.textContent = \`▲ \${formatAmount(delta)}\`;
-      } else if (delta < 0) {
+        badge.textContent = '▲ ' + formatAmount(delta);
+      } else if (delta < 0){
         badge.classList.add('delta-down');
-        badge.textContent = \`▼ \${formatAmount(Math.abs(delta))}\`;
+        badge.textContent = '▼ ' + formatAmount(Math.abs(delta));
       } else {
         badge.classList.add('delta-same');
         badge.textContent = '– 0원';
@@ -969,130 +796,117 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       return badge;
     }
 
-    function applyPulse(el, direction) {
+    function setValueWithBadge(el, value, prevValue){
+      var delta = value - prevValue;
+      el.innerHTML = '';
+      var textNode = document.createElement('span');
+      textNode.textContent = formatAmount(value);
+      el.appendChild(textNode);
+      el.appendChild(buildDeltaBadge(delta));
+    }
+
+    function applyPulse(el, direction){
       el.classList.remove('pulse-up','pulse-down');
       void el.offsetWidth;
       if (direction === 'up') el.classList.add('pulse-up');
       if (direction === 'down') el.classList.add('pulse-down');
     }
 
-    function applyCardGlow(cardEl, direction) {
+    function applyCardGlow(cardEl, direction){
       cardEl.classList.remove('cardGlowUp','cardGlowDown');
       void cardEl.offsetWidth;
       if (direction === 'up') cardEl.classList.add('cardGlowUp');
       if (direction === 'down') cardEl.classList.add('cardGlowDown');
     }
 
-    function applySweep(cardEl, direction) {
+    function applySweep(cardEl, direction){
       cardEl.classList.remove('sweep-up','sweep-down');
       void cardEl.offsetWidth;
       if (direction === 'up') cardEl.classList.add('sweep-up');
       if (direction === 'down') cardEl.classList.add('sweep-down');
     }
 
-    function setValueWithBadge(el, value, prevValue) {
-      // el: value-main
-      // value 표시 + badge(차이)
-      const delta = value - prevValue;
-      el.innerHTML = '';
-      const textNode = document.createElement('span');
-      textNode.textContent = formatAmount(value);
-      el.appendChild(textNode);
-
-      const badge = buildDeltaBadge(delta);
-      el.appendChild(badge);
+    // ====== 차트 ======
+    function pushChartPoint(v){
+      chartState.points.push(v);
+      if (chartState.points.length > chartState.maxPoints) chartState.points.shift();
     }
 
-    // ✅ 차트 유틸 (Canvas 라인 차트)
-    function pushChartPoint(v) {
-      const pts = chartState.points;
-      pts.push(v);
-      if (pts.length > chartState.maxPoints) pts.shift();
-    }
+    function drawChart(){
+      var canvas = qs('profitChart');
+      var ctx = canvas.getContext('2d');
+      var w = canvas.width, h = canvas.height;
 
-    function drawChart() {
-      const canvas = document.getElementById('profitChart');
-      const ctx = canvas.getContext('2d');
-      const w = canvas.width;
-      const h = canvas.height;
-
-      // clear
       ctx.clearRect(0,0,w,h);
 
       // grid
-      ctx.globalAlpha = 1;
       ctx.lineWidth = 1;
       ctx.strokeStyle = 'rgba(148,163,184,0.35)';
-      for (let i=1;i<=3;i++){
-        const y = (h/4)*i;
-        ctx.beginPath();
-        ctx.moveTo(0,y);
-        ctx.lineTo(w,y);
-        ctx.stroke();
+      for (var i=1;i<=3;i++){
+        var y = (h/4)*i;
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
       }
 
-      const pts = chartState.points;
+      var pts = chartState.points;
       if (pts.length < 2) return;
 
-      const min = Math.min(...pts);
-      const max = Math.max(...pts);
-      const range = Math.max(1, max - min);
+      var min = Math.min.apply(null, pts);
+      var max = Math.max.apply(null, pts);
+      var range = Math.max(1, max - min);
 
-      const padX = 10;
-      const padY = 12;
+      var padX = 10, padY = 12;
 
-      // line
       ctx.lineWidth = 2.2;
       ctx.strokeStyle = 'rgba(79,70,229,0.9)';
       ctx.beginPath();
 
-      pts.forEach((v, i) => {
-        const x = padX + ( (w - padX*2) * (i / (pts.length - 1)) );
-        const y = (h - padY) - ( (h - padY*2) * ((v - min) / range) );
-        if (i === 0) ctx.moveTo(x,y);
+      pts.forEach(function(v, idx){
+        var x = padX + ((w - padX*2) * (idx / (pts.length - 1)));
+        var y = (h - padY) - ((h - padY*2) * ((v - min) / range));
+        if (idx === 0) ctx.moveTo(x,y);
         else ctx.lineTo(x,y);
       });
       ctx.stroke();
 
-      // last point dot
-      const last = pts[pts.length - 1];
-      const lx = padX + ( (w - padX*2) * 1 );
-      const ly = (h - padY) - ( (h - padY*2) * ((last - min) / range) );
-
+      // last dot
+      var last = pts[pts.length - 1];
+      var lx = padX + (w - padX*2);
+      var ly = (h - padY) - ((h - padY*2) * ((last - min) / range));
       ctx.fillStyle = 'rgba(79,70,229,1)';
-      ctx.beginPath();
-      ctx.arc(lx, ly, 4, 0, Math.PI*2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(lx, ly, 4, 0, Math.PI*2); ctx.fill();
     }
 
-    // ✅ (선택) 수익 로그 테이블이 있으면 "오늘 수익"을 계산해서 더 정확히 보여줌
-    // 테이블 예시: profit_logs(user_id, amount_delta, created_at)
-    async function fetchTodayProfitFromLogs(userId) {
+    // ====== 데이터 ======
+    async function fetchTodayProfitFromLogs(userId){
+      // profit_logs 테이블이 없어도 동작해야 하므로 try/catch + null 반환
       try {
-        const start = new Date();
+        var start = new Date();
         start.setHours(0,0,0,0);
-        const { data, error } = await supabase
+
+        var res = await supabase
           .from('profit_logs')
           .select('amount_delta, created_at')
           .eq('user_id', userId)
           .gte('created_at', start.toISOString());
 
-        if (error) return null;
-        if (!Array.isArray(data)) return null;
+        if (res.error) return null;
+        if (!Array.isArray(res.data)) return null;
 
-        return data.reduce((sum, r) => sum + Number(r.amount_delta || 0), 0);
-      } catch {
+        return res.data.reduce(function(sum, r){
+          return sum + Number(r.amount_delta || 0);
+        }, 0);
+      } catch (e) {
         return null;
       }
     }
 
-    function setModeUI() {
-      const todayBtn = document.getElementById('toggleToday');
-      const totalBtn = document.getElementById('toggleTotal');
-      const label = document.getElementById('realizedLabel');
-      const title = document.getElementById('chartTitle');
+    function setModeUI(){
+      var todayBtn = qs('toggleToday');
+      var totalBtn = qs('toggleTotal');
+      var label = qs('realizedLabel');
+      var title = qs('chartTitle');
 
-      if (profitMode === 'today') {
+      if (profitMode === 'today'){
         todayBtn.classList.add('active');
         totalBtn.classList.remove('active');
         label.textContent = '수익 (오늘)';
@@ -1105,45 +919,44 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       }
     }
 
-    async function loadStatus() {
-      const nameLine   = document.getElementById('nameLine');
-      const amountText = document.getElementById('amountText');
-      const investEl   = document.getElementById('amountInvestText');
-      const realizedEl = document.getElementById('realizedAmountText');
-      const totalEl    = document.getElementById('totalAmountText');
+    async function loadStatus(){
+      var nameLine = qs('nameLine');
+      var amountText = qs('amountText');
+      var investEl = qs('amountInvestText');
+      var realizedEl = qs('realizedAmountText');
+      var totalEl = qs('totalAmountText');
 
-      const boxInvest = document.getElementById('boxInvest');
-      const boxRealized = document.getElementById('boxRealized');
-      const boxTotal = document.getElementById('boxTotal');
+      var boxRealized = qs('boxRealized');
+      var boxTotal = qs('boxTotal');
 
-      const displayName = (currentUser && (currentUser.name || currentUser.username)) || '';
-      nameLine.textContent = displayName
-        ? `${displayName}님의 AI 투자 진행 정보입니다.`
-        : 'AI 투자 진행 정보입니다.';
+      var displayName = (currentUser && (currentUser.name || currentUser.username)) ? (currentUser.name || currentUser.username) : '';
+      nameLine.textContent = displayName ? (displayName + '님의 AI 투자 진행 정보입니다.') : 'AI 투자 진행 정보입니다.';
 
       setRealtimeError(false);
       setSkeleton(true);
 
       try {
-        const { data, error } = await supabase
+        var result = await supabase
           .from('users')
           .select('*')
           .eq('username', currentUser.username)
           .maybeSingle();
 
-        if (error) {
-          console.error('Supabase error:', error);
+        if (result.error){
+          console.error(result.error);
           setSkeleton(false);
           setRealtimeError(true, '조회 실패: Supabase 오류가 발생했습니다.');
           return;
         }
 
-        if (!data) {
+        var data = result.data;
+
+        if (!data){
           setSkeleton(false);
-          amountText.textContent   = '- 원';
-          investEl.textContent     = '- 원';
-          realizedEl.textContent   = '- 원';
-          totalEl.textContent      = '- 원';
+          amountText.textContent = '- 원';
+          investEl.textContent = '- 원';
+          realizedEl.textContent = '- 원';
+          totalEl.textContent = '- 원';
           renderStatus('대기중');
           renderSteps('대기중');
           fillAccountInfo({});
@@ -1152,22 +965,16 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
           return;
         }
 
-        // 현재 값들
-        const amount = Number(data.amount || 0);
-        const realizedTotal = Number(data.realized_amount || 0); // 누적 기본값
-        let realizedToday = 0;
+        var amount = Number(data.amount || 0);
+        var realizedTotal = Number(data.realized_amount || 0);
 
-        // profit_logs 테이블이 있으면 오늘 수익 계산 (없으면 그냥 0 유지)
-        const maybeToday = await fetchTodayProfitFromLogs(data.id);
+        var realizedToday = 0;
+        var maybeToday = await fetchTodayProfitFromLogs(data.id);
         if (typeof maybeToday === 'number') realizedToday = maybeToday;
 
-        // 토글에 따라 표시할 realized
-        const realizedShown = (profitMode === 'today') ? realizedToday : realizedTotal;
+        var realizedShown = (profitMode === 'today') ? realizedToday : realizedTotal;
+        var total = amount + realizedTotal;
 
-        const total = amount + realizedTotal; // "총 금액"은 누적 실현 기준으로 계산(실제 자산)
-        // (원하면 today 모드에서도 total은 동일하게 유지하는게 정상임)
-
-        // 상단 카드
         amountText.textContent = formatAmount(amount);
 
         // 색상
@@ -1180,52 +987,43 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
         realizedEl.classList.add(realizedShown > 0 ? 'amount-positive' : 'amount-muted');
         totalEl.classList.add(total > 0 ? 'amount-positive' : 'amount-muted');
 
-        // 첫 로드/이후 로드
-        if (!hasPrev) {
+        if (!hasPrev){
           investEl.textContent = formatAmount(amount);
           realizedEl.textContent = formatAmount(realizedShown);
           totalEl.textContent = formatAmount(total);
 
-          // 초기 차트 포인트
-          for (let i=0;i<8;i++) pushChartPoint(realizedShown);
+          chartState.points = [];
+          for (var i=0;i<8;i++) pushChartPoint(realizedShown);
           drawChart();
 
           hasPrev = true;
         } else {
-          // 카운트업
-          animateMoney(investEl, prevAmount, amount);
+          // 카운트업은 먼저
+          animateMoney(investEl, prevAmount, amount, 650);
 
-          // realized는 "모드별" 이전값을 따로 관리
-          const prevShown = (profitMode === 'today') ? prevRealizedToday : prevRealizedTotal;
-          animateMoney(realizedEl, prevShown, realizedShown);
+          var prevShown = (profitMode === 'today') ? prevRealizedToday : prevRealizedTotal;
+          animateMoney(realizedEl, prevShown, realizedShown, 650);
+          animateMoney(totalEl, prevTotal, total, 650);
 
-          animateMoney(totalEl, prevTotal, total);
-
-          // 배지 + 펄스/글로우
-          // 투자중
+          // 배지
           setValueWithBadge(investEl, amount, prevAmount);
-
-          // 수익(모드별)
           setValueWithBadge(realizedEl, realizedShown, prevShown);
-
-          // 총금액(누적 기준)
           setValueWithBadge(totalEl, total, prevTotal);
 
-          // 방향 계산
-          const dirReal = realizedShown > prevShown ? 'up' : (realizedShown < prevShown ? 'down' : null);
-          const dirTot = total > prevTotal ? 'up' : (total < prevTotal ? 'down' : null);
+          // 방향
+          var dirReal = (realizedShown > prevShown) ? 'up' : ((realizedShown < prevShown) ? 'down' : null);
+          var dirTot = (total > prevTotal) ? 'up' : ((total < prevTotal) ? 'down' : null);
 
-          if (dirReal) {
+          if (dirReal){
             applyPulse(realizedEl, dirReal);
             applyCardGlow(boxRealized, dirReal);
           }
-          if (dirTot) {
+          if (dirTot){
             applyPulse(totalEl, dirTot);
             applyCardGlow(boxTotal, dirTot);
-            applySweep(boxTotal, dirTot); // 총금액 스윕
+            applySweep(boxTotal, dirTot);
           }
 
-          // 차트 포인트 추가(표시 모드 기준)
           pushChartPoint(realizedShown);
           drawChart();
         }
@@ -1242,156 +1040,154 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
 
         setSkeleton(false);
 
-        // 업데이트 시간
         lastUpdatedAt = new Date();
         updateLastUpdatedLabel();
-      } catch (e) {
-        console.error('JS error:', e);
+      } catch (e){
+        console.error(e);
         setSkeleton(false);
         setRealtimeError(true, '조회 실패: 네트워크/스크립트 오류가 발생했습니다.');
       }
     }
 
-    // 탭 전환
-    const tabStatus  = document.getElementById('tabStatus');
-    const tabIntro   = document.getElementById('tabIntro');
-    const tabAccount = document.getElementById('tabAccount');
+    function requireLogin(){
+      var raw = localStorage.getItem('neoai_current_user');
+      if (!raw){
+        alert('로그인이 필요합니다.');
+        window.location.href = 'index.html';
+        return;
+      }
+      try{
+        currentUser = JSON.parse(raw);
+      } catch (e){
+        localStorage.removeItem('neoai_current_user');
+        window.location.href = 'index.html';
+      }
+    }
 
-    const sectionStatus      = document.getElementById('sectionStatus');
-    const sectionRealtime    = document.getElementById('sectionRealtime');
-    const sectionStatusExtra = document.getElementById('sectionStatusExtra');
-    const sectionIntro       = document.getElementById('sectionIntro');
-    const sectionAccount     = document.getElementById('sectionAccount');
+    function showTab(which){
+      var tabStatus = qs('tabStatus');
+      var tabIntro = qs('tabIntro');
+      var tabAccount = qs('tabAccount');
 
-    tabStatus.addEventListener('click', () => {
-      tabStatus.classList.add('active');
+      var sectionStatus = qs('sectionStatus');
+      var sectionRealtime = qs('sectionRealtime');
+      var sectionStatusExtra = qs('sectionStatusExtra');
+      var sectionIntro = qs('sectionIntro');
+      var sectionAccount = qs('sectionAccount');
+
+      tabStatus.classList.remove('active');
       tabIntro.classList.remove('active');
       tabAccount.classList.remove('active');
 
-      sectionStatus.classList.remove('hidden');
-      sectionRealtime.classList.remove('hidden');
-      sectionStatusExtra.classList.remove('hidden');
-      sectionIntro.classList.add('hidden');
-      sectionAccount.classList.add('hidden');
-    });
-
-    tabIntro.addEventListener('click', () => {
-      tabIntro.classList.add('active');
-      tabStatus.classList.remove('active');
-      tabAccount.classList.remove('active');
-
-      sectionIntro.classList.remove('hidden');
-      sectionStatus.classList.add('hidden');
-      sectionRealtime.classList.add('hidden');
-      sectionStatusExtra.classList.add('hidden');
-      sectionAccount.classList.add('hidden');
-    });
-
-    tabAccount.addEventListener('click', () => {
-      tabAccount.classList.add('active');
-      tabStatus.classList.remove('active');
-      tabIntro.classList.remove('active');
-
-      sectionAccount.classList.remove('hidden');
       sectionStatus.classList.add('hidden');
       sectionRealtime.classList.add('hidden');
       sectionStatusExtra.classList.add('hidden');
       sectionIntro.classList.add('hidden');
-    });
+      sectionAccount.classList.add('hidden');
 
-    // 로그아웃
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      localStorage.removeItem('neoai_current_user');
-      alert('로그아웃 되었습니다.');
-      window.location.href = 'index.html';
-    });
-
-    // 재조회
-    document.getElementById('btnRefresh').addEventListener('click', loadStatus);
-    document.getElementById('btnRetryInline').addEventListener('click', loadStatus);
-
-    // 토글
-    const toggleToday = document.getElementById('toggleToday');
-    const toggleTotal = document.getElementById('toggleTotal');
-
-    toggleToday.addEventListener('click', async () => {
-      profitMode = 'today';
-      setModeUI();
-      // 모드 바뀌면 차트 데이터 리셋 느낌(깔끔)
-      chartState.points = [];
-      hasPrev = false; // 모드 바뀌면 배지/이전값 꼬임 방지
-      await loadStatus();
-    });
-
-    toggleTotal.addEventListener('click', async () => {
-      profitMode = 'total';
-      setModeUI();
-      chartState.points = [];
-      hasPrev = false;
-      await loadStatus();
-    });
-
-    // 설정 모달 로직
-    const settingsModal     = document.getElementById('settingsModal');
-    const btnOpenSettings   = document.getElementById('btnOpenSettings');
-    const btnCancelSettings = document.getElementById('btnCancelSettings');
-    const btnSaveSettings   = document.getElementById('btnSaveSettings');
-
-    btnOpenSettings.addEventListener('click', () => {
-      settingsModal.classList.remove('hidden');
-      document.getElementById('editPassword').value = '';
-      document.getElementById('editBank').value = (currentUser && currentUser.bank_account) || '';
-    });
-
-    btnCancelSettings.addEventListener('click', () => {
-      settingsModal.classList.add('hidden');
-    });
-
-    btnSaveSettings.addEventListener('click', async () => {
-      const newPw   = document.getElementById('editPassword').value.trim();
-      const newBank = document.getElementById('editBank').value.trim();
-
-      const payload = {};
-      if (newPw) payload.password = newPw;
-      payload.bank_account = newBank || null;
-
-      if (!currentUser || !currentUser.id) {
-        alert('사용자 정보를 확인할 수 없습니다.');
-        return;
+      if (which === 'status'){
+        tabStatus.classList.add('active');
+        sectionStatus.classList.remove('hidden');
+        sectionRealtime.classList.remove('hidden');
+        sectionStatusExtra.classList.remove('hidden');
+      } else if (which === 'intro'){
+        tabIntro.classList.add('active');
+        sectionIntro.classList.remove('hidden');
+      } else {
+        tabAccount.classList.add('active');
+        sectionAccount.classList.remove('hidden');
       }
+    }
 
-    const { data, error } = await supabase
-  .from('users')
-  .select('*')
-  .eq('id', currentUser.id)
-  .maybeSingle();
+    // ====== 이벤트 바인딩(여기서부터 “클릭/탭/로그아웃”이 살아남) ======
+    window.addEventListener('DOMContentLoaded', function(){
+      // 기본 이벤트
+      qs('tabStatus').addEventListener('click', function(){ showTab('status'); });
+      qs('tabIntro').addEventListener('click', function(){ showTab('intro'); });
+      qs('tabAccount').addEventListener('click', function(){ showTab('account'); });
 
+      qs('btnLogout').addEventListener('click', function(){
+        localStorage.removeItem('neoai_current_user');
+        alert('로그아웃 되었습니다.');
+        window.location.href = 'index.html';
+      });
 
-      if (error) {
-        console.error(error);
-        alert('정보 수정 중 오류가 발생했습니다.');
-        return;
-      }
+      qs('btnRefresh').addEventListener('click', loadStatus);
+      qs('btnRetryInline').addEventListener('click', loadStatus);
 
-      currentUser = { ...currentUser, ...data };
-      localStorage.setItem('neoai_current_user', JSON.stringify(currentUser));
-      fillAccountInfo(data);
-      settingsModal.classList.add('hidden');
-      alert('정보가 저장되었습니다.');
+      qs('toggleToday').addEventListener('click', function(){
+        profitMode = 'today';
+        setModeUI();
+        chartState.points = [];
+        hasPrev = false;
+        loadStatus();
+      });
+
+      qs('toggleTotal').addEventListener('click', function(){
+        profitMode = 'total';
+        setModeUI();
+        chartState.points = [];
+        hasPrev = false;
+        loadStatus();
+      });
+
+      // 설정 모달
+      var settingsModal = qs('settingsModal');
+
+      qs('btnOpenSettings').addEventListener('click', function(){
+        settingsModal.classList.remove('hidden');
+        qs('editPassword').value = '';
+        qs('editBank').value = (currentUser && currentUser.bank_account) ? currentUser.bank_account : '';
+      });
+
+      qs('btnCancelSettings').addEventListener('click', function(){
+        settingsModal.classList.add('hidden');
+      });
+
+      qs('btnSaveSettings').addEventListener('click', async function(){
+        var newPw = qs('editPassword').value.trim();
+        var newBank = qs('editBank').value.trim();
+
+        if (!currentUser || !currentUser.id){
+          alert('사용자 정보를 확인할 수 없습니다.');
+          return;
+        }
+
+        var payload = {};
+        if (newPw) payload.password = newPw;
+        payload.bank_account = newBank || null;
+
+        var res = await supabase
+          .from('users')
+          .update(payload)
+          .eq('id', currentUser.id)
+          .select('*')
+          .maybeSingle();
+
+        if (res.error){
+          console.error(res.error);
+          alert('정보 수정 중 오류가 발생했습니다.');
+          return;
+        }
+
+        currentUser = Object.assign({}, currentUser, res.data);
+        localStorage.setItem('neoai_current_user', JSON.stringify(currentUser));
+        fillAccountInfo(res.data);
+        settingsModal.classList.add('hidden');
+        alert('정보가 저장되었습니다.');
+      });
+
+      // 상대 시간 갱신
+      setInterval(function(){
+        if (lastUpdatedAt) updateLastUpdatedLabel();
+      }, 5000);
+
+      // 초기 실행
+      requireLogin();
+      setModeUI();
+      showTab('status');
+      loadStatus();
     });
-
-    // 주기적으로 "방금/몇 분 전" 업데이트 (UI만)
-    setInterval(() => {
-      if (lastUpdatedAt) updateLastUpdatedLabel();
-    }, 5000);
-
-    // 초기
-    requireLogin();
-    setModeUI();
-    loadStatus();
   </script>
 </body>
 </html>
-
-
-
