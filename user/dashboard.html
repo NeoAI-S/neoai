@@ -2,204 +2,524 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>NEO AI - 유저 대시보드</title>
+  <title>NEO AI 프로세서 - 대시보드</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    *{box-sizing:border-box}
-    @font-face{
-      font-family:'SUIT-Regular';
-      src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
-      font-display:swap;
+    * { box-sizing: border-box; }
+
+    /* 눈누 SUIT 웹폰트 */
+    @font-face {
+      font-family: 'SUIT-Regular';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2')
+           format('woff2');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
     }
-    body{
-      margin:0;font-family:'SUIT-Regular',system-ui,-apple-system,Segoe UI,sans-serif;color:#0f172a;
+
+    body {
+      margin: 0;
+      font-family: 'SUIT-Regular', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      color: #0f172a;
       background:
-        radial-gradient(circle at 0% 0%, rgba(129,140,248,.25), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(52,211,153,.20), transparent 55%),
-        linear-gradient(135deg,#eef2ff,#fefce8);
-      min-height:100vh;
+        radial-gradient(circle at 0% 0%, rgba(129, 140, 248, 0.25), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(52, 211, 153, 0.2), transparent 55%),
+        linear-gradient(135deg, #eef2ff, #fefce8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px 12px 28px;
     }
-    .topbar{
-      position:sticky;top:0;z-index:10;
-      background:rgba(255,255,255,.75);backdrop-filter:blur(10px);
-      border-bottom:1px solid rgba(226,232,240,.9);
-      display:flex;justify-content:space-between;align-items:center;
-      padding:14px 16px;
+
+    .shell {
+      width: 100%;
+      max-width: 1000px;
     }
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand img{height:30px;width:auto;display:block}
-    .brand .t{font-weight:900;letter-spacing:.18em}
-    .brand .t span{color:#4f46e5;letter-spacing:.24em}
-    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-    .nav button{
-      padding:8px 14px;border-radius:999px;border:1px solid transparent;background:#f3f4f6;
-      cursor:pointer;font-weight:700;font-size:13px
+
+    .frame {
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow:
+        0 20px 60px rgba(148, 163, 184, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.8);
+      padding: 18px 20px 22px;
     }
-    .nav button.active{background:#111827;color:#fff;box-shadow:0 10px 28px rgba(15,23,42,.25)}
-    .wrap{max-width:1100px;margin:18px auto;padding:0 14px 24px}
-    .card{
-      background:#fff;border:1px solid #e5e7eb;border-radius:22px;
-      box-shadow:0 16px 40px rgba(148,163,184,.22);
-      padding:18px;margin-bottom:14px;
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
     }
-    .h{font-size:18px;font-weight:900;margin:0 0 6px}
-    .sub{color:#6b7280;font-size:13px;margin:0 0 14px;line-height:1.6}
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    .box{
-      flex:1;min-width:180px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:16px;padding:14px
+
+    .logo {
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #111827;
     }
-    .lbl{font-size:12px;color:#6b7280;margin-bottom:6px}
-    .val{font-size:22px;font-weight:900}
-    .muted{color:#4b5563}
-    .pos{color:#059669;text-shadow:0 0 5px rgba(16,185,129,.25)}
-    .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:800}
-    .dot{width:8px;height:8px;border-radius:99px}
-    .wait{background:#fef3c7;border:1px solid #facc15;color:#92400e}
-    .wait .dot{background:#facc15}
-    .run{background:#dcfce7;border:1px solid #22c55e;color:#166534}
-    .run .dot{background:#22c55e}
-    .done{background:#e5e7eb;border:1px solid #9ca3af;color:#374151}
-    .done .dot{background:#6b7280}
+    .logo span {
+      color: #4f46e5;
+      font-weight: 900;
+      letter-spacing: 0.24em;
+    }
 
-    .steps{display:flex;gap:10px;flex-wrap:wrap}
-    .step{flex:1;min-width:190px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:16px;padding:12px;position:relative}
-    .step b{display:block;margin-bottom:6px}
-    .tag{position:absolute;top:10px;right:10px;font-size:10px;padding:2px 8px;border-radius:999px;background:#fff;border:1px solid #e5e7eb;color:#6b7280}
-    .step.active{background:#eef2ff;border-color:#4f46e5;box-shadow:0 0 0 1px rgba(79,70,229,.25)}
-    .step.active .tag{background:#4f46e5;border-color:#4f46e5;color:#fff}
+    .nav {
+      display: flex;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .nav button {
+      padding: 7px 15px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: #f3f4f6;
+      color: #111827;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.16s ease;
+    }
+    .nav button.active {
+      background: #111827;
+      color: #f9fafb;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.35);
+      transform: translateY(-1px);
+    }
+    .nav button:hover:not(.active) {
+      background: #e5e7eb;
+    }
 
-    .grid2{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px}
-    @media (max-width:860px){.grid2{grid-template-columns:1fr}}
-    .list{margin:0;padding:0;list-style:none;font-size:13px;color:#374151}
-    .list li{margin-bottom:8px}
+    .card {
+      border-radius: 20px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 16px 40px rgba(148, 163, 184, 0.25);
+      padding: 18px 18px 18px;
+      margin-bottom: 14px;
+    }
 
-    .hidden{display:none}
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #111827;
+    }
 
-    /* 내 정보 */
-    .acctGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-    @media (max-width:820px){.acctGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    .kv{background:#f9fafb;border:1px solid #e5e7eb;border-radius:16px;padding:12px}
-    .kv .k{font-size:12px;color:#6b7280;margin-bottom:4px}
-    .kv .v{font-weight:800}
+    .section-sub {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 14px;
+    }
 
-    .acctHead{display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .gear{border:none;background:#f3f4f6;border-radius:999px;padding:6px 10px;cursor:pointer;font-weight:800}
-    .gear:active{transform:translateY(1px)}
+    .value-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 6px;
+    }
+    .value-box {
+      flex: 1;
+      min-width: 180px;
+      padding: 14px 14px;
+      border-radius: 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+    .value-label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    .value-main {
+      font-size: 22px;
+      font-weight: 700;
+      color: #111827;
+    }
 
-    /* modal */
-    .backdrop{position:fixed;inset:0;background:rgba(15,23,42,.35);display:flex;align-items:center;justify-content:center;z-index:50}
-    .modal{width:100%;max-width:380px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 20px 50px rgba(15,23,42,.45);padding:16px}
-    .modal h3{margin:0 0 10px;font-size:16px;font-weight:900}
-    .modal label{display:block;font-size:13px;color:#374151;margin:10px 0 6px}
-    .modal input{width:100%;padding:9px 10px;border-radius:10px;border:1px solid #d1d5db;background:#f9fafb}
-    .modal input:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 1px rgba(99,102,241,.35);background:#fff}
-    .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
-    .btn{border:none;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:900}
-    .btn.gray{background:#f3f4f6}
-    .btn.blue{background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff}
+    /* 긍정적인 금액 강조 색상 */
+    .amount-positive {
+      color: #059669;
+      font-weight: 800;
+      text-shadow: 0 0 4px rgba(16, 185, 129, 0.25);
+    }
+    .amount-muted {
+      color: #4b5563;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+    }
+    .status-wait {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #facc15;
+    }
+    .status-wait .status-dot { background: #facc15; }
+    .status-run {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #22c55e;
+    }
+    .status-run .status-dot { background: #22c55e; }
+    .status-done {
+      background: #e5e7eb;
+      color: #374151;
+      border: 1px solid #9ca3af;
+    }
+    .status-done .status-dot { background: #6b7280; }
+
+    .info-text {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    /* 내 정보 카드 */
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      font-size: 13px;
+    }
+    @media (max-width: 720px) {
+      .account-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .acct-label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 2px;
+    }
+    .acct-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: #111827;
+    }
+
+    .account-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .btn-gear {
+      border: none;
+      background: #f3f4f6;
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #4b5563;
+    }
+    .btn-gear:hover {
+      background: #e5e7eb;
+    }
+
+    /* 진행 단계 카드 */
+    .steps-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .step {
+      flex: 1;
+      min-width: 160px;
+      padding: 10px 11px;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      font-size: 12px;
+      color: #4b5563;
+      position: relative;
+    }
+    .step-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #111827;
+    }
+    .step-tag {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      color: #6b7280;
+    }
+    .step.active {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.25);
+      background: #eef2ff;
+    }
+    .step.active .step-tag {
+      background: #4f46e5;
+      border-color: #4f46e5;
+      color: #e5e7eb;
+    }
+
+    /* 소개 섹션 */
+    .intro-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+    @media (max-width: 720px) {
+      .intro-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .intro-badge {
+      display: inline-flex;
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #eef2ff;
+      color: #4f46e5;
+      margin-bottom: 10px;
+    }
+    .intro-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #111827;
+    }
+    .intro-text {
+      font-size: 14px;
+      color: #4b5563;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .intro-box {
+      padding: 12px 12px;
+      border-radius: 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      margin-top: 10px;
+    }
+    .intro-box-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+    .intro-points {
+      font-size: 13px;
+      color: #374151;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .intro-points li {
+      margin-bottom: 6px;
+    }
+    .scenario-highlight {
+      font-weight: 600;
+      color: #4f46e5;
+    }
+
+    /* 설정 모달 */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+    }
+    .modal {
+      width: 100%;
+      max-width: 360px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.45);
+      border: 1px solid #e5e7eb;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .modal label {
+      display: block;
+      font-size: 13px;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      color: #374151;
+    }
+    .modal input {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      font-size: 13px;
+    }
+    .modal input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
+      background: #ffffff;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .btn-secondary, .btn-primary {
+      border-radius: 999px;
+      border: none;
+      font-size: 13px;
+      padding: 7px 14px;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #0ea5e9);
+      color: #f9fafb;
+      font-weight: 600;
+    }
+
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <img src="../logo.png" alt="NeoAI Logo" onerror="this.style.display='none'">
-      <div class="t"><span>NEO AI</span> PROCESSOR</div>
-    </div>
-    <nav class="nav">
-      <button id="tabStatus" class="active">AI 투자현황</button>
-      <button id="tabIntro">소개</button>
-      <button id="tabAccount">내 정보</button>
-      <button id="btnLogout">로그아웃</button>
-    </nav>
-  </header>
+  <div class="shell">
+    <div class="frame">
+      <header class="topbar">
+        <div class="logo"><span>NEO AI</span> PROCESSOR</div>
+        <nav class="nav">
+          <button id="tabStatus" class="active">AI 투자현황</button>
+          <button id="tabIntro">소개</button>
+          <button id="tabAccount">내 정보</button>
+          <button id="btnLogout">로그아웃</button>
+        </nav>
+      </header>
 
-  <main class="wrap">
-    <!-- AI 투자현황 탭 -->
-    <section id="secStatus">
-      <div class="card">
-        <div class="h">AI 투자현황</div>
-        <p class="sub" id="nameLine">AI 투자 진행 정보입니다.</p>
+      <!-- 1. AI 투자현황 : 예전처럼 금액 + 진행 상태 -->
+      <section id="sectionStatus" class="card">
+        <div class="section-title">AI 투자현황</div>
+        <div class="section-sub" id="nameLine"></div>
 
-        <div class="row">
-          <div class="box">
-            <div class="lbl">AI투자중인 금액</div>
-            <div class="val" id="amountText">- 원</div>
+        <div class="value-row">
+          <div class="value-box">
+            <div class="value-label">AI투자중인 금액</div>
+            <div class="value-main" id="amountText">- 원</div>
           </div>
-          <div class="box">
-            <div class="lbl">진행 상태</div>
+          <div class="value-box">
+            <div class="value-label">진행 상태</div>
             <div id="statusBadge"></div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="card">
-        <div class="h">실시간 수익 현황</div>
-        <p class="sub">네오 AI 투자 프로세서 기준, 현재 세션의 실시간 금액 정보입니다.</p>
-        <div class="row">
-          <div class="box">
-            <div class="lbl">투자중인 금액</div>
-            <div class="val muted" id="investText">- 원</div>
+      <!-- 2. 실시간 수익 현황 -->
+      <section id="sectionRealtime" class="card">
+        <div class="section-title">실시간 수익 현황</div>
+        <div class="section-sub">네오 AI 투자 프로세서 기준, 현재 세션의 실시간 금액 정보입니다.</div>
+
+        <div class="value-row">
+          <div class="value-box">
+            <div class="value-label">투자중인 금액</div>
+            <div class="value-main amount-muted" id="amountInvestText">- 원</div>
           </div>
-          <div class="box">
-            <div class="lbl">수익 실현중인 금액</div>
-            <div class="val muted" id="realizedText">- 원</div>
+          <div class="value-box">
+            <div class="value-label">수익 실현중인 금액</div>
+            <div class="value-main amount-muted" id="realizedAmountText">- 원</div>
           </div>
-          <div class="box">
-            <div class="lbl">총 금액 (투자중 + 실현)</div>
-            <div class="val muted" id="totalText">- 원</div>
+          <div class="value-box">
+            <div class="value-label">총 금액 (투자중 + 실현)</div>
+            <div class="value-main amount-muted" id="totalAmountText">- 원</div>
           </div>
         </div>
-        <p class="sub" style="margin-top:12px;margin-bottom:0">
+
+        <div class="info-text">
           투자중인 금액과 실현된 수익을 합산한 금액이 총 금액으로 표시됩니다.
-        </p>
-      </div>
+        </div>
+      </section>
 
-      <div class="card">
-        <div class="h">AI 세션 진행 단계</div>
-        <p class="sub">네오AI는 아래 3단계를 거쳐 세션을 운용합니다.</p>
-        <div class="steps">
-          <div class="step" data-step="대기중">
-            <span class="tag">READY</span>
-            <b>1단계 · 대기중</b>
-            투자금 확정 전 단계입니다.<br>투자가 확정되면 다음 단계로 이동합니다.
+      <!-- 3. AI 세션 진행 단계 -->
+      <section id="sectionStatusExtra" class="card">
+        <div class="section-title">AI 세션 진행 단계</div>
+        <div class="section-sub">
+          네오AI는 아래 3단계를 거쳐 세션을 운용합니다.
+        </div>
+
+        <div class="steps-row">
+          <div class="step" data-step="wait">
+            <div class="step-title">1단계 · 대기중</div>
+            <div class="step-tag">READY</div>
+            <div>
+              투자금 확정 전 단계입니다.<br/>
+              투자가 확정되면 다음 단계로 이동합니다.
+            </div>
           </div>
-          <div class="step" data-step="진행중">
-            <span class="tag">RUNNING</span>
-            <b>2단계 · 진행중</b>
-            설정된 금액에 맞춰 AI가 분산 투자를 수행합니다.<br>포트폴리오 구성과 비중 조정이 자동으로 이뤄집니다.
+          <div class="step" data-step="run">
+            <div class="step-title">2단계 · 진행중</div>
+            <div class="step-tag">RUNNING</div>
+            <div>
+              설정된 금액에 맞춰 AI가 분산 투자를 수행하는 구간입니다.<br/>
+              포트폴리오 구성과 비중 조정이 자동으로 이뤄집니다.
+            </div>
           </div>
-          <div class="step" data-step="진행 완료">
-            <span class="tag">COMPLETE</span>
-            <b>3단계 · 진행 완료</b>
-            투자 운용이 완료된 상태입니다.<br>수익 정산을 준비합니다.
+          <div class="step" data-step="done">
+            <div class="step-title">3단계 · 진행 완료</div>
+            <div class="step-tag">COMPLETE</div>
+            <div>
+              투자 운용이 완료된 상태입니다.<br/>
+              수익 정산을 준비합니다.
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 소개 탭 -->
-    <section id="secIntro" class="hidden">
-      <div class="card">
-        <div class="h">네오AI 소개</div>
-        <p class="sub">AI 기반 자동 투자 프로세스</p>
-
-        <div class="grid2">
+      <!-- 소개 섹션 -->
+      <section id="sectionIntro" class="card hidden">
+        <div class="intro-badge">AI 기반 자동 투자 프로세스</div>
+        <div class="intro-grid">
           <div>
-            <div class="box" style="background:#fff">
-              <b style="display:block;margin-bottom:10px;font-size:16px">네오AI, 스스로 판단하고 분산 투자하는 인공지능</b>
-              <div style="font-size:14px;line-height:1.75;color:#4b5563;white-space:pre-line">
+            <div class="intro-title">네오AI, 스스로 판단하고 분산 투자하는 인공지능</div>
+            <p class="intro-text">
 네오AI는 대량의 시장 데이터와 딥러닝 알고리즘을 활용해
 시장 흐름을 분석하고, 여러 종목과 자산군에 자동으로 분산 투자하는
 AI 투자 프로세서입니다.
 
 사용자는 투자 금액만 정하면,
 AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동으로 수행하도록 설계되어 있습니다.
-              </div>
-            </div>
+            </p>
 
-            <div class="box" style="margin-top:12px">
-              <b style="display:block;margin-bottom:8px">AI가 하는 일</b>
-              <ul class="list">
+            <div class="intro-box">
+              <div class="intro-box-title">AI가 하는 일</div>
+              <ul class="intro-points">
                 <li>· 경제 지표, 뉴스, 시황 데이터를 종합적으로 스캔</li>
                 <li>· 최대 30개 내외 종목으로 포트폴리오 자동 구성</li>
                 <li>· 최소 1일 ~ 최대 30일 단위로 세션 운용</li>
@@ -207,36 +527,43 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
               </ul>
             </div>
           </div>
-
           <div>
-            <div class="box">
-              <b style="display:block;margin-bottom:8px">투자 예시 시나리오 (전문 운영 관점)</b>
-              <div style="font-size:13.5px;line-height:1.75;color:#4b5563;white-space:pre-line">
-<b style="color:#4f46e5">예시 · 50,000원을 AI에 맡기는 경우</b>
+            <div class="intro-box">
+              <div class="intro-box-title">투자 예시 시나리오 (전문 운영 관점)</div>
+              <p class="intro-text" style="margin-top:4px;">
+<span class="scenario-highlight">예시 · 50,000원을 AI에 맡기는 경우</span>
 
-1) 세션 설정
- · 유저가 50,000원을 투자하고, 약 1일 ~ 최대 30일 AI에게 맡깁니다.
+1) <strong>세션 설정</strong>  
+ · 유저가 50,000원을 투자하고, 약 1일 ~ 최대 30일 AI에게 맡깁니다.  
  · "진행중" 상태로 전환되며, 네오AI는 해당 금액을 운용대상으로 인식합니다.
 
-2) 시장·종목 스캔
- · 네오AI는 최근 수 시간~30일간의 가격 흐름, 거래량, 변동성, 뉴스·이슈 등 데이터를 수집합니다.
+2) <strong>시장·종목 스캔</strong>  
+ · 네오AI는 최근 수 시간~30일간의 가격 흐름, 거래량, 변동성, 뉴스·이슈 등 데이터를 수집합니다.  
  · 과거 학습 데이터와 현재 시장 상황을 비교해, 효율이 높은 섹터·종목을 선별합니다.
 
-3) 포트폴리오 구성
- · 전체 50,000원 중 일부는 기본 안전 구간, 일부는 공격 구간으로 나누어 비중을 설정합니다.
+3) <strong>포트폴리오 구성</strong>  
+ · 전체 50,000원 중 일부는 기본 안전 구간, 일부는 공격 구간으로 나누어 비중을 설정합니다.  
+ · 예를 들어, 변동성이 낮은 자산 60% + 변동성이 높은 자산 40% 조합으로 10~20개 내외 종목을 선정할 수 있습니다.  
+ · 각 종목별 예상 수익·리스크에 따라 비중이 자동으로 조정됩니다.
 
-4) 세션 중 리스크 관리
- · 운용 구간 동안 실시간 가격 변화를 모니터링하며, 급격한 변동이 발생할 경우 비중을 조정합니다.
+4) <strong>세션 중 리스크 관리</strong>  
+ · 운용 구간 동안 실시간 가격 변화를 모니터링하며,  
+   사전 설정된 손실 한도 또는 급격한 변동이 발생할 경우 비중을 축소하거나 현금 비중을 늘립니다.  
+ · 과도한 집중이 발생하지 않도록, 종목당·섹터당 비중 상한을 유지합니다.
 
-5) 세션 종료 및 정산
- · 운용 구간이 종료되면 "진행 완료"로 전환됩니다.
- · 성과 데이터는 다음 세션 전략 고도화에 활용됩니다.
-              </div>
+5) <strong>세션 종료 및 정산</strong>  
+ · 운용 구간이 종료되면, 해당 세션은 "진행 완료" 상태로 전환됩니다.  
+ · 포트폴리오 전체 평가금액이 계산되고, 수익 결과가 정리됩니다.  
+ · 이때의 성과 데이터는 다음 세션의 전략 고도화에 사용되며, 어떤 조건·종목 조합이 유리했는지 재학습에 반영됩니다.
+
+이 과정에서 유저는 투자 금액과 세션 운용 여부만 확인하고,  
+실제 종목 선택·비중 조정·리스크 관리는 모두 네오AI가 담당하는 구조입니다.
+              </p>
             </div>
 
-            <div class="box" style="margin-top:12px">
-              <b style="display:block;margin-bottom:8px">이런 분께 적합합니다</b>
-              <ul class="list">
+            <div class="intro-box" style="margin-top:10px;">
+              <div class="intro-box-title">이런 분께 적합합니다</div>
+              <ul class="intro-points">
                 <li>· 세부 종목 선택보다는 전체 전략·결과에 집중하고 싶은 분</li>
                 <li>· 단기 구간별(1일 ~ 최대 30일) 운용을 선호하는 분</li>
                 <li>· AI 기반 의사결정과 분산 투자를 한 번에 경험해 보고 싶은 분</li>
@@ -244,66 +571,80 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 내 정보 탭 -->
-    <section id="secAccount" class="hidden">
-      <div class="card">
-        <div class="acctHead">
+      <!-- 내 정보 섹션 -->
+      <section id="sectionAccount" class="card hidden">
+        <div class="account-header-row">
           <div>
-            <div class="h">내 정보</div>
-            <p class="sub" style="margin-bottom:0">네오 AI 투자 프로세서에서 사용하는 기본 회원 정보입니다.</p>
+            <div class="section-title">내 정보</div>
+            <div class="section-sub">네오 AI 투자 프로세서에서 사용하는 기본 회원 정보입니다.</div>
           </div>
-          <button class="gear" id="btnOpen">⚙ 설정</button>
+          <button class="btn-gear" id="btnOpenSettings">⚙ 설정</button>
         </div>
 
-        <div class="acctGrid" style="margin-top:14px">
-          <div class="kv"><div class="k">이름</div><div class="v" id="acctName">-</div></div>
-          <div class="kv"><div class="k">아이디</div><div class="v" id="acctUsername">-</div></div>
-          <div class="kv"><div class="k">휴대폰</div><div class="v" id="acctPhone">-</div></div>
-          <div class="kv"><div class="k">투자중인 금액</div><div class="v" id="acctAmount">-</div></div>
-          <div class="kv"><div class="k">수익 실현중인 금액</div><div class="v" id="acctRealized">-</div></div>
-          <div class="kv"><div class="k">출금 계좌</div><div class="v" id="acctBank">-</div></div>
+        <div class="account-grid">
+          <div>
+            <div class="acct-label">이름</div>
+            <div class="acct-value" id="acctName">-</div>
+          </div>
+          <div>
+            <div class="acct-label">아이디</div>
+            <div class="acct-value" id="acctUsername">-</div>
+          </div>
+          <div>
+            <div class="acct-label">휴대폰</div>
+            <div class="acct-value" id="acctPhone">-</div>
+          </div>
+          <div>
+            <div class="acct-label">투자중인 금액</div>
+            <div class="acct-value" id="acctAmount">-</div>
+          </div>
+          <div>
+            <div class="acct-label">수익 실현중인 금액</div>
+            <div class="acct-value" id="acctRealized">-</div>
+          </div>
+          <div>
+            <div class="acct-label">출금 계좌</div>
+            <div class="acct-value" id="acctBank">-</div>
+          </div>
         </div>
 
-        <p class="sub" style="margin-top:12px;margin-bottom:0">
-          출금 계좌는 본인 확인 및 출금 처리 시에만 사용됩니다.
-        </p>
+        <div class="info-text" style="margin-top:12px;">
+          출금 계좌는 본인 확인 및 출금 처리 시에만 사용되며, 관리자 페이지에서만 조회·관리됩니다.
+        </div>
+      </section>
+
+      <!-- 설정 모달 -->
+      <div id="settingsModal" class="modal-backdrop hidden">
+        <div class="modal">
+          <div class="modal-title">내 정보 수정</div>
+          <p class="section-sub" style="margin-bottom:4px;">
+            비밀번호와 출금 계좌 정보를 변경할 수 있습니다.
+          </p>
+
+          <label for="editPassword">새 비밀번호</label>
+          <input type="password" id="editPassword" placeholder="변경하지 않으려면 비워두세요" />
+
+          <label for="editBank">출금 계좌</label>
+          <input type="text" id="editBank" placeholder="예: 국민 123456-01-123456" />
+
+          <div class="modal-actions">
+            <button class="btn-secondary" id="btnCancelSettings">취소</button>
+            <button class="btn-primary" id="btnSaveSettings">저장하기</button>
+          </div>
+        </div>
       </div>
-    </section>
-  </main>
 
-  <!-- 설정 모달 -->
-  <div id="modalWrap" class="backdrop hidden">
-    <div class="modal">
-      <h3>내 정보 수정</h3>
-      <div class="sub" style="margin-top:-4px">비밀번호와 출금 계좌 정보를 변경할 수 있습니다.</div>
-
-      <label for="newPw">새 비밀번호</label>
-      <input id="newPw" type="password" placeholder="변경하지 않으려면 비워두세요">
-
-      <label for="newBank">출금 계좌</label>
-      <input id="newBank" type="text" placeholder="예: 국민 123456-01-123456">
-
-      <div class="actions">
-        <button class="btn gray" id="btnClose">취소</button>
-        <button class="btn blue" id="btnSave">저장</button>
-      </div>
     </div>
   </div>
 
+  <!-- Supabase + 대시보드 로직 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ✅ repo base 자동 계산 (/neoai/)
-    const parts = location.pathname.split('/').filter(Boolean);
-    const repo = parts[0] || '';
-    const BASE = repo ? `/${repo}/` : '/';
-
-    // ✅ 네가 나중에 바꿀 것
-    const SUPABASE_URL = "네_수파베이스_URL";
-    const SUPABASE_KEY = "네_퍼블리시_키";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
+    const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     let currentUser = null;
 
@@ -311,156 +652,272 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
       const raw = localStorage.getItem('neoai_current_user');
       if (!raw) {
         alert('로그인이 필요합니다.');
-        location.replace(BASE + 'user/login.html');
-        return false;
+        window.location.href = 'index.html';
+        return;
       }
       try {
         currentUser = JSON.parse(raw);
-        return true;
       } catch {
         localStorage.removeItem('neoai_current_user');
-        location.replace(BASE + 'user/login.html');
-        return false;
+        window.location.href = 'index.html';
       }
     }
 
-    function formatWon(n){
-      if (n == null || isNaN(n)) return '- 원';
-      return Number(n).toLocaleString('ko-KR') + ' 원';
+    function formatAmount(value) {
+      if (value == null || isNaN(value)) return '- 원';
+      return Number(value).toLocaleString('ko-KR') + ' 원';
     }
 
-    function renderStatus(status){
-      const box = document.getElementById('statusBadge');
-      const s = status || '대기중';
-      let cls = 'wait', label = '대기중';
-      if (s === '진행중') { cls='run'; label='진행중'; }
-      if (s === '진행 완료') { cls='done'; label='진행 완료'; }
-      box.innerHTML = `<span class="pill ${cls}"><span class="dot"></span>${label}</span>`;
+    function maskPhone(phone) {
+      if (!phone) return '-';
+      const digits = phone.replace(/[^0-9]/g, '');
+      if (digits.length < 8) return phone;
+      const head = digits.slice(0, 3);
+      const tail = digits.slice(-4);
+      return `${head}-****-${tail}`;
+    }
 
-      document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-      const target = document.querySelector(`.step[data-step="${label}"]`);
+    function renderStatus(status) {
+      const badge = document.getElementById('statusBadge');
+      badge.innerHTML = '';
+
+      const wrapper = document.createElement('span');
+      wrapper.classList.add('status-pill');
+      const dot = document.createElement('span');
+      dot.classList.add('status-dot');
+      const text = document.createElement('span');
+
+      if (!status || status === '대기중') {
+        wrapper.classList.add('status-wait');
+        text.textContent = '대기중';
+      } else if (status === '진행중') {
+        wrapper.classList.add('status-run');
+        text.textContent = '진행중';
+      } else {
+        wrapper.classList.add('status-done');
+        text.textContent = '진행 완료';
+      }
+
+      wrapper.appendChild(dot);
+      wrapper.appendChild(text);
+      badge.appendChild(wrapper);
+    }
+
+    function renderSteps(status) {
+      const steps = document.querySelectorAll('.step');
+      steps.forEach(step => step.classList.remove('active'));
+
+      let key = 'wait';
+      if (status === '진행중') key = 'run';
+      else if (status === '진행 완료') key = 'done';
+
+      const target = document.querySelector(`.step[data-step="${key}"]`);
       if (target) target.classList.add('active');
     }
 
-    async function loadData(){
-      const displayName = (currentUser?.name || currentUser?.username || '');
-      document.getElementById('nameLine').textContent =
-        displayName ? `${displayName}님의 AI 투자 진행 정보입니다.` : 'AI 투자 진행 정보입니다.';
+    function fillAccountInfo(userFromDb) {
+      const merged = { ...currentUser, ...userFromDb };
 
-      const { data, error } = await supabase
-        .from('users')
-        .select('id, username, name, phone, amount, realized_amount, status, bank_account')
-        .eq('id', currentUser.id)
-        .maybeSingle();
+      document.getElementById('acctName').textContent =
+        merged.name || '-';
+      document.getElementById('acctUsername').textContent =
+        merged.username || '-';
+      document.getElementById('acctPhone').textContent =
+        merged.phone ? maskPhone(merged.phone) : '-';
+      document.getElementById('acctAmount').textContent =
+        formatAmount(merged.amount || 0);
+      document.getElementById('acctRealized').textContent =
+        formatAmount(merged.realized_amount || 0);
+      document.getElementById('acctBank').textContent =
+        merged.bank_account || '-';
+    }
 
-      if (error) console.error(error);
+    async function loadStatus() {
+      const nameLine   = document.getElementById('nameLine');
+      const amountText = document.getElementById('amountText');
+      const investEl   = document.getElementById('amountInvestText');
+      const realizedEl = document.getElementById('realizedAmountText');
+      const totalEl    = document.getElementById('totalAmountText');
 
-      if (!data){
-        // 최소 표시
-        document.getElementById('amountText').textContent = '- 원';
-        renderStatus('대기중');
-        return;
+      const displayName =
+        (currentUser && (currentUser.name || currentUser.username)) || '';
+
+      if (displayName) {
+        nameLine.textContent =
+          `${displayName}님의 AI 투자 진행 정보입니다.`;
+      } else {
+        nameLine.textContent = 'AI 투자 진행 정보입니다.';
       }
 
-      // 상단 투자현황
-      document.getElementById('amountText').textContent = formatWon(data.amount || 0);
-      renderStatus(data.status || '대기중');
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('username', currentUser.username)
+          .maybeSingle();
 
-      // 실시간 수익 현황
-      const amount = Number(data.amount || 0);
-      const realized = Number(data.realized_amount || 0);
-      const total = amount + realized;
+        if (error) {
+          console.error('Supabase error:', error);
+        }
 
-      const investEl = document.getElementById('investText');
-      const realizedEl = document.getElementById('realizedText');
-      const totalEl = document.getElementById('totalText');
+        if (!data) {
+          amountText.textContent   = '- 원';
+          investEl.textContent     = '- 원';
+          realizedEl.textContent   = '- 원';
+          totalEl.textContent      = '- 원';
+          [investEl, realizedEl, totalEl].forEach(el => {
+            el.classList.add('amount-muted');
+            el.classList.remove('amount-positive');
+          });
+          renderStatus('대기중');
+          renderSteps('대기중');
+          fillAccountInfo({});
+          return;
+        }
 
-      investEl.textContent = formatWon(amount);
-      realizedEl.textContent = formatWon(realized);
-      totalEl.textContent = formatWon(total);
+        const amount   = Number(data.amount || 0);
+        const realized = Number(data.realized_amount || 0);
+        const total    = amount + realized;
 
-      // 색상 강조
-      investEl.className = 'val muted';
-      realizedEl.className = 'val ' + (realized > 0 ? 'pos' : 'muted');
-      totalEl.className = 'val ' + (total > 0 ? 'pos' : 'muted');
+        // 상단 카드 금액
+        amountText.textContent = formatAmount(amount);
 
-      // 내 정보
-      document.getElementById('acctName').textContent = data.name || '-';
-      document.getElementById('acctUsername').textContent = data.username || '-';
-      document.getElementById('acctPhone').textContent = data.phone || '-';
-      document.getElementById('acctAmount').textContent = formatWon(amount);
-      document.getElementById('acctRealized').textContent = formatWon(realized);
-      document.getElementById('acctBank').textContent = data.bank_account || '-';
+        // 가운데 카드 금액들
+        investEl.textContent   = formatAmount(amount);
+        realizedEl.textContent = formatAmount(realized);
+        totalEl.textContent    = formatAmount(total);
 
-      // localStorage 갱신(설정 저장 시 id 보장)
-      currentUser = { ...currentUser, ...data };
-      localStorage.setItem('neoai_current_user', JSON.stringify(currentUser));
+        [investEl, realizedEl, totalEl].forEach(el => {
+          el.classList.remove('amount-muted', 'amount-positive');
+        });
+        investEl.classList.add('amount-muted');
+        realizedEl.classList.add(realized > 0 ? 'amount-positive' : 'amount-muted');
+        totalEl.classList.add(total > 0 ? 'amount-positive' : 'amount-muted');
+
+        renderStatus(data.status);
+        renderSteps(data.status);
+        fillAccountInfo(data);
+      } catch (e) {
+        console.error('JS error:', e);
+        amountText.textContent   = '- 원';
+        investEl.textContent     = '- 원';
+        realizedEl.textContent   = '- 원';
+        totalEl.textContent      = '- 원';
+        [investEl, realizedEl, totalEl].forEach(el => {
+          el.classList.add('amount-muted');
+          el.classList.remove('amount-positive');
+        });
+        renderStatus('대기중');
+        renderSteps('대기중');
+        fillAccountInfo({});
+      }
     }
 
-    // 탭
-    const tabStatus = document.getElementById('tabStatus');
-    const tabIntro = document.getElementById('tabIntro');
-    const tabAccount = document.getElementById('tabAccount');
+    // 탭 전환
+    const tabStatus      = document.getElementById('tabStatus');
+    const tabIntro       = document.getElementById('tabIntro');
+    const tabAccount     = document.getElementById('tabAccount');
+    const sectionStatus      = document.getElementById('sectionStatus');
+    const sectionRealtime    = document.getElementById('sectionRealtime');
+    const sectionStatusExtra = document.getElementById('sectionStatusExtra');
+    const sectionIntro       = document.getElementById('sectionIntro');
+    const sectionAccount     = document.getElementById('sectionAccount');
 
-    const secStatus = document.getElementById('secStatus');
-    const secIntro = document.getElementById('secIntro');
-    const secAccount = document.getElementById('secAccount');
+    tabStatus.addEventListener('click', () => {
+      tabStatus.classList.add('active');
+      tabIntro.classList.remove('active');
+      tabAccount.classList.remove('active');
 
-    function setActive(which){
-      [tabStatus, tabIntro, tabAccount].forEach(b => b.classList.remove('active'));
-      [secStatus, secIntro, secAccount].forEach(s => s.classList.add('hidden'));
-      if (which === 'status') { tabStatus.classList.add('active'); secStatus.classList.remove('hidden'); }
-      if (which === 'intro') { tabIntro.classList.add('active'); secIntro.classList.remove('hidden'); }
-      if (which === 'account') { tabAccount.classList.add('active'); secAccount.classList.remove('hidden'); }
-    }
-    tabStatus.onclick = () => setActive('status');
-    tabIntro.onclick = () => setActive('intro');
-    tabAccount.onclick = () => setActive('account');
+      sectionStatus.classList.remove('hidden');
+      sectionRealtime.classList.remove('hidden');
+      sectionStatusExtra.classList.remove('hidden');
+      sectionIntro.classList.add('hidden');
+      sectionAccount.classList.add('hidden');
+    });
+
+    tabIntro.addEventListener('click', () => {
+      tabIntro.classList.add('active');
+      tabStatus.classList.remove('active');
+      tabAccount.classList.remove('active');
+
+      sectionIntro.classList.remove('hidden');
+      sectionStatus.classList.add('hidden');
+      sectionRealtime.classList.add('hidden');
+      sectionStatusExtra.classList.add('hidden');
+      sectionAccount.classList.add('hidden');
+    });
+
+    tabAccount.addEventListener('click', () => {
+      tabAccount.classList.add('active');
+      tabStatus.classList.remove('active');
+      tabIntro.classList.remove('active');
+
+      sectionAccount.classList.remove('hidden');
+      sectionStatus.classList.add('hidden');
+      sectionRealtime.classList.add('hidden');
+      sectionStatusExtra.classList.add('hidden');
+      sectionIntro.classList.add('hidden');
+    });
 
     // 로그아웃
-    document.getElementById('btnLogout').onclick = () => {
+    document.getElementById('btnLogout').addEventListener('click', () => {
       localStorage.removeItem('neoai_current_user');
       alert('로그아웃 되었습니다.');
-      location.replace(BASE + 'user/login.html');
-    };
+      window.location.href = 'index.html';
+    });
 
-    // 설정 모달
-    const modalWrap = document.getElementById('modalWrap');
-    document.getElementById('btnOpen').onclick = () => {
-      document.getElementById('newPw').value = '';
-      document.getElementById('newBank').value = currentUser?.bank_account || '';
-      modalWrap.classList.remove('hidden');
-    };
-    document.getElementById('btnClose').onclick = () => modalWrap.classList.add('hidden');
+    // 설정 모달 로직
+    const settingsModal     = document.getElementById('settingsModal');
+    const btnOpenSettings   = document.getElementById('btnOpenSettings');
+    const btnCancelSettings = document.getElementById('btnCancelSettings');
+    const btnSaveSettings   = document.getElementById('btnSaveSettings');
 
-    document.getElementById('btnSave').onclick = async () => {
-      const pw = document.getElementById('newPw').value.trim();
-      const bank = document.getElementById('newBank').value.trim();
+    btnOpenSettings.addEventListener('click', () => {
+      settingsModal.classList.remove('hidden');
+      document.getElementById('editPassword').value = '';
+      document.getElementById('editBank').value =
+        (currentUser && currentUser.bank_account) || '';
+    });
+
+    btnCancelSettings.addEventListener('click', () => {
+      settingsModal.classList.add('hidden');
+    });
+
+    btnSaveSettings.addEventListener('click', async () => {
+      const newPw   = document.getElementById('editPassword').value.trim();
+      const newBank = document.getElementById('editBank').value.trim();
 
       const payload = {};
-      if (pw) payload.password = pw;
-      payload.bank_account = bank || null;
+      if (newPw) payload.password = newPw;
+      payload.bank_account = newBank || null;
+
+      if (!currentUser || !currentUser.id) {
+        alert('사용자 정보를 확인할 수 없습니다.');
+        return;
+      }
 
       const { data, error } = await supabase
         .from('users')
         .update(payload)
         .eq('id', currentUser.id)
-        .select('id, username, name, phone, amount, realized_amount, status, bank_account')
+        .select('*')
         .maybeSingle();
 
       if (error) {
         console.error(error);
-        alert('저장 중 오류가 발생했습니다.');
+        alert('정보 수정 중 오류가 발생했습니다.');
         return;
       }
-      modalWrap.classList.add('hidden');
+
       currentUser = { ...currentUser, ...data };
       localStorage.setItem('neoai_current_user', JSON.stringify(currentUser));
-      await loadData();
-      alert('저장되었습니다.');
-    };
+      fillAccountInfo(data);
+      settingsModal.classList.add('hidden');
+      alert('정보가 저장되었습니다.');
+    });
 
-    if (requireLogin()) loadData();
+    requireLogin();
+    loadStatus();
   </script>
 </body>
 </html>
