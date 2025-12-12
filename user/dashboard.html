@@ -142,6 +142,46 @@
       color: #6b7280;
       margin-bottom: 4px;
     }
+    .timeline-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid #e5e7eb;
+  background:#f9fafb;
+}
+.timeline-left{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+}
+.timeline-time{
+  font-size:12px;
+  color:#6b7280;
+}
+.timeline-msg{
+  font-size:13px;
+  font-weight:800;
+  color:#111827;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.timeline-delta{
+  font-size:13px;
+  font-weight:900;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid transparent;
+  white-space:nowrap;
+}
+.timeline-up{ background:#fee2e2; color:#dc2626; border-color:#fecaca; }
+.timeline-down{ background:#dbeafe; color:#2563eb; border-color:#bfdbfe; }
+.timeline-same{ background:#e5e7eb; color:#6b7280; border-color:#d1d5db; }
+
 
     /* ✅ 숫자+배지 분리(카운트업 충돌 방지) */
     .value-main {
@@ -468,6 +508,13 @@
           </div>
           <canvas id="profitChart" width="920" height="160"></canvas>
         </div>
+        <div class="chart-wrap" style="margin-top:12px;">
+  <div class="chart-title-row">
+    <div class="chart-title" id="timelineTitle">수익 로그 (오늘)</div>
+    <span class="last-updated" id="timelineHint">최근 기록</span>
+  </div>
+  <div id="profitTimeline" style="display:flex; flex-direction:column; gap:8px;"></div>
+</div>
 
         <div class="info-text">
           오늘 수익은 <b>00시</b> 기준으로 계산됩니다.
@@ -633,8 +680,18 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    let currentUser = null;
+    let rtChannel = null;
+let rtDebounceTimer = null;
 
+function rtTriggerReload(reason = '') {
+  // 같은 순간에 INSERT/UPDATE가 연달아 올 수 있어서 디바운스
+  clearTimeout(rtDebounceTimer);
+  rtDebounceTimer = setTimeout(() => {
+    // 필요하면 콘솔로 이유 확인 가능
+    // console.log('[Realtime] reload by', reason);
+    loadStatus();
+  }, 250);
+}
     /* =========================
       상태 변수
     ========================= */
@@ -654,6 +711,99 @@ AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동�
     /* =========================
       유틸
     ========================= */
+    function subscribeRealtime(userRow) {
+  try {
+    // 기존 채널 있으면 정리
+    if (rtChannel) {
+      supabase.removeChannel(rtChannel);
+      rtChannel = null;
+    }
+
+    const userId = userRow.id;
+
+    rtChannel = supabase
+      .channel('neoai-rt-' + userId)
+      // 1) profit_logs 새 수익 발생 감지 (INSERT)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'profit_logs', filter: `user_id=eq.${userId}` },
+        (payload) => {
+          rtTriggerReload('profit_logs INSERT');
+        }
+      )
+      // 2) users 업데이트 감지 (status, realized_amount, amount 등)
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'users', filter: `id=eq.${userId}` },
+        (payload) => {
+          rtTriggerReload('users UPDATE');
+        }
+      )
+      .subscribe((status) => {
+        // console.log('[Realtime] status:', status);
+      });
+  } catch (e) {
+    console.warn('Realtime subscribe failed:', e);
+  }
+}
+    function formatKST(isoString) {
+  try {
+    const d = new Date(isoString);
+    // 일본/한국 모두 +9라서 표시용으로 ko-KR 사용
+    return d.toLocaleString('ko-KR', { hour12:false });
+  } catch (e) {
+    return isoString || '-';
+  }
+}
+
+function renderTimeline(logs) {
+  const wrap = document.getElementById('profitTimeline');
+  const title = document.getElementById('timelineTitle');
+  const hint = document.getElementById('timelineHint');
+
+  if (!wrap) return;
+
+  title.textContent = (profitMode === 'today') ? '수익 로그 (오늘)' : '수익 로그 (최근 60건)';
+  hint.textContent = (logs && logs.length) ? `총 ${logs.length}건` : '기록 없음';
+
+  wrap.innerHTML = '';
+
+  if (!Array.isArray(logs) || logs.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'timeline-item';
+    empty.innerHTML = `
+      <div class="timeline-left">
+        <div class="timeline-time">-</div>
+        <div class="timeline-msg">아직 수익 로그가 없습니다.</div>
+      </div>
+      <div class="timeline-delta timeline-same">-</div>
+    `;
+    wrap.appendChild(empty);
+    return;
+  }
+
+  // 최신이 위로 보이게
+  const arr = [...logs].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+
+  arr.slice(0, 20).forEach((r) => { // 일단 UI는 20개만(원하면 늘리면 됨)
+    const delta = Number(r.amount_delta || 0);
+    const item = document.createElement('div');
+    item.className = 'timeline-item';
+
+    const cls = delta > 0 ? 'timeline-up' : (delta < 0 ? 'timeline-down' : 'timeline-same');
+    const sign = delta > 0 ? '▲' : (delta < 0 ? '▼' : '–');
+    const txt = `${sign} ${Math.abs(delta).toLocaleString('ko-KR')}원`;
+
+    item.innerHTML = `
+      <div class="timeline-left">
+        <div class="timeline-time">${formatKST(r.created_at)}</div>
+        <div class="timeline-msg">${delta > 0 ? '수익 발생' : (delta < 0 ? '손실 발생' : '변동 없음')}</div>
+      </div>
+      <div class="timeline-delta ${cls}">${txt}</div>
+    `;
+    wrap.appendChild(item);
+  });
+}
     function formatAmount(value) {
   if (value == null || isNaN(value)) return '- 원';
   return Number(value).toLocaleString('ko-KR') + ' 원';
@@ -1003,6 +1153,8 @@ function renderDeltaBadge(badgeEl, delta, idForPersist) {
 
         if (userErr) throw userErr;
         if (!userRow) throw new Error('users 테이블에서 사용자 데이터를 찾을 수 없습니다.');
+        // ✅ Realtime 구독 (현재 유저 row 기준)
+subscribeRealtime(userRow);
 
         // users 값
         const amount = Number(userRow.amount || 0);
@@ -1013,6 +1165,9 @@ function renderDeltaBadge(badgeEl, delta, idForPersist) {
         const todayLogs = await fetchProfitLogsForToday(userRow.id);
         const todayProfit = todayLogs.reduce((sum, r) => sum + Number(r.amount_delta || 0), 0);
 
+        // ✅ 타임라인 (오늘/누적에 맞춰 표시)
+renderTimeline(profitMode === 'today' ? todayLogs : recentLogs);
+        
         const recentLogs = await fetchProfitLogsRecent(userRow.id, 60);
 
         // 보여줄 realized
@@ -1266,9 +1421,15 @@ renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
     setModeUI();
     showTab('status');
     loadStatus();
+    window.addEventListener('beforeunload', () => {
+  try {
+    if (rtChannel) supabase.removeChannel(rtChannel);
+  } catch (e) {}
+});
   </script>
 </body>
 </html>
+
 
 
 
