@@ -1175,10 +1175,6 @@ const realizedShown = (profitMode === 'today') ? todayProfit : realizedTotal;
 // ✅ 타임라인은 recentLogs 선언 이후에!
 renderTimeline(profitMode === 'today' ? todayLogs : recentLogs);
         
-        const recentLogs = await fetchProfitLogsRecent(userRow.id, 60);
-
-        // 보여줄 realized
-        const realizedShown = (profitMode === 'today') ? todayProfit : realizedTotal;
 
         // DOM 참조(숫자/배지)
         const amountNum = document.getElementById('amountNum');
@@ -1436,6 +1432,7 @@ renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
   </script>
 </body>
 </html>
+
 
 
 
