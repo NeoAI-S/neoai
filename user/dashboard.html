@@ -712,6 +712,9 @@ function rtTriggerReload(reason = '') {
       유틸
     ========================= */
     function subscribeRealtime(userRow) {
+      const userId = userRow.id;
+if (rtChannel && rtSubscribedUserId === userId) return;
+rtSubscribedUserId = userId;
   try {
     // 기존 채널 있으면 정리
     if (rtChannel) {
@@ -741,8 +744,9 @@ function rtTriggerReload(reason = '') {
         }
       )
       .subscribe((status) => {
-        // console.log('[Realtime] status:', status);
-      });
+  console.log('[Realtime] subscribe status:', status);
+});
+
   } catch (e) {
     console.warn('Realtime subscribe failed:', e);
   }
@@ -1156,6 +1160,8 @@ function renderDeltaBadge(badgeEl, delta, idForPersist) {
         if (!userRow) throw new Error('users 테이블에서 사용자 데이터를 찾을 수 없습니다.');
         subscribeRealtime(userRow);
 
+        let rtSubscribedUserId = null;
+
         // users 값
         const amount = Number(userRow.amount || 0);
         const realizedTotal = Number(userRow.realized_amount || 0);
@@ -1432,6 +1438,7 @@ renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
   </script>
 </body>
 </html>
+
 
 
 
