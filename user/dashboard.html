@@ -5,7 +5,6 @@
   <title>NEO AI 프로세서 - 대시보드</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- ✅ favicon -->
   <link rel="icon" type="image/png" href="./favicon.png" />
   <link rel="apple-touch-icon" href="./favicon.png" />
 
@@ -143,6 +142,26 @@
       margin-bottom: 4px;
     }
 
+    .value-main {
+      font-size: 22px;
+      font-weight: 900;
+      color: #111827;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+    .value-main .num { display:inline-block; }
+    .value-main .badge { display:inline-flex; }
+
+    .amount-positive {
+      color: #059669;
+      font-weight: 900;
+      text-shadow: 0 0 4px rgba(16, 185, 129, 0.25);
+    }
+    .amount-muted { color: #4b5563; }
+
     /* 타임라인 */
     .timeline-item{
       display:flex;
@@ -184,27 +203,7 @@
     .timeline-down{ background:#dbeafe; color:#2563eb; border-color:#bfdbfe; }
     .timeline-same{ background:#e5e7eb; color:#6b7280; border-color:#d1d5db; }
 
-    /* 숫자+배지 분리 */
-    .value-main {
-      font-size: 22px;
-      font-weight: 900;
-      color: #111827;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      line-height: 1.1;
-      white-space: nowrap;
-    }
-    .value-main .num { display:inline-block; }
-    .value-main .badge { display:inline-flex; }
-
-    .amount-positive {
-      color: #059669;
-      font-weight: 900;
-      text-shadow: 0 0 4px rgba(16, 185, 129, 0.25);
-    }
-    .amount-muted { color: #4b5563; }
-
+    /* 펄스 / 글로우 / 스윕 */
     .pulse-up { animation: pulseUp 700ms ease-out 1; }
     .pulse-down { animation: pulseDown 700ms ease-out 1; }
     @keyframes pulseUp {
@@ -244,6 +243,7 @@
     .sweep-down::after{ background: linear-gradient(90deg, transparent, rgba(59,130,246,.22), transparent); }
     @keyframes sweep { to { transform: translateX(120%); } }
 
+    /* 스켈레톤 */
     .skeleton::after{
       content:'';
       position:absolute;
@@ -261,6 +261,7 @@
       100%{ transform: translateX(100%); }
     }
 
+    /* 미니 증감 배지 */
     .delta-badge{
       font-size: 11px;
       padding: 2px 8px;
@@ -278,6 +279,7 @@
     .delta-down{ background:#dbeafe; color:#2563eb; border-color:#bfdbfe; }
     .delta-same{ background:#e5e7eb; color:#6b7280; border-color:#d1d5db; }
 
+    /* 상태 뱃지 */
     .status-pill {
       display: inline-flex;
       align-items: center;
@@ -301,6 +303,7 @@
       line-height: 1.6;
     }
 
+    /* 진행 단계 */
     .steps-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
     .step { flex:1; min-width:160px; padding:10px 11px; border-radius:14px; border:1px solid #e5e7eb; background:#f9fafb; font-size:12px; color:#4b5563; position:relative; }
     .step-title { font-size:13px; font-weight:800; margin-bottom:4px; color:#111827; }
@@ -308,6 +311,7 @@
     .step.active { border-color:#4f46e5; box-shadow: 0 0 0 1px rgba(79,70,229,0.25); background:#eef2ff; }
     .step.active .step-tag { background:#4f46e5; border-color:#4f46e5; color:#e5e7eb; }
 
+    /* 실시간 카드 헤더 */
     .card-head-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:8px; flex-wrap:wrap; }
     .mini-actions{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
     .last-updated{ font-size:12px; color:#6b7280; }
@@ -341,12 +345,56 @@
     .error-inline{ margin-top:10px; font-size:12px; color:#b91c1c; display:none; }
     .error-inline.show{ display:block; }
 
+    /* 그래프 */
     .chart-wrap{ margin-top:12px; padding:12px; border-radius:16px; border:1px solid #e5e7eb; background:#ffffff; }
     .chart-title-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap; }
     .chart-title{ font-size:13px; font-weight:900; color:#111827; }
     canvas{ width:100%; height:120px; display:block; }
 
     .hidden { display:none; }
+
+    /* 소개 */
+    .intro-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; }
+    @media (max-width: 720px) { .intro-grid { grid-template-columns: minmax(0, 1fr); } }
+    .intro-badge { display:inline-flex; padding:4px 11px; border-radius:999px; font-size:11px; background:#eef2ff; color:#4f46e5; margin-bottom:10px; }
+    .intro-title { font-size:18px; font-weight:900; margin-bottom:8px; color:#111827; }
+    .intro-text { font-size:14px; color:#4b5563; line-height:1.7; white-space:pre-line; }
+    .intro-box { padding:12px; border-radius:16px; background:#f9fafb; border:1px solid #e5e7eb; margin-top:10px; }
+    .intro-box-title { font-size:14px; font-weight:800; margin-bottom:6px; color:#111827; }
+    .intro-points { font-size:13px; color:#374151; list-style:none; padding:0; margin:0; }
+    .intro-points li { margin-bottom:6px; }
+    .scenario-highlight { font-weight:900; color:#4f46e5; }
+
+    /* 내정보 */
+    .account-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:10px; font-size:13px; }
+    @media (max-width: 720px) { .account-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    .acct-label { font-size:12px; color:#6b7280; margin-bottom:2px; }
+    .acct-value { font-size:14px; font-weight:600; color:#111827; }
+    .account-header-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:10px; }
+    .btn-gear { border:none; background:#f3f4f6; border-radius:999px; padding:5px 8px; font-size:11px; cursor:pointer; color:#4b5563; }
+    .btn-gear:hover { background:#e5e7eb; }
+
+    /* 모달 */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.35);
+      display: flex; justify-content: center; align-items: center; z-index: 50;
+    }
+    .modal {
+      width: 100%; max-width: 360px; background: #ffffff; border-radius: 18px;
+      padding: 18px 18px 16px; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.45);
+      border: 1px solid #e5e7eb;
+    }
+    .modal-title { font-size: 16px; font-weight: 900; margin-bottom: 10px; }
+    .modal label { display: block; font-size: 13px; margin-top: 10px; margin-bottom: 4px; color: #374151; }
+    .modal input {
+      width: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid #d1d5db;
+      background: #f9fafb; font-size: 13px;
+    }
+    .modal input:focus { outline:none; border-color:#6366f1; box-shadow:0 0 0 1px rgba(99, 102, 241, 0.4); background:#fff; }
+    .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:14px; }
+    .btn-secondary, .btn-primary { border-radius:999px; border:none; font-size:13px; padding:7px 14px; cursor:pointer; }
+    .btn-secondary { background:#f3f4f6; color:#374151; }
+    .btn-primary { background: linear-gradient(135deg, #6366f1, #0ea5e9); color:#f9fafb; font-weight:900; }
 
     @media (max-width: 640px) {
       .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
@@ -444,18 +492,15 @@
           <canvas id="profitChart" width="920" height="160"></canvas>
         </div>
 
-        <!-- ✅ 수익 로그(접기/펼치기) -->
+        <!-- 수익 로그 -->
         <div class="chart-wrap" style="margin-top:12px;">
           <div class="chart-title-row">
             <div class="chart-title" id="timelineTitle">수익 로그 (오늘)</div>
-
             <div style="display:flex; align-items:center; gap:8px;">
               <span class="last-updated" id="timelineHint">최근 기록</span>
               <button id="btnToggleTimeline" class="btn-refresh" type="button">펼치기</button>
             </div>
           </div>
-
-          <!-- ✅ 여기 반드시 있어야 renderTimeline이 그릴 수 있음 -->
           <div id="profitTimeline" style="display:flex; flex-direction:column; gap:8px;"></div>
         </div>
 
@@ -493,11 +538,119 @@
         </div>
       </section>
 
-      <!-- 소개 / 내정보 섹션(원본 유지 - 너가 준 코드 그대로라 길어서 생략 없이 유지 가능) -->
-      <!-- 네가 올린 코드에 있던 sectionIntro, sectionAccount, settingsModal 부분은 그대로 둬도 됨 -->
-      <!-- 여기서부터는 네가 준 원본이 너무 길어서, 지금 동작에 필요한 핵심만 유지했어.
-           만약 소개/내정보/설정 모달까지 포함한 "완전 통짜 파일"이 필요하면 말해줘.
-           내가 네 원본 그대로 포함해서 다시 한 번에 만들어줄게. -->
+      <!-- 4) 소개 -->
+      <section id="sectionIntro" class="card hidden">
+        <div class="intro-badge">AI 기반 자동 투자 프로세스</div>
+        <div class="intro-grid">
+          <div>
+            <div class="intro-title">네오AI, 스스로 판단하고 분산 투자하는 인공지능</div>
+            <p class="intro-text">
+네오AI는 대량의 시장 데이터와 딥러닝 알고리즘을 활용해
+시장 흐름을 분석하고, 여러 종목과 자산군에 자동으로 분산 투자하는
+AI 투자 프로세서입니다.
+
+사용자는 투자 금액만 정하면,
+AI가 포트폴리오 구성부터 리스크 관리까지 전 과정을 자동으로 수행하도록 설계되어 있습니다.
+            </p>
+
+            <div class="intro-box">
+              <div class="intro-box-title">AI가 하는 일</div>
+              <ul class="intro-points">
+                <li>· 경제 지표, 뉴스, 시황 데이터를 종합적으로 스캔</li>
+                <li>· 최대 30개 내외 종목으로 포트폴리오 자동 구성</li>
+                <li>· 최소 1일 ~ 최대 30일 단위로 세션 운용</li>
+                <li>· 손익·변동성 데이터를 기반으로 전략을 반복 학습</li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <div class="intro-box">
+              <div class="intro-box-title">투자 예시 시나리오 (전문 운영 관점)</div>
+              <p class="intro-text" style="margin-top:4px;">
+<span class="scenario-highlight">예시 · 50,000원을 AI에 맡기는 경우</span>
+
+1) <strong>세션 설정</strong>
+ · 유저가 50,000원을 투자하고, 약 1일 ~ 최대 30일 AI에게 맡깁니다.
+ · "진행중" 상태로 전환되며, 네오AI는 해당 금액을 운용대상으로 인식합니다.
+
+2) <strong>시장·종목 스캔</strong>
+ · 네오AI는 최근 수 시간~30일간의 가격 흐름, 거래량, 변동성, 뉴스·이슈 등 데이터를 수집합니다.
+ · 과거 학습 데이터와 현재 시장 상황을 비교해, 효율이 높은 섹터·종목을 선별합니다.
+
+3) <strong>포트폴리오 구성</strong>
+ · 전체 50,000원 중 일부는 기본 안전 구간, 일부는 공격 구간으로 나누어 비중을 설정합니다.
+ · 예를 들어, 변동성이 낮은 자산 60% + 변동성이 높은 자산 40% 조합으로 10~20개 내외 종목을 선정할 수 있습니다.
+ · 각 종목별 예상 수익·리스크에 따라 비중이 자동으로 조정됩니다.
+
+4) <strong>세션 중 리스크 관리</strong>
+ · 운용 구간 동안 실시간 가격 변화를 모니터링하며,
+   사전 설정된 손실 한도 또는 급격한 변동이 발생할 경우 비중을 축소하거나 현금 비중을 늘립니다.
+ · 과도한 집중이 발생하지 않도록, 종목당·섹터당 비중 상한을 유지합니다.
+
+5) <strong>세션 종료 및 정산</strong>
+ · 운용 구간이 종료되면, 해당 세션은 "진행 완료" 상태로 전환됩니다.
+ · 포트폴리오 전체 평가금액이 계산되고, 수익 결과가 정리됩니다.
+ · 이때의 성과 데이터는 다음 세션의 전략 고도화에 사용되며, 어떤 조건·종목 조합이 유리했는지 재학습에 반영됩니다.
+              </p>
+            </div>
+
+            <div class="intro-box" style="margin-top:10px;">
+              <div class="intro-box-title">이런 분께 적합합니다</div>
+              <ul class="intro-points">
+                <li>· 세부 종목 선택보다는 전체 전략·결과에 집중하고 싶은 분</li>
+                <li>· 단기 구간별(1일 ~ 최대 30일) 운용을 선호하는 분</li>
+                <li>· AI 기반 의사결정과 분산 투자를 한 번에 경험해 보고 싶은 분</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5) 내 정보 -->
+      <section id="sectionAccount" class="card hidden">
+        <div class="account-header-row">
+          <div>
+            <div class="section-title">내 정보</div>
+            <div class="section-sub">네오 AI 투자 프로세서에서 사용하는 기본 회원 정보입니다.</div>
+          </div>
+          <button class="btn-gear" id="btnOpenSettings" type="button">⚙ 설정</button>
+        </div>
+
+        <div class="account-grid">
+          <div><div class="acct-label">이름</div><div class="acct-value" id="acctName">-</div></div>
+          <div><div class="acct-label">아이디</div><div class="acct-value" id="acctUsername">-</div></div>
+          <div><div class="acct-label">휴대폰</div><div class="acct-value" id="acctPhone">-</div></div>
+          <div><div class="acct-label">투자중인 금액</div><div class="acct-value" id="acctAmount">-</div></div>
+          <div><div class="acct-label">수익 실현중인 금액</div><div class="acct-value" id="acctRealized">-</div></div>
+          <div><div class="acct-label">출금 계좌</div><div class="acct-value" id="acctBank">-</div></div>
+        </div>
+
+        <div class="info-text" style="margin-top:12px;">
+          출금 계좌는 본인 확인 및 출금 처리 시에만 사용되며, 관리자 페이지에서만 조회·관리됩니다.
+        </div>
+      </section>
+
+      <!-- 설정 모달 -->
+      <div id="settingsModal" class="modal-backdrop hidden">
+        <div class="modal">
+          <div class="modal-title">내 정보 수정</div>
+          <p class="section-sub" style="margin-bottom:4px;">
+            비밀번호와 출금 계좌 정보를 변경할 수 있습니다.
+          </p>
+
+          <label for="editPassword">새 비밀번호</label>
+          <input type="password" id="editPassword" placeholder="변경하지 않으려면 비워두세요" />
+
+          <label for="editBank">출금 계좌</label>
+          <input type="text" id="editBank" placeholder="예: 국민 123456-01-123456" />
+
+          <div class="modal-actions">
+            <button class="btn-secondary" id="btnCancelSettings" type="button">취소</button>
+            <button class="btn-primary" id="btnSaveSettings" type="button">저장하기</button>
+          </div>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -514,18 +667,18 @@
 
     let currentUser = null;
 
-    /* ✅ Realtime 전역 상태(중요) */
+    /* ✅ Realtime 전역 상태 */
     let rtChannel = null;
     let rtDebounceTimer = null;
     let rtSubscribedUserId = null;
 
-    /* ✅ 타임라인 접기/펼치기 상태(HTML이 아니라 JS에 있어야 함) */
+    /* ✅ 타임라인 상태 */
     let timelineExpanded = false;
 
     function rtTriggerReload(reason = '') {
       clearTimeout(rtDebounceTimer);
       rtDebounceTimer = setTimeout(() => {
-        console.log('[Realtime] reload by:', reason);
+        // console.log('[Realtime] reload by:', reason);
         loadStatus();
       }, 250);
     }
@@ -545,132 +698,21 @@
       suppressDeltaOnce: false,
     };
 
-    function subscribeRealtime(userRow) {
-      try {
-        const userId = userRow.id;
-
-        // 같은 유저면 중복 구독 방지
-        if (rtChannel && rtSubscribedUserId === userId) return;
-        rtSubscribedUserId = userId;
-
-        // 기존 채널 정리
-        if (rtChannel) {
-          supabase.removeChannel(rtChannel);
-          rtChannel = null;
-        }
-
-        rtChannel = supabase
-          .channel('neoai-rt-' + userId)
-          .on(
-            'postgres_changes',
-            { event: 'INSERT', schema: 'public', table: 'profit_logs', filter: `user_id=eq.${userId}` },
-            (payload) => {
-              console.log('[Realtime] profit_logs INSERT:', payload);
-              rtTriggerReload('profit_logs INSERT');
-            }
-          )
-          .on(
-            'postgres_changes',
-            { event: 'UPDATE', schema: 'public', table: 'users', filter: `id=eq.${userId}` },
-            (payload) => {
-              console.log('[Realtime] users UPDATE:', payload);
-              rtTriggerReload('users UPDATE');
-            }
-          )
-          .subscribe((status) => {
-            console.log('[Realtime] subscribe status:', status);
-          });
-
-      } catch (e) {
-        console.warn('Realtime subscribe failed:', e);
-      }
-    }
-
-    function formatKST(isoString) {
-      try {
-        const d = new Date(isoString);
-        return d.toLocaleString('ko-KR', { hour12:false });
-      } catch (e) {
-        return isoString || '-';
-      }
-    }
-
-    function renderTimeline(logs) {
-      const wrap = document.getElementById('profitTimeline');
-      const title = document.getElementById('timelineTitle');
-      const hint = document.getElementById('timelineHint');
-      const btn  = document.getElementById('btnToggleTimeline');
-
-      if (!wrap) return;
-
-      title.textContent = (profitMode === 'today') ? '수익 로그 (오늘)' : '수익 로그 (최근 60건)';
-
-      if (!Array.isArray(logs) || logs.length === 0) {
-        hint.textContent = '기록 없음';
-        wrap.innerHTML = `
-          <div class="timeline-item">
-            <div class="timeline-left">
-              <div class="timeline-time">-</div>
-              <div class="timeline-msg">아직 수익 로그가 없습니다.</div>
-            </div>
-            <div class="timeline-delta timeline-same">-</div>
-          </div>
-        `;
-        if (btn) btn.style.display = 'none';
-        return;
-      }
-
-      const arr = [...logs].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      const visible = timelineExpanded ? arr.length : 3;
-      const showArr = arr.slice(0, visible);
-
-      hint.textContent = `총 ${logs.length}건`;
-
-      if (btn) {
-        btn.style.display = logs.length > 3 ? 'inline-block' : 'none';
-        btn.textContent = timelineExpanded ? '접기' : '펼치기';
-      }
-
-      wrap.innerHTML = '';
-
-      showArr.forEach((r) => {
-        const delta = Number(r.amount_delta || 0);
-        const cls = delta > 0 ? 'timeline-up' : (delta < 0 ? 'timeline-down' : 'timeline-same');
-        const sign = delta > 0 ? '▲' : (delta < 0 ? '▼' : '–');
-        const txt = `${sign} ${Math.abs(delta).toLocaleString('ko-KR')}원`;
-
-        const item = document.createElement('div');
-        item.className = 'timeline-item';
-        item.innerHTML = `
-          <div class="timeline-left">
-            <div class="timeline-time">${formatKST(r.created_at)}</div>
-            <div class="timeline-msg">${delta > 0 ? '수익 발생' : (delta < 0 ? '손실 발생' : '변동 없음')}</div>
-          </div>
-          <div class="timeline-delta ${cls}">${txt}</div>
-        `;
-        wrap.appendChild(item);
-      });
-    }
-
+    /* =========================
+      유틸
+    ========================= */
     function formatAmount(value) {
       if (value == null || isNaN(value)) return '- 원';
       return Number(value).toLocaleString('ko-KR') + ' 원';
     }
 
-    function badgeKey(id) {
-      return "neoai_badge_" + id + "_" + profitMode;
-    }
-
-    function restoreBadge(badgeEl, id) {
-      try {
-        const raw = localStorage.getItem(badgeKey(id));
-        if (!raw) return;
-        const obj = JSON.parse(raw);
-        if (obj && obj.text && obj.className) {
-          badgeEl.textContent = obj.text;
-          badgeEl.className = obj.className;
-        }
-      } catch (e) {}
+    function maskPhone(phone) {
+      if (!phone) return '-';
+      const digits = String(phone).replace(/[^0-9]/g, '');
+      if (digits.length < 8) return phone;
+      const head = digits.slice(0, 3);
+      const tail = digits.slice(-4);
+      return head + '-****-' + tail;
     }
 
     function relativeTime(fromDate) {
@@ -753,8 +795,29 @@
       if (direction === 'down') cardEl.classList.add('sweep-down');
     }
 
+    /* =========================
+      배지 저장(재조회해도 유지)
+    ========================= */
+    function badgeKey(id) {
+      return "neoai_badge_" + id + "_" + profitMode;
+    }
+    function restoreBadge(badgeEl, id) {
+      try {
+        const raw = localStorage.getItem(badgeKey(id));
+        if (!raw) return;
+        const obj = JSON.parse(raw);
+        if (obj && obj.text && obj.className) {
+          badgeEl.textContent = obj.text;
+          badgeEl.className = obj.className;
+        }
+      } catch (e) {}
+    }
     function renderDeltaBadge(badgeEl, delta, idForPersist) {
+      if (!badgeEl) return;
+
       if (idForPersist) restoreBadge(badgeEl, idForPersist);
+
+      // 변동 없으면 기존 배지 유지
       if (!delta) return;
 
       const cls = 'delta-badge ' + (delta > 0 ? 'delta-up' : 'delta-down');
@@ -768,6 +831,170 @@
           localStorage.setItem(badgeKey(idForPersist), JSON.stringify({ className: cls, text: txt }));
         } catch (e) {}
       }
+    }
+
+    /* =========================
+      진행상태/단계/내정보 렌더
+    ========================= */
+    function renderStatus(status) {
+      const badge = document.getElementById('statusBadge');
+      if (!badge) return;
+
+      badge.innerHTML = '';
+
+      const wrapper = document.createElement('span');
+      wrapper.classList.add('status-pill');
+
+      const dot = document.createElement('span');
+      dot.classList.add('status-dot');
+
+      const text = document.createElement('span');
+
+      if (!status || status === '대기중') {
+        wrapper.classList.add('status-wait');
+        text.textContent = '대기중';
+      } else if (status === '진행중') {
+        wrapper.classList.add('status-run');
+        text.textContent = '진행중';
+      } else {
+        wrapper.classList.add('status-done');
+        text.textContent = '진행 완료';
+      }
+
+      wrapper.appendChild(dot);
+      wrapper.appendChild(text);
+      badge.appendChild(wrapper);
+    }
+
+    function renderSteps(status) {
+      document.querySelectorAll('.step').forEach((s) => s.classList.remove('active'));
+
+      let key = 'wait';
+      if (status === '진행중') key = 'run';
+      else if (status === '진행 완료') key = 'done';
+
+      const target = document.querySelector('.step[data-step="' + key + '"]');
+      if (target) target.classList.add('active');
+    }
+
+    function fillAccountInfo(userFromDb) {
+      const merged = { ...(currentUser || {}), ...(userFromDb || {}) };
+
+      const elName = document.getElementById('acctName');
+      const elUsername = document.getElementById('acctUsername');
+      const elPhone = document.getElementById('acctPhone');
+      const elAmount = document.getElementById('acctAmount');
+      const elRealized = document.getElementById('acctRealized');
+      const elBank = document.getElementById('acctBank');
+
+      if (elName) elName.textContent = merged.name || '-';
+      if (elUsername) elUsername.textContent = merged.username || '-';
+      if (elPhone) elPhone.textContent = merged.phone ? maskPhone(merged.phone) : '-';
+      if (elAmount) elAmount.textContent = formatAmount(merged.amount || 0);
+      if (elRealized) elRealized.textContent = formatAmount(merged.realized_amount || 0);
+      if (elBank) elBank.textContent = merged.bank_account || '-';
+    }
+
+    /* =========================
+      Realtime 구독
+    ========================= */
+    function subscribeRealtime(userRow) {
+      try {
+        const userId = userRow.id;
+
+        if (rtChannel && rtSubscribedUserId === userId) return;
+        rtSubscribedUserId = userId;
+
+        if (rtChannel) {
+          supabase.removeChannel(rtChannel);
+          rtChannel = null;
+        }
+
+        rtChannel = supabase
+          .channel('neoai-rt-' + userId)
+          .on(
+            'postgres_changes',
+            { event: 'INSERT', schema: 'public', table: 'profit_logs', filter: `user_id=eq.${userId}` },
+            () => rtTriggerReload('profit_logs INSERT')
+          )
+          .on(
+            'postgres_changes',
+            { event: 'UPDATE', schema: 'public', table: 'users', filter: `id=eq.${userId}` },
+            () => rtTriggerReload('users UPDATE')
+          )
+          .subscribe();
+      } catch (e) {
+        console.warn('Realtime subscribe failed:', e);
+      }
+    }
+
+    /* =========================
+      수익 로그/타임라인
+    ========================= */
+    function formatKST(isoString) {
+      try {
+        const d = new Date(isoString);
+        return d.toLocaleString('ko-KR', { hour12:false });
+      } catch (e) {
+        return isoString || '-';
+      }
+    }
+
+    function renderTimeline(logs) {
+      const wrap = document.getElementById('profitTimeline');
+      const title = document.getElementById('timelineTitle');
+      const hint = document.getElementById('timelineHint');
+      const btn  = document.getElementById('btnToggleTimeline');
+
+      if (!wrap) return;
+
+      if (title) title.textContent = (profitMode === 'today') ? '수익 로그 (오늘)' : '수익 로그 (최근 60건)';
+
+      if (!Array.isArray(logs) || logs.length === 0) {
+        if (hint) hint.textContent = '기록 없음';
+        wrap.innerHTML = `
+          <div class="timeline-item">
+            <div class="timeline-left">
+              <div class="timeline-time">-</div>
+              <div class="timeline-msg">아직 수익 로그가 없습니다.</div>
+            </div>
+            <div class="timeline-delta timeline-same">-</div>
+          </div>
+        `;
+        if (btn) btn.style.display = 'none';
+        return;
+      }
+
+      const arr = [...logs].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      const visible = timelineExpanded ? arr.length : 3;
+      const showArr = arr.slice(0, visible);
+
+      if (hint) hint.textContent = `총 ${logs.length}건`;
+
+      if (btn) {
+        btn.style.display = logs.length > 3 ? 'inline-block' : 'none';
+        btn.textContent = timelineExpanded ? '접기' : '펼치기';
+      }
+
+      wrap.innerHTML = '';
+
+      showArr.forEach((r) => {
+        const delta = Number(r.amount_delta || 0);
+        const cls = delta > 0 ? 'timeline-up' : (delta < 0 ? 'timeline-down' : 'timeline-same');
+        const sign = delta > 0 ? '▲' : (delta < 0 ? '▼' : '–');
+        const txt = `${sign} ${Math.abs(delta).toLocaleString('ko-KR')}원`;
+
+        const item = document.createElement('div');
+        item.className = 'timeline-item';
+        item.innerHTML = `
+          <div class="timeline-left">
+            <div class="timeline-time">${formatKST(r.created_at)}</div>
+            <div class="timeline-msg">${delta > 0 ? '수익 발생' : (delta < 0 ? '손실 발생' : '변동 없음')}</div>
+          </div>
+          <div class="timeline-delta ${cls}">${txt}</div>
+        `;
+        wrap.appendChild(item);
+      });
     }
 
     async function fetchProfitLogsForToday(userId) {
@@ -799,6 +1026,9 @@
       return arr.reverse();
     }
 
+    /* =========================
+      차트(Canvas)
+    ========================= */
     function drawChart(series) {
       const canvas = document.getElementById('profitChart');
       if (!canvas) return;
@@ -838,23 +1068,92 @@
         else ctx.lineTo(x,y);
       });
       ctx.stroke();
+
+      // last dot
+      const last = series[series.length - 1];
+      const lx = padX + (w - padX*2);
+      const ly = (h - padY) - ((h - padY*2) * ((last - min) / range));
+      ctx.fillStyle = 'rgba(79,70,229,1)';
+      ctx.beginPath();
+      ctx.arc(lx, ly, 4, 0, Math.PI*2);
+      ctx.fill();
     }
 
+    /* =========================
+      모드 UI
+    ========================= */
+    function setModeUI() {
+      const todayBtn = document.getElementById('toggleToday');
+      const totalBtn = document.getElementById('toggleTotal');
+      const label = document.getElementById('realizedLabel');
+      const title = document.getElementById('chartTitle');
+
+      if (profitMode === 'today') {
+        todayBtn?.classList.add('active');
+        totalBtn?.classList.remove('active');
+        if (label) label.textContent = '수익 (오늘)';
+        if (title) title.textContent = '실시간 수익 그래프 (오늘)';
+      } else {
+        totalBtn?.classList.add('active');
+        todayBtn?.classList.remove('active');
+        if (label) label.textContent = '수익 (누적)';
+        if (title) title.textContent = '실시간 수익 그래프 (누적)';
+      }
+    }
+
+    /* =========================
+      로그인 체크
+    ========================= */
     function requireLogin() {
       const raw = localStorage.getItem('neoai_current_user');
       if (!raw) {
         alert('로그인이 필요합니다.');
         window.location.href = 'index.html';
-        return;
+        return false;
       }
       try {
         currentUser = JSON.parse(raw);
+        return true;
       } catch (e) {
         localStorage.removeItem('neoai_current_user');
         window.location.href = 'index.html';
+        return false;
       }
     }
 
+    /* =========================
+      탭 전환 (소개/내정보 복구 핵심)
+    ========================= */
+    function showTab(tab) {
+      const tabStatus = document.getElementById('tabStatus');
+      const tabIntro = document.getElementById('tabIntro');
+      const tabAccount = document.getElementById('tabAccount');
+
+      const sectionStatus = document.getElementById('sectionStatus');
+      const sectionRealtime = document.getElementById('sectionRealtime');
+      const sectionStatusExtra = document.getElementById('sectionStatusExtra');
+      const sectionIntro = document.getElementById('sectionIntro');
+      const sectionAccount = document.getElementById('sectionAccount');
+
+      tabStatus?.classList.toggle('active', tab === 'status');
+      tabIntro?.classList.toggle('active', tab === 'intro');
+      tabAccount?.classList.toggle('active', tab === 'account');
+
+      const isStatus = tab === 'status';
+      const isIntro = tab === 'intro';
+      const isAccount = tab === 'account';
+
+      sectionStatus?.classList.toggle('hidden', !isStatus);
+      sectionRealtime?.classList.toggle('hidden', !isStatus);
+      sectionStatusExtra?.classList.toggle('hidden', !isStatus);
+
+      sectionIntro?.classList.toggle('hidden', !isIntro);
+      sectionAccount?.classList.toggle('hidden', !isAccount);
+    }
+
+    /* =========================
+      메인 로더
+    ========================= */
     async function loadStatus() {
       setRealtimeError(false);
       setSkeleton(true);
@@ -877,8 +1176,13 @@
         if (userErr) throw userErr;
         if (!userRow) throw new Error('users 테이블에서 사용자 데이터를 찾을 수 없습니다.');
 
-        // ✅ Realtime 구독 (한 번만 유지)
+        // ✅ realtime 구독
         subscribeRealtime(userRow);
+
+        // ✅ 진행상태/단계/내정보 갱신 (복구)
+        renderStatus(userRow.status);
+        renderSteps(userRow.status);
+        fillAccountInfo(userRow);
 
         const amount = Number(userRow.amount || 0);
         const realizedTotal = Number(userRow.realized_amount || 0);
@@ -890,9 +1194,10 @@
         const todayProfit = todayLogs.reduce((sum, r) => sum + Number(r.amount_delta || 0), 0);
         const realizedShown = (profitMode === 'today') ? todayProfit : realizedTotal;
 
-        // ✅ 타임라인 렌더
+        // ✅ 타임라인
         renderTimeline(profitMode === 'today' ? todayLogs : recentLogs);
 
+        // DOM
         const amountNum = document.getElementById('amountNum');
         const amountBadge = document.getElementById('amountBadge');
 
@@ -908,6 +1213,7 @@
         const boxRealized = document.getElementById('boxRealized');
         const boxTotal = document.getElementById('boxTotal');
 
+        // 색상
         if (realizedNum?.parentElement) {
           realizedNum.parentElement.classList.remove('amount-positive','amount-muted');
           realizedNum.parentElement.classList.add(realizedShown > 0 ? 'amount-positive' : 'amount-muted');
@@ -917,6 +1223,7 @@
           totalNum.parentElement.classList.add(totalAsset > 0 ? 'amount-positive' : 'amount-muted');
         }
 
+        // delta 계산
         const prevAmount = prev.amount;
         const prevToday = prev.todayProfit;
         const prevTotalProfit = prev.totalProfit;
@@ -924,28 +1231,31 @@
 
         const prevRealizedShown = (profitMode === 'today') ? prevToday : prevTotalProfit;
 
-        const deltaAmount  = prev.initialized && !prev.suppressDeltaOnce ? (amount - prevAmount) : 0;
-        const deltaInvest  = prev.initialized && !prev.suppressDeltaOnce ? (amount - prevAmount) : 0;
-        const deltaRealized= prev.initialized && !prev.suppressDeltaOnce ? (realizedShown - prevRealizedShown) : 0;
-        const deltaTotal   = prev.initialized && !prev.suppressDeltaOnce ? (totalAsset - prevAsset) : 0;
+        const deltaAmount   = prev.initialized && !prev.suppressDeltaOnce ? (amount - prevAmount) : 0;
+        const deltaInvest   = prev.initialized && !prev.suppressDeltaOnce ? (amount - prevAmount) : 0;
+        const deltaRealized = prev.initialized && !prev.suppressDeltaOnce ? (realizedShown - prevRealizedShown) : 0;
+        const deltaTotal    = prev.initialized && !prev.suppressDeltaOnce ? (totalAsset - prevAsset) : 0;
 
-        if (amountBadge)  renderDeltaBadge(amountBadge,  deltaAmount,  'amountBadge');
-        if (investBadge)  renderDeltaBadge(investBadge,  deltaInvest,  'amountInvestBadge');
-        if (realizedBadge)renderDeltaBadge(realizedBadge,deltaRealized,'realizedBadge');
-        if (totalBadge)   renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
+        // 배지
+        renderDeltaBadge(amountBadge,   deltaAmount,   'amountBadge');
+        renderDeltaBadge(investBadge,   deltaInvest,   'amountInvestBadge');
+        renderDeltaBadge(realizedBadge, deltaRealized, 'realizedBadge');
+        renderDeltaBadge(totalBadge,    deltaTotal,    'totalBadge');
 
+        // 숫자 표시
         if (!prev.initialized || prev.suppressDeltaOnce) {
-          if (amountNum)  amountNum.textContent  = formatAmount(amount);
-          if (investNum)  investNum.textContent  = formatAmount(amount);
-          if (realizedNum)realizedNum.textContent= formatAmount(realizedShown);
-          if (totalNum)   totalNum.textContent   = formatAmount(totalAsset);
+          if (amountNum)  amountNum.textContent = formatAmount(amount);
+          if (investNum)  investNum.textContent = formatAmount(amount);
+          if (realizedNum)realizedNum.textContent = formatAmount(realizedShown);
+          if (totalNum)   totalNum.textContent = formatAmount(totalAsset);
         } else {
-          if (amountNum)  animateMoney(amountNum,  prevAmount, amount);
-          if (investNum)  animateMoney(investNum,  prevAmount, amount);
-          if (realizedNum)animateMoney(realizedNum,prevRealizedShown, realizedShown);
-          if (totalNum)   animateMoney(totalNum,   prevAsset, totalAsset);
+          if (amountNum)  animateMoney(amountNum, prevAmount, amount);
+          if (investNum)  animateMoney(investNum, prevAmount, amount);
+          if (realizedNum)animateMoney(realizedNum, prevRealizedShown, realizedShown);
+          if (totalNum)   animateMoney(totalNum, prevAsset, totalAsset);
         }
 
+        // 효과
         const dirReal = deltaRealized > 0 ? 'up' : (deltaRealized < 0 ? 'down' : null);
         const dirTot  = deltaTotal > 0 ? 'up' : (deltaTotal < 0 ? 'down' : null);
 
@@ -959,6 +1269,7 @@
           applySweep(boxTotal, dirTot);
         }
 
+        // 차트 시리즈
         let series = [];
         if (profitMode === 'today') {
           let c = 0;
@@ -966,8 +1277,7 @@
           if (deltas.length === 0) deltas.push(0, 0);
           if (deltas.length === 1) deltas.unshift(0);
           deltas.forEach(d => { c += d; series.push(c); });
-          const hint = document.getElementById('chartHint');
-          if (hint) hint.textContent = '오늘 누적(로그 기반)';
+          document.getElementById('chartHint').textContent = '오늘 누적(로그 기반)';
         } else {
           const deltas = recentLogs.map(r => Number(r.amount_delta || 0));
           const sumRecent = deltas.reduce((s,v)=>s+v,0);
@@ -977,11 +1287,11 @@
           if (deltas.length === 1) deltas.unshift(0);
           series = [];
           deltas.forEach(d => { c += d; series.push(c); });
-          const hint = document.getElementById('chartHint');
-          if (hint) hint.textContent = '누적(최근 60건 기준)';
+          document.getElementById('chartHint').textContent = '누적(최근 60건 기준)';
         }
         drawChart(series);
 
+        // prev 저장
         prev.amount = amount;
         prev.todayProfit = todayProfit;
         prev.totalProfit = realizedTotal;
@@ -999,77 +1309,121 @@
       }
     }
 
-    function setModeUI() {
-      const todayBtn = document.getElementById('toggleToday');
-      const totalBtn = document.getElementById('toggleTotal');
-      const label = document.getElementById('realizedLabel');
-      const title = document.getElementById('chartTitle');
+    /* =========================
+      설정 모달
+    ========================= */
+    const settingsModal = document.getElementById('settingsModal');
+    const btnOpenSettings = document.getElementById('btnOpenSettings');
+    const btnCancelSettings = document.getElementById('btnCancelSettings');
+    const btnSaveSettings = document.getElementById('btnSaveSettings');
 
-      if (profitMode === 'today') {
-        todayBtn?.classList.add('active');
-        totalBtn?.classList.remove('active');
-        if (label) label.textContent = '수익 (오늘)';
-        if (title) title.textContent = '실시간 수익 그래프 (오늘)';
-      } else {
-        totalBtn?.classList.add('active');
-        todayBtn?.classList.remove('active');
-        if (label) label.textContent = '수익 (누적)';
-        if (title) title.textContent = '실시간 수익 그래프 (누적)';
+    btnOpenSettings?.addEventListener('click', () => {
+      settingsModal?.classList.remove('hidden');
+      const pw = document.getElementById('editPassword');
+      const bank = document.getElementById('editBank');
+      if (pw) pw.value = '';
+      if (bank) bank.value = (currentUser && currentUser.bank_account) || '';
+    });
+
+    btnCancelSettings?.addEventListener('click', () => {
+      settingsModal?.classList.add('hidden');
+    });
+
+    btnSaveSettings?.addEventListener('click', async () => {
+      try {
+        const newPw = (document.getElementById('editPassword')?.value || '').trim();
+        const newBank = (document.getElementById('editBank')?.value || '').trim();
+
+        const payload = {};
+        if (newPw) payload.password = newPw;
+        payload.bank_account = newBank || null;
+
+        if (!currentUser || !currentUser.id) {
+          alert('사용자 정보를 확인할 수 없습니다.');
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('users')
+          .update(payload)
+          .eq('id', currentUser.id)
+          .select('*')
+          .maybeSingle();
+
+        if (error) throw error;
+
+        currentUser = { ...currentUser, ...data };
+        localStorage.setItem('neoai_current_user', JSON.stringify(currentUser));
+        fillAccountInfo(data);
+
+        settingsModal?.classList.add('hidden');
+        alert('정보가 저장되었습니다.');
+      } catch (e) {
+        console.error(e);
+        alert('정보 수정 중 오류가 발생했습니다.');
       }
-    }
+    });
 
     /* =========================
       초기 실행 + 이벤트
     ========================= */
-    requireLogin();
+    if (!requireLogin()) {
+      // redirect됨
+    } else {
+      // 탭 이벤트(소개/내정보 복구 핵심)
+      document.getElementById('tabStatus')?.addEventListener('click', () => showTab('status'));
+      document.getElementById('tabIntro')?.addEventListener('click', () => showTab('intro'));
+      document.getElementById('tabAccount')?.addEventListener('click', () => showTab('account'));
 
-    document.getElementById('btnLogout')?.addEventListener('click', () => {
-      localStorage.removeItem('neoai_current_user');
-      alert('로그아웃 되었습니다.');
-      window.location.href = 'index.html';
-    });
+      // 로그아웃
+      document.getElementById('btnLogout')?.addEventListener('click', () => {
+        localStorage.removeItem('neoai_current_user');
+        alert('로그아웃 되었습니다.');
+        window.location.href = 'index.html';
+      });
 
-    document.getElementById('btnRefresh')?.addEventListener('click', loadStatus);
-    document.getElementById('btnRetryInline')?.addEventListener('click', loadStatus);
+      // 재조회
+      document.getElementById('btnRefresh')?.addEventListener('click', loadStatus);
+      document.getElementById('btnRetryInline')?.addEventListener('click', loadStatus);
 
-    // ✅ 펼치기/접기 이벤트는 "딱 한 번만"
-    const toggleBtn = document.getElementById('btnToggleTimeline');
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', () => {
+      // 수익 로그 펼치기/접기 (한 번만)
+      document.getElementById('btnToggleTimeline')?.addEventListener('click', () => {
         timelineExpanded = !timelineExpanded;
         loadStatus();
       });
+
+      // 토글
+      document.getElementById('toggleToday')?.addEventListener('click', async () => {
+        profitMode = 'today';
+        setModeUI();
+        prev.suppressDeltaOnce = true;
+        await loadStatus();
+      });
+      document.getElementById('toggleTotal')?.addEventListener('click', async () => {
+        profitMode = 'total';
+        setModeUI();
+        prev.suppressDeltaOnce = true;
+        await loadStatus();
+      });
+
+      // 5초마다 마지막 업데이트 텍스트만 갱신
+      setInterval(() => {
+        if (lastUpdatedAt) {
+          const el = document.getElementById('lastUpdatedText');
+          if (el) el.textContent = '마지막 업데이트: ' + relativeTime(lastUpdatedAt);
+        }
+      }, 5000);
+
+      setModeUI();
+      showTab('status');
+      loadStatus();
+
+      window.addEventListener('beforeunload', () => {
+        try {
+          if (rtChannel) supabase.removeChannel(rtChannel);
+        } catch (e) {}
+      });
     }
-
-    document.getElementById('toggleToday')?.addEventListener('click', async () => {
-      profitMode = 'today';
-      setModeUI();
-      prev.suppressDeltaOnce = true;
-      await loadStatus();
-    });
-
-    document.getElementById('toggleTotal')?.addEventListener('click', async () => {
-      profitMode = 'total';
-      setModeUI();
-      prev.suppressDeltaOnce = true;
-      await loadStatus();
-    });
-
-    setInterval(() => {
-      if (lastUpdatedAt) {
-        const el = document.getElementById('lastUpdatedText');
-        if (el) el.textContent = '마지막 업데이트: ' + relativeTime(lastUpdatedAt);
-      }
-    }, 5000);
-
-    setModeUI();
-    loadStatus();
-
-    window.addEventListener('beforeunload', () => {
-      try {
-        if (rtChannel) supabase.removeChannel(rtChannel);
-      } catch (e) {}
-    });
   </script>
 </body>
 </html>
