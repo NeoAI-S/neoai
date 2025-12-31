@@ -128,11 +128,12 @@
   </div>
 
   <!-- Supabase + 관리자 로그인 로직 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
     const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    window.__neoai_admin_sb = window.__neoai_admin_sb || window.supabase.createClient(supabaseUrl, supabaseKey);
+    const sb = window.__neoai_admin_sb;
 
     async function adminLogin() {
       const id = document.getElementById('adminId').value.trim();
@@ -146,7 +147,7 @@
       }
 
       try {
-        const { data, error } = await supabase
+        const { data, error } = await sb
           .from('users')
           .select('*')
           .eq('username', id)
