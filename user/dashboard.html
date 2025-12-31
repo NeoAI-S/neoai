@@ -658,19 +658,17 @@
 
   
 
-  // ✅ Supabase 클라이언트 싱글톤
+  // ✅ Supabase 클라이언트 싱글톤 (중복 선언 방지)
   window.sb = window.sb || window.supabase.createClient(supabaseUrl, supabaseKey);
-  const sb = window.sb;
+  var sb = window.sb; // var 사용으로 재선언 안전
 
   // ✅ 기존 코드 호환용 별칭
-  const supabase = sb;
+  var supabase = sb;
 
 // ✅ 중복 선언/중복 실행 방지: 이미 있으면 재사용
   window.sb = window.sb || window.supabase.createClient(supabaseUrl, supabaseKey);
 
   // ✅ 이후 코드는 supabase 대신 sb를 사용
-  const sb = window.sb;
-
   let currentUser = null;
   let currentUserDbId = null;
 
