@@ -662,6 +662,9 @@
   // ✅ 이후 코드는 supabase 대신 sb를 사용
   const sb = window.sb;
 
+  // ✅ 기존 코드 호환: 아래 코드에서 supabase.from()/supabase.channel()을 그대로 쓰기 위한 별칭
+  const supabase = sb;
+
   let currentUser = null;
   let currentUserDbId = null;
 
@@ -1447,7 +1450,6 @@
   </script>
 </body>
 </html>
-
 
 
 
