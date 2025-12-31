@@ -160,68 +160,65 @@
     <div class="error" id="errorBox"></div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
-    const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  /* ✅ Supabase는 여기서 단 한 번만 */
+  const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
+  const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const loginId   = document.getElementById('loginId');
-      const loginPw   = document.getElementById('loginPw');
-      const errorBox  = document.getElementById('errorBox');
-      const btnLogin  = document.getElementById('btnLogin');
-      const btnSignup = document.getElementById('btnSignup');
+  document.addEventListener('DOMContentLoaded', () => {
+    const loginId   = document.getElementById('loginId');
+    const loginPw   = document.getElementById('loginPw');
+    const errorBox  = document.getElementById('errorBox');
+    const btnLogin  = document.getElementById('btnLogin');
+    const btnSignup = document.getElementById('btnSignup');
 
-      async function login() {
-        const username = loginId.value.trim();
-        const password = loginPw.value.trim();
-        errorBox.textContent = '';
+    async function login() {
+      const username = loginId.value.trim();
+      const password = loginPw.value.trim();
+      errorBox.textContent = '';
 
-        if (!username || !password) {
-          errorBox.textContent = '아이디와 비밀번호를 입력해주세요.';
-          return;
-        }
-
-        try {
-          const { data, error } = await supabase
-            .from('users')
-            .select('id, username, password, approved, name, amount, bank_account, status, realized_amount')
-            .eq('username', username)
-            .eq('password', password)
-            .maybeSingle();
-
-          if (error || !data) {
-            errorBox.textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
-            return;
-          }
-
-          if (data.approved === false) {
-            errorBox.textContent = '관리자 승인 대기 중입니다.';
-            return;
-          }
-
-          delete data.password;
-          localStorage.setItem('neoai_current_user', JSON.stringify(data));
-          window.location.href = 'dashboard.html';
-        } catch (e) {
-          console.error(e);
-          errorBox.textContent = '서버와 통신 중 오류가 발생했습니다.';
-        }
+      if (!username || !password) {
+        errorBox.textContent = '아이디와 비밀번호를 입력해주세요.';
+        return;
       }
 
-      btnLogin.addEventListener('click', login);
-      loginPw.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') login();
-      });
+      const { data, error } = await supabase
+        .from('users')
+        .select('id, username, password, approved, name, amount, bank_account, status, realized_amount')
+        .eq('username', username)
+        .eq('password', password)
+        .maybeSingle();
 
-      btnSignup.addEventListener('click', () => {
-        window.location.href = 'signup.html';
-      });
+      if (error || !data) {
+        errorBox.textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
+        return;
+      }
+
+      if (data.approved === false) {
+        errorBox.textContent = '관리자 승인 대기 중입니다.';
+        return;
+      }
+
+      delete data.password;
+      localStorage.setItem('neoai_current_user', JSON.stringify(data));
+      window.location.href = 'dashboard.html';
+    }
+
+    btnLogin.addEventListener('click', login);
+    loginPw.addEventListener('keydown', e => {
+      if (e.key === 'Enter') login();
     });
-  </script>
+
+    btnSignup.addEventListener('click', () => {
+      window.location.href = 'signup.html';
+    });
+  });
+</script>
 
 </body>
 </html>
+
 
 
