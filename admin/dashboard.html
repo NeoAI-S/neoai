@@ -197,13 +197,17 @@
   </main>
 
   <!-- Supabase + 관리자 대시보드 로직 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
     const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
 
-    function checkAdmin() {
+    // ✅ 어드민 전용 Supabase 클라이언트 (이름 충돌 방지)
+    window.__neoai_admin_sb = window.__neoai_admin_sb || window.supabase.createClient(supabaseUrl, supabaseKey);
+    const sb = window.__neoai_admin_sb;
+
+function checkAdmin() {
       const flag = localStorage.getItem('neoai_admin_logged_in');
       if (flag !== 'true') {
         alert('관리자 로그인이 필요합니다.');
@@ -216,7 +220,7 @@
       tbody.innerHTML = '';
 
       try {
-        const { data, error } = await supabase
+        const { data, error } = await sb
           .from('users')
           .select('id, username, name, phone, amount, realized_amount, status, approved, role')
           .neq('role', 'admin')         // 관리자 계정 제외
@@ -310,7 +314,7 @@
       const status   = statusSelect.value;
       const approved = approvedSelect.value === 'true';
 
-      const { error } = await supabase
+      const { error } = await sb
         .from('users')
         .update({ amount, realized_amount: realized, status, approved })
         .eq('id', id);
