@@ -1126,6 +1126,49 @@
     /* =========================
       로그인 체크
     ========================= */
+    function getLoginScope() {
+      // ✅ 로그인 계정 식별자(브라우저 공용값 금지)
+      try {
+        const raw = localStorage.getItem('neoai_current_user') || '';
+        // currentUser에 들어있는 값 우선
+        if (currentUser) {
+          if (currentUser.id != null) return String(currentUser.id);
+          if (currentUser.uid != null) return String(currentUser.uid);
+          if (currentUser.user_id != null) return String(currentUser.user_id);
+          if (currentUser.email) return String(currentUser.email);
+          if (currentUser.username) return String(currentUser.username);
+        }
+        // 그래도 없으면 raw 자체를 스코프로 사용(계정별로 JSON이 다르므로 섞이지 않음)
+        return raw ? ('raw_' + btoa(unescape(encodeURIComponent(raw))).slice(0, 24)) : 'raw_empty';
+      } catch (e) {
+        return 'raw_err';
+      }
+    }
+
+    function clearAllDeltaBadges() {
+      // ✅ 계정 전환 시 남아있는 '증감배지(Δ)' 캐시를 전부 제거
+      try {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('neoai_badge_')) keys.push(k);
+        }
+        keys.forEach(k => localStorage.removeItem(k));
+      } catch (e) {}
+    }
+
+    function ensureBadgeScope() {
+      // ✅ 현재 로그인 계정이 바뀌면, 이전 계정의 증감배지를 절대 따라오지 않게 초기화
+      const scope = getLoginScope();
+      const prev = localStorage.getItem('neoai_badge_active_scope');
+      if (!prev || prev !== scope) {
+        clearAllDeltaBadges();
+        localStorage.setItem('neoai_badge_active_scope', scope);
+      }
+      return scope;
+    }
+
+
     function requireLogin() {
       const raw = localStorage.getItem('neoai_current_user');
       if (!raw) {
@@ -1135,6 +1178,7 @@
       }
       try {
         currentUser = JSON.parse(raw);
+        ensureBadgeScope();
         return true;
       } catch (e) {
         localStorage.removeItem('neoai_current_user');
