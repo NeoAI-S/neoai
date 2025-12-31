@@ -657,7 +657,7 @@
   const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
 
   // ✅ 중복 선언/중복 실행 방지: 이미 있으면 재사용
-  window.sb = window.sb || window.sb.createClient(supabaseUrl, supabaseKey);
+  window.sb = window.sb || window.supabase.createClient(supabaseUrl, supabaseKey);
 
   // ✅ 이후 코드는 supabase 대신 sb를 사용
   const sb = window.sb;
@@ -1447,4 +1447,5 @@
   </script>
 </body>
 </html>
+
 
