@@ -165,7 +165,7 @@
   /* ✅ Supabase는 여기서 단 한 번만 */
   const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
   const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
-  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+  const sb = window.supabase.createClient(supabaseUrl, supabaseKey);
 
   document.addEventListener('DOMContentLoaded', () => {
     const loginId   = document.getElementById('loginId');
@@ -184,7 +184,7 @@
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await sb    
         .from('users')
         .select('id, username, password, approved, name, amount, bank_account, status, realized_amount')
         .eq('username', username)
@@ -219,6 +219,7 @@
 
 </body>
 </html>
+
 
 
 
