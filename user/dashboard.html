@@ -647,26 +647,29 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
-  <script>
-    /* =========================
-      Supabase 연결
-    ========================= */
-    const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
-    const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+<script>
+  /* =========================
+    Supabase 연결
+  ========================= */
+  const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
+  const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
 
-    let currentUser = null;        // localStorage user
-    let currentUserDbId = null;    // users 테이블 id (정확한 업데이트에 사용)
+  // ✅ 중복 선언/중복 실행 방지: 이미 있으면 재사용
+  window.sb = window.sb || window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    /* ✅ Realtime 전역 상태 */
-    let rtChannel = null;
-    let rtDebounceTimer = null;
-    let rtSubscribedUserId = null;
+  // ✅ 이후 코드는 supabase 대신 sb를 사용
+  const sb = window.sb;
 
-    /* ✅ 접기/펼치기 상태 */
-    let timelineExpanded = false;
+  let currentUser = null;
+  let currentUserDbId = null;
+
+  let rtChannel = null;
+  let rtDebounceTimer = null;
+  let rtSubscribedUserId = null;
+
+  let timelineExpanded = false;
 
     function rtTriggerReload(reason = '') {
       clearTimeout(rtDebounceTimer);
@@ -1444,4 +1447,5 @@
   </script>
 </body>
 </html>
+
 
