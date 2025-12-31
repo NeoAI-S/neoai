@@ -647,17 +647,17 @@
     </div>
   </div>
 
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/sb.min.js"></script>
 
 <script>
   /* =========================
     Supabase 연결
   ========================= */
-  const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
+  const supabaseUrl = 'https://uvwturgomovjvokojtkp.sb.co';
   const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
 
   // ✅ 중복 선언/중복 실행 방지: 이미 있으면 재사용
-  window.sb = window.sb || window.supabase.createClient(supabaseUrl, supabaseKey);
+  window.sb = window.sb || window.sb.createClient(supabaseUrl, supabaseKey);
 
   // ✅ 이후 코드는 supabase 대신 sb를 사용
   const sb = window.sb;
@@ -949,7 +949,7 @@
 
         // 기존 채널 정리
         if (rtChannel) {
-          supabase.removeChannel(rtChannel);
+          sb.removeChannel(rtChannel);
           rtChannel = null;
         }
 
@@ -1442,10 +1442,9 @@
 
     // 페이지 나갈 때 채널 정리
     window.addEventListener('beforeunload', () => {
-      try { if (rtChannel) supabase.removeChannel(rtChannel); } catch (e) {}
+      try { if (rtChannel) sb.removeChannel(rtChannel); } catch (e) {}
     });
   </script>
 </body>
 </html>
-
 
