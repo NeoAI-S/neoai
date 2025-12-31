@@ -145,13 +145,22 @@
   </div>
 
   <!-- Supabase + 회원가입 로직 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script>
     const supabaseUrl = 'https://uvwturgomovjvokojtkp.supabase.co';
     const supabaseKey = 'sb_publishable_a6k4T2_-ksuHVUvCduUlCQ_DtoR9R4F';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
 
-    async function signup() {
+    // ✅ 페이지/스크립트 중복 로드에도 안전한 싱글톤 클라이언트
+    if (!window.supabase || !window.supabase.createClient) {
+      alert('Supabase 라이브러리가 로드되지 않았습니다. (script src 확인 필요)');
+      throw new Error('Supabase library missing');
+    }
+
+    window.__neoai_sb = window.__neoai_sb || window.supabase.createClient(supabaseUrl, supabaseKey);
+    const sb = window.__neoai_sb;
+
+async function signup() {
       const username = document.getElementById('username').value.trim();
       const pw = document.getElementById('password').value.trim();
       const pw2 = document.getElementById('password2').value.trim();
@@ -172,7 +181,7 @@
 
       try {
         // 아이디 중복 체크
-        const { data: exists } = await supabase
+        const { data: exists } = await sb
           .from('users')
           .select('id')
           .eq('username', username)
@@ -183,7 +192,7 @@
           return;
         }
 
-        const { error } = await supabase
+        const { error } = await sb
           .from('users')
           .insert({
             username,
