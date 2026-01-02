@@ -1375,8 +1375,11 @@
             : 0;
 
         // 배지
-        renderDeltaBadge(amountBadge,  deltaAmount);
-        renderDeltaBadge(investBadge,  deltaInvest);
+        // ✅ 요청사항: 'AI투자중인 금액' / '투자중인 금액'에는 증감 배지를 표시하지 않음
+        if (amountBadge) { amountBadge.className = ''; amountBadge.textContent = ''; }
+        if (investBadge) { investBadge.className = ''; investBadge.textContent = ''; }
+
+        // ✅ 수익(오늘/누적) 및 총금액 배지는 계속 유지/갱신
         renderDeltaBadge(realizedBadge,deltaRealized);
         renderDeltaBadge(totalBadge,   deltaTotal);
 
@@ -1473,7 +1476,7 @@
         localStorage.removeItem('neoai_current_user');
                 try {
           const scope = (currentUserDbId != null ? String(currentUserDbId) : (currentUser && currentUser.username) ? String(currentUser.username) : 'anon');
-          ['amountBadge','amountInvestBadge','realizedBadge','totalBadge'].forEach(id => {
+          ['realizedBadge','totalBadge'].forEach(id => {
             ['today','total'].forEach(mode => {
               localStorage.removeItem(`neoai_badge_${scope}_${id}_${mode}`);
             });
