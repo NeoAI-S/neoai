@@ -708,6 +708,38 @@
       return Number(value).toLocaleString('ko-KR') + ' 원';
     }
 
+    // ✅ 로컬 날짜 키 (오늘 수익 리셋 판단용)
+    function getLocalDateKey(d = new Date()) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // ✅ 특정 값(예: 투자중 금액) 증감배지는 "변경 1회"만 보여주기
+    // - DB 값이 바뀐 직후 첫 조회에만 배지를 띄우고,
+    // - 그 즉시 기준값을 업데이트해 새로고침/재조회 시 다시 안 뜨게 함.
+    function oneTimeDelta(storageKey, userId, currentValue) {
+      const key = `${storageKey}:${userId}`;
+      const prevRaw = localStorage.getItem(key);
+      const prevVal = prevRaw == null ? null : Number(prevRaw);
+
+      if (prevVal == null || isNaN(prevVal)) {
+        localStorage.setItem(key, String(Number(currentValue || 0)));
+        return 0;
+      }
+
+      const cur = Number(currentValue || 0);
+      const delta = cur - prevVal;
+
+      if (delta !== 0) {
+        localStorage.setItem(key, String(cur));
+        return delta;
+      }
+      return 0;
+    }
+
+
     function maskPhone(phone) {
       if (!phone) return '-';
       const digits = String(phone).replace(/[^0-9]/g, '');
@@ -782,26 +814,22 @@
       } catch (e) {}
     }
 
-    function renderDeltaBadge(badgeEl, delta, idForPersist) {
+    function renderDeltaBadge(badgeEl, delta) {
       if (!badgeEl) return;
 
-      // 저장된 배지 먼저 복원
-      if (idForPersist) restoreBadge(badgeEl, idForPersist);
-
-      // 변동 없으면 그대로 유지
-      if (!delta) return;
+      // ✅ 변동이 없으면 배지 제거 (이전 배지가 남지 않도록)
+      if (!delta) {
+        badgeEl.className = '';
+        badgeEl.textContent = '';
+        return;
+      }
 
       const cls = 'delta-badge ' + (delta > 0 ? 'delta-up' : 'delta-down');
       const txt = (delta > 0 ? '▲ ' : '▼ ') + Math.abs(delta).toLocaleString('ko-KR') + '원';
 
       badgeEl.className = cls;
       badgeEl.textContent = txt;
-
-      if (idForPersist) {
-        try {
-          localStorage.setItem(badgeKey(idForPersist), JSON.stringify({ className: cls, text: txt }));
-        } catch (e) {}
-      }
+    }
     }
 
     /* =========================
@@ -1278,12 +1306,18 @@
         const recentLogs = await fetchProfitLogsRecent(userRow.id, 60);
 
         const todayProfit = todayLogs.reduce((sum, r) => sum + Number(r.amount_delta || 0), 0);
+        // ✅ 오늘 수익 리셋(00시) 감지: 날짜가 바뀌면 "감소 배지"가 뜨지 않도록 초기화 처리
+        const todayKey = getLocalDateKey(new Date());
+        const todayKeyStore = `neoai_today_key:${userRow.id}`;
+        const lastTodayKey = localStorage.getItem(todayKeyStore);
+        const dayChanged = !!(lastTodayKey && lastTodayKey !== todayKey);
+        if (!lastTodayKey || dayChanged) localStorage.setItem(todayKeyStore, todayKey);
+
         // ✅ 화면에 표시되는 수익(오늘/누적)
         const realizedShown = (profitMode === 'today') ? todayProfit : totalProfit;
-                // ✅ 총금액(투자중+실현)도 현재 모드의 수익 기준으로 같이 변동되게
-        // - today 모드: 투자중 + (오늘 수익)
-        // - total 모드: 투자중 + (누적 실현수익)
-        const totalShown = amount + realizedShown;
+
+        // ✅ 총금액(투자중 + 실현)은 "항상 누적 실현수익" 기준 (토글과 무관하게 동일해야 함)
+        const totalShown = amount + totalProfit;
 
         // ✅ 타임라인
         renderTimeline(profitMode === 'today' ? todayLogs : recentLogs);
@@ -1316,25 +1350,39 @@
 
         // 이전값
         const prevAmount = prev.amount;
-        const prevToday = prev.todayProfit;
+        let prevToday = prev.todayProfit;
+        if (dayChanged) prevToday = 0;
         const prevTotalProfit = prev.totalProfit;
         const prevAsset = prev.totalAsset;
         const prevRealizedShown = (profitMode === 'today') ? prevToday : prevTotalProfit;
 
         // delta
-        const deltaAmount  = prev.initialized && !prev.suppressDeltaOnce ? (amount - prevAmount) : 0;
-        const deltaInvest  = prev.initialized && !prev.suppressDeltaOnce ? (amount - prevAmount) : 0;
-        const deltaRealized= prev.initialized && !prev.suppressDeltaOnce ? (realizedShown - prevRealizedShown) : 0;
-        const deltaTotal   = prev.initialized && !prev.suppressDeltaOnce ? (totalShown - prevAsset) : 0;
+        // 1) 투자중 금액 배지: "변경 1회"만 표시 (새로고침/재조회 시 재표시 방지)
+        const deltaAmount = oneTimeDelta('neoai_invest_amount', userRow.id, amount);
+        const deltaInvest = deltaAmount;
+
+        // 2) 오늘 수익: 00시 리셋은 "감소"로 취급하지 않음 (배지/애니메이션 억제)
+        const suppressTodayReset = (profitMode === 'today') && dayChanged;
+
+        const deltaRealized =
+          prev.initialized && !prev.suppressDeltaOnce && !suppressTodayReset
+            ? (realizedShown - prevRealizedShown)
+            : 0;
+
+        // 3) 총 금액: 항상 누적 기준이므로, 토글/00시와 무관하게 실제 변동만 반영
+        const deltaTotal =
+          prev.initialized && !prev.suppressDeltaOnce
+            ? (totalShown - prevAsset)
+            : 0;
 
         // 배지
-        renderDeltaBadge(amountBadge,  deltaAmount,  'amountBadge');
-        renderDeltaBadge(investBadge,  deltaInvest,  'amountInvestBadge');
-        renderDeltaBadge(realizedBadge,deltaRealized,'realizedBadge');
-        renderDeltaBadge(totalBadge,   deltaTotal,   'totalBadge');
+        renderDeltaBadge(amountBadge,  deltaAmount);
+        renderDeltaBadge(investBadge,  deltaInvest);
+        renderDeltaBadge(realizedBadge,deltaRealized);
+        renderDeltaBadge(totalBadge,   deltaTotal);
 
         // 숫자
-        if (!prev.initialized || prev.suppressDeltaOnce) {
+        if (!prev.initialized || prev.suppressDeltaOnce || suppressTodayReset) {
           if (amountNum)  amountNum.textContent  = formatAmount(amount);
           if (investNum)  investNum.textContent  = formatAmount(amount);
           if (realizedNum)realizedNum.textContent= formatAmount(realizedShown);
