@@ -144,13 +144,12 @@
       <div class="top">
         <div class="brand"><span>NEO AI</span> ADMIN · 실현수익 증감</div>
         <div class="row" style="gap:8px;">
-          <a class="btn secondary" href="admin-dashboard.html" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">회원 & 투자 관리</a>
           <button class="btn secondary" id="btnLogout" type="button">로그아웃</button>
         </div>
       </div>
       <div class="help">
         ✅ 실현수익은 “총 누적값”이라 직접 덮어쓰지 않고,<br/>
-        <b>증감할 금액(±)</b>만 입력해서 <b>profit_logs</b>에 기록하면 트리거가 자동으로 <b>users.realized_amount</b>에 반영됩니다.
+        <b>증감할 금액(원)</b>만 입력해서 <b>profit_logs</b>에 기록하면 트리거가 자동으로 <b>users.realized_amount</b>에 반영됩니다.
       </div>
     </div>
 
@@ -186,19 +185,16 @@
         <label for="deltaAmount">증감할 금액(원)</label>
         <div class="row">
           <div>
-            <input id="deltaAmount" type="number" inputmode="numeric" placeholder="예: 2000" />
+            <input id="deltaAmount" type="text" inputmode="decimal" placeholder="예: 250000 또는 -250000" />
             <div class="mini" style="margin-top:6px;">
-              아래 버튼으로 + / - 를 선택해 적용합니다. (손실은 자동으로 -로 기록)
+              숫자만 입력 후 <b>Enter</b> 또는 <b>확인</b>을 누르세요. (예: 250000 = 수익, -250000 = 손실)
             </div>
           </div>
         </div>
 
         <div class="row" style="margin-top:10px;">
           <div style="flex:1; min-width:180px;">
-            <button class="btn" id="btnPlus" type="button" disabled>+ 적용</button>
-          </div>
-          <div style="flex:1; min-width:180px;">
-            <button class="btn secondary" id="btnMinus" type="button" disabled>- 적용</button>
+            <button class="btn" id="btnApply" type="button" disabled>확인</button>
           </div>
         </div>
 
@@ -248,14 +244,14 @@
       if (ok !== 'true') {
         alert('관리자 로그인이 필요합니다.');
         // 너의 어드민 로그인 페이지로
-        window.location.href = 'admin-login.html';
+        window.location.href = 'login.html';
       }
     }
 
     document.getElementById('btnLogout').addEventListener('click', () => {
       localStorage.removeItem('neoai_admin_logged_in');
       alert('로그아웃 되었습니다.');
-      window.location.href = 'admin-login.html';
+      window.location.href = 'login.html';
     });
 
     /********************
@@ -270,8 +266,7 @@
     let selectedUser = null; // users row
 
     function enableApplyButtons(on) {
-      el('btnPlus').disabled = !on;
-      el('btnMinus').disabled = !on;
+      el('btnApply').disabled = !on;
     }
 
     function toKST(iso) {
@@ -375,17 +370,21 @@
      * 4) 증감 적용 (profit_logs insert)
      * - 트리거가 users.realized_amount를 자동 반영
      ********************/
-    async function applyDelta(sign) {
+    
+async function applyDeltaFromInput() {
       clearMsg();
 
       try {
         if (!selectedUser?.id) return showErr('먼저 유저를 조회하세요.');
 
-        const raw = el('deltaAmount').value;
-        const n = Number(raw);
-        if (!raw || !Number.isFinite(n) || n <= 0) return showErr('증감할 금액은 0보다 큰 숫자로 입력하세요.');
+        const raw = String(el('deltaAmount').value || '').trim();
+        const normalized = raw.replace(/,/g, '').replace(/\s+/g, '');
+        if (!raw) return showErr('증감할 금액을 입력하세요. (예: 250000 또는 -250000)');
 
-        const delta = sign === 'plus' ? n : -n;
+        const n = Number(normalized);
+        if (!Number.isFinite(n) || n === 0) return showErr('0이 아닌 숫자만 입력하세요. (예: 250000 또는 -250000)');
+
+        const delta = n; // ✅ 양수=수익, 음수=손실
 
         // ✅ profit_logs에 기록 (트리거로 users 반영)
         const { error } = await sb
@@ -405,8 +404,11 @@
       }
     }
 
-    el('btnPlus').addEventListener('click', () => applyDelta('plus'));
-    el('btnMinus').addEventListener('click', () => applyDelta('minus'));
+    // ✅ Enter / 확인 버튼으로 적용
+    el('btnApply').addEventListener('click', applyDeltaFromInput);
+    el('deltaAmount').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') applyDeltaFromInput();
+    });
 
     /********************
      * 5) 시작
