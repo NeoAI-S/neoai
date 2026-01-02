@@ -1242,14 +1242,18 @@
         // users 값
         const amount = Number(userRow.amount || 0);
         const realizedTotal = Number(userRow.realized_amount || 0);
-        const totalAsset = amount + realizedTotal;
 
         // logs
         const todayLogs = await fetchProfitLogsForToday(userRow.id);
         const recentLogs = await fetchProfitLogsRecent(userRow.id, 60);
 
         const todayProfit = todayLogs.reduce((sum, r) => sum + Number(r.amount_delta || 0), 0);
+        // ✅ 화면에 표시되는 수익(오늘/누적)
         const realizedShown = (profitMode === 'today') ? todayProfit : realizedTotal;
+        // ✅ 총금액(투자중+실현)도 현재 모드의 수익 기준으로 같이 변동되게
+        // - today 모드: 투자중 + (오늘 수익)
+        // - total 모드: 투자중 + (누적 실현수익)
+        const totalShown = amount + realizedShown;
 
         // ✅ 타임라인
         renderTimeline(profitMode === 'today' ? todayLogs : recentLogs);
@@ -1277,7 +1281,7 @@
         }
         if (totalNum?.parentElement) {
           totalNum.parentElement.classList.remove('amount-positive','amount-muted');
-          totalNum.parentElement.classList.add(totalAsset > 0 ? 'amount-positive' : 'amount-muted');
+          totalNum.parentElement.classList.add(totalShown > 0 ? 'amount-positive' : 'amount-muted');
         }
 
         // 이전값
@@ -1291,7 +1295,7 @@
         const deltaAmount  = prev.initialized && !prev.suppressDeltaOnce ? (amount - prevAmount) : 0;
         const deltaInvest  = prev.initialized && !prev.suppressDeltaOnce ? (amount - prevAmount) : 0;
         const deltaRealized= prev.initialized && !prev.suppressDeltaOnce ? (realizedShown - prevRealizedShown) : 0;
-        const deltaTotal   = prev.initialized && !prev.suppressDeltaOnce ? (totalAsset - prevAsset) : 0;
+        const deltaTotal   = prev.initialized && !prev.suppressDeltaOnce ? (totalShown - prevAsset) : 0;
 
         // 배지
         renderDeltaBadge(amountBadge,  deltaAmount,  'amountBadge');
@@ -1304,12 +1308,12 @@
           if (amountNum)  amountNum.textContent  = formatAmount(amount);
           if (investNum)  investNum.textContent  = formatAmount(amount);
           if (realizedNum)realizedNum.textContent= formatAmount(realizedShown);
-          if (totalNum)   totalNum.textContent   = formatAmount(totalAsset);
+          if (totalNum)   totalNum.textContent   = formatAmount(totalShown);
         } else {
           animateMoney(amountNum,  prevAmount, amount);
           animateMoney(investNum,  prevAmount, amount);
           animateMoney(realizedNum,prevRealizedShown, realizedShown);
-          animateMoney(totalNum,   prevAsset, totalAsset);
+          animateMoney(totalNum,   prevAsset, totalShown);
         }
 
         // 효과
@@ -1359,7 +1363,7 @@
         prev.amount = amount;
         prev.todayProfit = todayProfit;
         prev.totalProfit = realizedTotal;
-        prev.totalAsset = totalAsset;
+        prev.totalAsset = totalShown;
         prev.initialized = true;
         prev.suppressDeltaOnce = false;
 
@@ -1505,5 +1509,4 @@ alert('로그아웃 되었습니다.');
   </script>
 </body>
 </html>
-
 
