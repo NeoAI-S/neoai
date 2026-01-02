@@ -148,6 +148,40 @@
       text-align: center;
       color: #9ca3af;
     }
+  
+    .sortbar{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 10px;
+      border-radius:14px;
+      background: rgba(255,255,255,0.75);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 10px 26px rgba(148, 163, 184, 0.25);
+    }
+    .sortlabel{ font-size:12px; color:#6b7280; font-weight:600; }
+    .sortselect{
+      padding:6px 10px;
+      border-radius:10px;
+      border:1px solid #d1d5db;
+      background:#f9fafb;
+      color:#111827;
+      font-size:12px;
+      min-width: 220px;
+    }
+    .btn-sort{
+      padding:7px 12px;
+      border-radius:999px;
+      border:none;
+      font-size:12px;
+      font-weight:700;
+      cursor:pointer;
+      background: linear-gradient(135deg, #f97316, #f59e0b);
+      color:#fff;
+      white-space:nowrap;
+    }
+    .btn-sort:hover{ filter: brightness(1.03); }
+
   </style>
 </head>
 <body>
@@ -155,8 +189,7 @@
     <div class="logo"><span>NEO AI</span><br />ADMIN</div>
 
     <div class="menu-title">메인</div>
-    <a href="admin-dashboard.html" class="nav-item active">회원 & 투자 관리</a>
-    <a href="admin-profit.html" class="nav-item">실현수익 증감</a>
+    <a href="dashboard.html" class="nav-item active">회원 & 투자 관리</a>
 
     <div class="logout-admin" id="btnAdminLogout">관리자 로그아웃</div>
   </aside>
@@ -167,6 +200,18 @@
         <h1>회원 & AI 투자 관리</h1>
         <small>회원가입 승인과 <strong>AI투자중인 금액 / 실현 수익 / 진행 상태</strong>를 수정합니다.</small>
       </div>
+
+      <div class="sortbar">
+        <span class="sortlabel">정렬</span>
+        <select id="sortSelect" class="sortselect">
+          <option value="created_at:asc" selected>가입순 (오래된 → 최신)</option>
+          <option value="created_at:desc">가입순 (최신 → 오래된)</option>
+          <option value="amount:desc">투자중인 금액순 (높은 → 낮은)</option>
+          <option value="amount:asc">투자중인 금액순 (낮은 → 높은)</option>
+        </select>
+        <button id="btnSortApply" type="button" class="btn-sort">적용</button>
+      </div>
+
     </div>
 
     <section>
@@ -208,11 +253,15 @@
     window.__neoai_admin_sb = window.__neoai_admin_sb || window.supabase.createClient(supabaseUrl, supabaseKey);
     const sb = window.__neoai_admin_sb;
 
+    // 정렬 상태
+    let __sortKey = 'created_at';
+    let __sortAsc = true;
+
 function checkAdmin() {
       const flag = localStorage.getItem('neoai_admin_logged_in');
       if (flag !== 'true') {
         alert('관리자 로그인이 필요합니다.');
-        window.location.href = 'admin-login.html';
+        window.location.href = 'login.html';
       }
     }
 
@@ -225,7 +274,7 @@ function checkAdmin() {
           .from('users')
           .select('id, username, name, phone, amount, realized_amount, status, approved, role')
           .neq('role', 'admin')         // 관리자 계정 제외
-          .order('created_at', { ascending: true });
+          .order(__sortKey, { ascending: __sortAsc });
 
         if (error || !data) {
           const tr = document.createElement('tr');
@@ -332,7 +381,27 @@ function checkAdmin() {
       localStorage.removeItem('neoai_admin_logged_in');
       localStorage.removeItem('neoai_admin_user');
       alert('관리자 로그아웃 되었습니다.');
-      window.location.href = 'admin-login.html';
+      window.location.href = 'login.html';
+    });
+
+
+
+    function applySortFromUI() {
+      const sel = document.getElementById('sortSelect');
+      if (!sel) return;
+      const v = (sel.value || 'created_at:asc').split(':');
+      __sortKey = v[0] || 'created_at';
+      __sortAsc = (v[1] || 'asc') === 'asc';
+    }
+
+    document.getElementById('btnSortApply').addEventListener('click', () => {
+      applySortFromUI();
+      loadUsers();
+    });
+
+    document.getElementById('sortSelect').addEventListener('change', () => {
+      // 즉시 반영 원하면 주석 해제
+      // applySortFromUI(); loadUsers();
     });
 
     checkAdmin();
