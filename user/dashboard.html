@@ -1387,9 +1387,10 @@
             ? (realizedShown - prevRealizedShown)
             : 0;
 
-        // 3) 총 금액: 항상 누적 기준이므로, 토글/00시와 무관하게 실제 변동만 반영
+        // 3) 총 금액: 항상 누적 기준이므로, 토글과 무관하게 "실제 변동"만 반영
+        //    단, 00시 날짜 변경으로 인한 '오늘 수익 리셋'은 총 금액 변화로 취급하지 않도록 1회 억제
         const deltaTotal =
-          prev.initialized && !prev.suppressDeltaOnce
+          prev.initialized && !prev.suppressDeltaOnce && !dayChanged
             ? (totalShown - prevAsset)
             : 0;
 
