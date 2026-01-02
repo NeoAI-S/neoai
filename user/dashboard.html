@@ -799,7 +799,8 @@
       배지(유지)
     ========================= */
     function badgeKey(id) {
-      return "neoai_badge_" + id + "_" + profitMode;
+      // ✅ FINAL: 배지는 모드(오늘/누적)와 무관하게 동일해야 하므로 profitMode를 키에 포함하지 않음
+      return "neoai_badge_" + id;
     }
 
     function restoreBadge(badgeEl, id) {
@@ -814,7 +815,51 @@
       } catch (e) {}
     }
 
-    function renderDeltaBadge(badgeEl, delta, opts = {}) {
+    
+    /* =========================
+      ✅ FINAL: 수익 증감배지(이벤트 기준 단일화)
+      - profit_logs 최신 1건을 '마지막 수익 이벤트'로 간주
+      - 새로고침/재조회에도 유지 (localStorage)
+      - 오늘/누적/총금액 모두 동일 배지
+    ========================= */
+    function profitEventStoreKey(userId) {
+      return "neoai_profit_event_" + userId;
+    }
+
+    function getLastProfitEventDelta(userId, recentLogsAsc) {
+      // recentLogsAsc: 오래된 -> 최신(배열 마지막이 최신)
+      let latest = null;
+      if (Array.isArray(recentLogsAsc) && recentLogsAsc.length) {
+        latest = recentLogsAsc[recentLogsAsc.length - 1];
+      }
+
+      const key = profitEventStoreKey(userId);
+      let stored = null;
+      try { stored = JSON.parse(localStorage.getItem(key)); } catch (e) {}
+
+      // 로그가 전혀 없으면 배지 제거
+      if (!latest) {
+        try { localStorage.removeItem(key); } catch (e) {}
+        return { delta: 0, sig: null, at: null };
+      }
+
+      const delta = Number(latest.amount_delta || 0);
+      const at = latest.created_at || null;
+      // ✅ 같은 금액이 반복되어도 '새 이벤트'면 갱신되도록 created_at을 포함해 시그니처 생성
+      const sig = String(at || "") + "|" + String(delta);
+
+      // 저장된 이벤트와 동일하면 저장값 유지 (배지 유지 목적)
+      if (stored && stored.sig === sig) {
+        return { delta: Number(stored.delta || 0), sig: stored.sig, at: stored.at || null };
+      }
+
+      // 새 이벤트면 갱신 저장
+      const next = { delta, sig, at };
+      try { localStorage.setItem(key, JSON.stringify(next)); } catch (e) {}
+      return next;
+    }
+
+function renderDeltaBadge(badgeEl, delta, opts = {}) {
       if (!badgeEl) return;
 
       const persistId = opts.persistId || null;
@@ -1379,14 +1424,20 @@
         const deltaAmount = oneTimeDelta('neoai_invest_amount', userRow.id, amount);
         const deltaInvest = deltaAmount;
 
-        // ✅ FINAL: 증감배지 기준 = 마지막 수익 이벤트 1개 (profit_logs 최신 1건)
-// - 오늘/누적 토글과 무관하게 동일 배지
-// - 00시 리셋은 배지/총금액에 영향 없음
-// - 새로고침/재조회 시에는 저장된 배지를 유지
-const lastEventDelta =
-  (Array.isArray(recentLogs) && recentLogs.length > 0)
-    ? Number(recentLogs[0].amount_delta || 0)
-    : 0;
+        // 2) 오늘 수익: 00시 리셋은 "감소"로 취급하지 않음 (배지/애니메이션 억제)
+        const suppressTodayReset = (profitMode === 'today') && dayChanged;
+
+        const deltaRealized =
+          prev.initialized && !prev.suppressDeltaOnce && !suppressTodayReset
+            ? (realizedShown - prevRealizedShown)
+            : 0;
+
+        // 3) 총 금액: 항상 누적 기준이므로, 토글과 무관하게 "실제 변동"만 반영
+        //    단, 00시 날짜 변경으로 인한 '오늘 수익 리셋'은 총 금액 변화로 취급하지 않도록 1회 억제
+        const deltaTotal =
+          prev.initialized && !prev.suppressDeltaOnce && !dayChanged
+            ? (totalShown - prevAsset)
+            : 0;
 
         // 배지
         // ✅ 요청사항: 'AI투자중인 금액' / '투자중인 금액'에는 증감 배지를 표시하지 않음
@@ -1394,19 +1445,16 @@ const lastEventDelta =
         if (investBadge) { investBadge.className = ''; investBadge.textContent = ''; }
 
         // ✅ 수익(오늘/누적) 및 총금액 배지는 계속 유지/갱신
-        // ✅ FINAL: 수익/총금액 배지는 '마지막 수익 이벤트' 1개 기준으로 동일하게 표시
-// (기존 per-mode 배지 키 정리: 1회만 실행)
-if (!window.__profitEventBadgeMigrated) {
-  try { localStorage.removeItem(badgeKey('realizedBadge')); } catch (e) {}
-  try { localStorage.removeItem(badgeKey('totalBadge')); } catch (e) {}
-  window.__profitEventBadgeMigrated = true;
-}
+        // ✅ FINAL: 마지막 수익 이벤트 1개 기준으로 배지 단일화
+        const ev = getLastProfitEventDelta(userRow.id, recentLogs);
 
-renderDeltaBadge(realizedBadge, lastEventDelta, { persistId: 'profitEventBadge', keepOnZero: true });
-renderDeltaBadge(totalBadge,    lastEventDelta, { persistId: 'profitEventBadge', keepOnZero: true });
+        // 배지(오늘/누적/총금액 동일)
+        renderDeltaBadge(realizedBadge, ev.delta, { persistId: 'profitEventBadge', keepOnZero: true });
+        renderDeltaBadge(totalBadge,    ev.delta, { persistId: 'profitEventBadge', keepOnZero: true });
+
 
         // 숫자
-        if (!prev.initialized || prev.suppressDeltaOnce ) {
+        if (!prev.initialized || prev.suppressDeltaOnce || suppressTodayReset) {
           if (amountNum)  amountNum.textContent  = formatAmount(amount);
           if (investNum)  investNum.textContent  = formatAmount(amount);
           if (realizedNum)realizedNum.textContent= formatAmount(realizedShown);
@@ -1418,9 +1466,9 @@ renderDeltaBadge(totalBadge,    lastEventDelta, { persistId: 'profitEventBadge',
           animateMoney(totalNum,   prevAsset, totalShown);
         }
 
-        // 효과 (✅ FINAL: 배지 기준과 동일하게 '마지막 수익 이벤트'로만 판단)
-        const dirReal = lastEventDelta > 0 ? 'up' : (lastEventDelta < 0 ? 'down' : null);
-        const dirTot  = dirReal;
+        // 효과
+        const dirReal = deltaRealized > 0 ? 'up' : (deltaRealized < 0 ? 'down' : null);
+        const dirTot  = deltaTotal > 0 ? 'up' : (deltaTotal < 0 ? 'down' : null);
 
         if (dirReal) {
           applyPulse(realizedNum?.parentElement, dirReal);
