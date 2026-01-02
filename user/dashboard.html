@@ -1,20 +1,3 @@
-<!--
-=========================================
-NEO AI USER DASHBOARD
-FINAL PATCH (EVENT-BASED DELTA BADGE)
-
-적용 규칙:
-1) 증감배지 기준 = 마지막 수익 이벤트 1개
-2) 오늘/누적/총금액 동일 배지
-3) 00시 리셋 → 배지/총금액 영향 없음
-4) 새로고침/재조회 → 배지 유지
-5) AI투자중 / 투자중 금액 배지 없음
-
-※ 이 파일은 기존 pasted.txt 전체 구조를 유지하며
-  증감배지 로직을 이벤트 기준으로 사용하도록 전제합니다.
-=========================================
--->
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -1396,20 +1379,14 @@ FINAL PATCH (EVENT-BASED DELTA BADGE)
         const deltaAmount = oneTimeDelta('neoai_invest_amount', userRow.id, amount);
         const deltaInvest = deltaAmount;
 
-        // 2) 오늘 수익: 00시 리셋은 "감소"로 취급하지 않음 (배지/애니메이션 억제)
-        const suppressTodayReset = (profitMode === 'today') && dayChanged;
-
-        const deltaRealized =
-          prev.initialized && !prev.suppressDeltaOnce && !suppressTodayReset
-            ? (realizedShown - prevRealizedShown)
-            : 0;
-
-        // 3) 총 금액: 항상 누적 기준이므로, 토글과 무관하게 "실제 변동"만 반영
-        //    단, 00시 날짜 변경으로 인한 '오늘 수익 리셋'은 총 금액 변화로 취급하지 않도록 1회 억제
-        const deltaTotal =
-          prev.initialized && !prev.suppressDeltaOnce && !dayChanged
-            ? (totalShown - prevAsset)
-            : 0;
+        // ✅ FINAL: 증감배지 기준 = 마지막 수익 이벤트 1개 (profit_logs 최신 1건)
+// - 오늘/누적 토글과 무관하게 동일 배지
+// - 00시 리셋은 배지/총금액에 영향 없음
+// - 새로고침/재조회 시에는 저장된 배지를 유지
+const lastEventDelta =
+  (Array.isArray(recentLogs) && recentLogs.length > 0)
+    ? Number(recentLogs[0].amount_delta || 0)
+    : 0;
 
         // 배지
         // ✅ 요청사항: 'AI투자중인 금액' / '투자중인 금액'에는 증감 배지를 표시하지 않음
@@ -1417,11 +1394,19 @@ FINAL PATCH (EVENT-BASED DELTA BADGE)
         if (investBadge) { investBadge.className = ''; investBadge.textContent = ''; }
 
         // ✅ 수익(오늘/누적) 및 총금액 배지는 계속 유지/갱신
-        renderDeltaBadge(realizedBadge, deltaRealized, { persistId: 'realizedBadge', keepOnZero: true });
-        renderDeltaBadge(totalBadge,    deltaTotal,    { persistId: 'totalBadge',   keepOnZero: true });
+        // ✅ FINAL: 수익/총금액 배지는 '마지막 수익 이벤트' 1개 기준으로 동일하게 표시
+// (기존 per-mode 배지 키 정리: 1회만 실행)
+if (!window.__profitEventBadgeMigrated) {
+  try { localStorage.removeItem(badgeKey('realizedBadge')); } catch (e) {}
+  try { localStorage.removeItem(badgeKey('totalBadge')); } catch (e) {}
+  window.__profitEventBadgeMigrated = true;
+}
+
+renderDeltaBadge(realizedBadge, lastEventDelta, { persistId: 'profitEventBadge', keepOnZero: true });
+renderDeltaBadge(totalBadge,    lastEventDelta, { persistId: 'profitEventBadge', keepOnZero: true });
 
         // 숫자
-        if (!prev.initialized || prev.suppressDeltaOnce || suppressTodayReset) {
+        if (!prev.initialized || prev.suppressDeltaOnce ) {
           if (amountNum)  amountNum.textContent  = formatAmount(amount);
           if (investNum)  investNum.textContent  = formatAmount(amount);
           if (realizedNum)realizedNum.textContent= formatAmount(realizedShown);
@@ -1433,9 +1418,9 @@ FINAL PATCH (EVENT-BASED DELTA BADGE)
           animateMoney(totalNum,   prevAsset, totalShown);
         }
 
-        // 효과
-        const dirReal = deltaRealized > 0 ? 'up' : (deltaRealized < 0 ? 'down' : null);
-        const dirTot  = deltaTotal > 0 ? 'up' : (deltaTotal < 0 ? 'down' : null);
+        // 효과 (✅ FINAL: 배지 기준과 동일하게 '마지막 수익 이벤트'로만 판단)
+        const dirReal = lastEventDelta > 0 ? 'up' : (lastEventDelta < 0 ? 'down' : null);
+        const dirTot  = dirReal;
 
         if (dirReal) {
           applyPulse(realizedNum?.parentElement, dirReal);
