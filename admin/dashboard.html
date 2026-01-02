@@ -155,7 +155,8 @@
     <div class="logo"><span>NEO AI</span><br />ADMIN</div>
 
     <div class="menu-title">메인</div>
-    <a href="dashboard.html" class="nav-item active">회원 & 투자 관리</a>
+    <a href="admin-dashboard.html" class="nav-item active">회원 & 투자 관리</a>
+    <a href="admin-profit.html" class="nav-item">실현수익 증감</a>
 
     <div class="logout-admin" id="btnAdminLogout">관리자 로그아웃</div>
   </aside>
@@ -211,7 +212,7 @@ function checkAdmin() {
       const flag = localStorage.getItem('neoai_admin_logged_in');
       if (flag !== 'true') {
         alert('관리자 로그인이 필요합니다.');
-        window.location.href = 'login.html';
+        window.location.href = 'admin-login.html';
       }
     }
 
@@ -331,7 +332,7 @@ function checkAdmin() {
       localStorage.removeItem('neoai_admin_logged_in');
       localStorage.removeItem('neoai_admin_user');
       alert('관리자 로그아웃 되었습니다.');
-      window.location.href = 'login.html';
+      window.location.href = 'admin-login.html';
     });
 
     checkAdmin();
