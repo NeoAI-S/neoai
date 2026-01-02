@@ -1,3 +1,4 @@
+
 ﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -162,7 +163,7 @@
 
         localStorage.setItem('neoai_admin_logged_in', 'true');
         localStorage.setItem('neoai_admin_user', JSON.stringify(data));
-        window.location.href = 'dashboard.html';
+        window.location.href = 'admin-dashboard.html';
       } catch (e) {
         console.error(e);
         errorBox.textContent = '서버와 통신 중 오류가 발생했습니다.';
