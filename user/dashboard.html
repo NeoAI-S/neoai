@@ -1010,6 +1010,34 @@
       return arr.reverse(); // 오래된 -> 최신
     }
 
+
+    // ✅ 누적 수익(전체) 계산: users.realized_amount 트리거가 지연/누락되어도 정확하게 표시하기 위해 profit_logs를 합산
+    async function fetchProfitTotal(userId) {
+      const pageSize = 1000;
+      let from = 0;
+      let sum = 0;
+
+      while (true) {
+        const { data, error } = await supabase
+          .from('profit_logs')
+          .select('amount_delta, created_at')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: true })
+          .range(from, from + pageSize - 1);
+
+        if (error) throw error;
+        const rows = Array.isArray(data) ? data : [];
+        if (rows.length === 0) break;
+
+        sum += rows.reduce((acc, r) => acc + Number(r.amount_delta || 0), 0);
+
+        if (rows.length < pageSize) break;
+        from += pageSize;
+      }
+
+      return sum;
+    }
+
     /* =========================
       타임라인 렌더
     ========================= */
@@ -1241,7 +1269,9 @@
 
         // users 값
         const amount = Number(userRow.amount || 0);
-        const realizedTotal = Number(userRow.realized_amount || 0);
+        const realizedTotalFromUsers = Number(userRow.realized_amount || 0);
+        const totalProfit = await fetchProfitTotal(userRow.id);
+        const totalAssetTotal = amount + totalProfit;
 
         // logs
         const todayLogs = await fetchProfitLogsForToday(userRow.id);
@@ -1249,8 +1279,8 @@
 
         const todayProfit = todayLogs.reduce((sum, r) => sum + Number(r.amount_delta || 0), 0);
         // ✅ 화면에 표시되는 수익(오늘/누적)
-        const realizedShown = (profitMode === 'today') ? todayProfit : realizedTotal;
-        // ✅ 총금액(투자중+실현)도 현재 모드의 수익 기준으로 같이 변동되게
+        const realizedShown = (profitMode === 'today') ? todayProfit : totalProfit;
+                // ✅ 총금액(투자중+실현)도 현재 모드의 수익 기준으로 같이 변동되게
         // - today 모드: 투자중 + (오늘 수익)
         // - total 모드: 투자중 + (누적 실현수익)
         const totalShown = amount + realizedShown;
@@ -1343,7 +1373,7 @@
         } else {
           const deltas = recentLogs.map(r => Number(r.amount_delta || 0));
           const sumRecent = deltas.reduce((s,v)=>s+v,0);
-          let base = realizedTotal - sumRecent;
+          let base = totalProfit - sumRecent;
           let c = base;
           if (deltas.length === 0) deltas.push(0, 0);
           if (deltas.length === 1) deltas.unshift(0);
@@ -1357,12 +1387,12 @@
         // ✅ 상태/단계/내정보
         renderStatus(userRow.status);
         renderSteps(userRow.status);
-        fillAccountInfo(userRow);
+        fillAccountInfo({ ...userRow, realized_amount: totalProfit });
 
         // prev 저장
         prev.amount = amount;
         prev.todayProfit = todayProfit;
-        prev.totalProfit = realizedTotal;
+        prev.totalProfit = totalProfit;
         prev.totalAsset = totalShown;
         prev.initialized = true;
         prev.suppressDeltaOnce = false;
