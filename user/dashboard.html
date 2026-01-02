@@ -849,12 +849,6 @@
       }
     }
 
-      const cls = 'delta-badge ' + (delta > 0 ? 'delta-up' : 'delta-down');
-      const txt = (delta > 0 ? '▲ ' : '▼ ') + Math.abs(delta).toLocaleString('ko-KR') + '원';
-
-      badgeEl.className = cls;
-      badgeEl.textContent = txt;
-    }
 
     /* =========================
       애니메이션
