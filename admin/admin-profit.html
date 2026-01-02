@@ -260,6 +260,50 @@
     const el = (id) => document.getElementById(id);
     const fmt = (v) => (v == null ? '-' : Number(v).toLocaleString('ko-KR') + ' 원');
     const showErr = (msg) => { el('errBox').textContent = '❌ 오류: ' + msg; el('errBox').classList.add('show'); el('okBox').classList.remove('show'); };
+
+    // ✅ 누적 실현수익 계산: profit_logs 합산(트리거/컬럼 지연에도 즉시 반영)
+    async function getRealizedFromLogs(userId) {
+      // 1) PostgREST aggregate 시도
+      try {
+        const { data, error } = await sb
+          .from('profit_logs')
+          .select('amount_delta.sum()')
+          .eq('user_id', userId);
+
+        if (!error && Array.isArray(data) && data.length) {
+          const row = data[0] || {};
+          const val = (row.sum ?? row['amount_delta']?.sum ?? Object.values(row)[0]);
+          const n = Number(val);
+          if (Number.isFinite(n)) return n;
+        }
+      } catch (e) {
+        // ignore and fallback
+      }
+
+      // 2) Fallback: 페이지네이션으로 직접 합산
+      let total = 0;
+      let from = 0;
+      const pageSize = 1000;
+
+      while (true) {
+        const { data, error } = await sb
+          .from('profit_logs')
+          .select('amount_delta')
+          .eq('user_id', userId)
+          .range(from, from + pageSize - 1);
+
+        if (error) throw error;
+
+        const rows = Array.isArray(data) ? data : [];
+        for (const r of rows) total += Number(r.amount_delta || 0);
+
+        if (rows.length < pageSize) break;
+        from += pageSize;
+      }
+
+      return total;
+    }
+
     const showOk  = (msg='✅ 적용 완료') => { el('okBox').textContent = msg; el('okBox').classList.add('show'); el('errBox').classList.remove('show'); };
     const clearMsg = () => { el('okBox').classList.remove('show'); el('errBox').classList.remove('show'); };
 
@@ -330,17 +374,19 @@
       const u = await findUserByUsername(selectedUser.username);
       selectedUser = u;
 
+      // ✅ users.realized_amount(트리거) 대신 profit_logs 합산으로 "현재 누적"을 표시
+      const realizedNow = await getRealizedFromLogs(u.id);
+
       el('statArea').style.display = 'flex';
       el('uName').textContent = u.name || u.username || '-';
       el('uId').textContent = 'user_id: ' + u.id;
-      el('uRealized').textContent = fmt(u.realized_amount);
+      el('uRealized').textContent = fmt(realizedNow);
 
       // realized 색상
       const v = el('uRealized');
       v.classList.remove('positive','negative');
-      const rv = Number(u.realized_amount || 0);
-      if (rv > 0) v.classList.add('positive');
-      if (rv < 0) v.classList.add('negative');
+      if (realizedNow > 0) v.classList.add('positive');
+      if (realizedNow < 0) v.classList.add('negative');
 
       el('logTitle').textContent = '선택된 유저: ' + (u.username || '-');
       enableApplyButtons(true);
