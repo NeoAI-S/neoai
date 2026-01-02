@@ -814,15 +814,40 @@
       } catch (e) {}
     }
 
-    function renderDeltaBadge(badgeEl, delta) {
+    function renderDeltaBadge(badgeEl, delta, opts = {}) {
       if (!badgeEl) return;
 
-      // ✅ 변동이 없으면 배지 제거 (이전 배지가 남지 않도록)
+      const persistId = opts.persistId || null;
+      const keepOnZero = (opts.keepOnZero !== false);   // default true
+      const clearOnZero = !!opts.clearOnZero;           // default false
+
+      // ✅ 저장된 배지 먼저 복원 (새로고침/재조회에도 유지)
+      if (persistId) restoreBadge(badgeEl, persistId);
+
+      // ✅ 변동 없으면:
+      // - keepOnZero=true  => 기존(저장된) 배지 그대로 유지
+      // - clearOnZero=true => 배지 제거(+저장값도 제거)
       if (!delta) {
-        badgeEl.className = '';
-        badgeEl.textContent = '';
+        if (!keepOnZero || clearOnZero) {
+          badgeEl.className = '';
+          badgeEl.textContent = '';
+          if (persistId) {
+            try { localStorage.removeItem(badgeKey(persistId)); } catch (e) {}
+          }
+        }
         return;
       }
+
+      const cls = 'delta-badge ' + (delta > 0 ? 'delta-up' : 'delta-down');
+      const txt = (delta > 0 ? '▲ ' : '▼ ') + Math.abs(delta).toLocaleString('ko-KR') + '원';
+
+      badgeEl.className = cls;
+      badgeEl.textContent = txt;
+
+      if (persistId) {
+        try { localStorage.setItem(badgeKey(persistId), JSON.stringify({ className: cls, text: txt })); } catch (e) {}
+      }
+    }
 
       const cls = 'delta-badge ' + (delta > 0 ? 'delta-up' : 'delta-down');
       const txt = (delta > 0 ? '▲ ' : '▼ ') + Math.abs(delta).toLocaleString('ko-KR') + '원';
@@ -1380,8 +1405,8 @@
         if (investBadge) { investBadge.className = ''; investBadge.textContent = ''; }
 
         // ✅ 수익(오늘/누적) 및 총금액 배지는 계속 유지/갱신
-        renderDeltaBadge(realizedBadge,deltaRealized);
-        renderDeltaBadge(totalBadge,   deltaTotal);
+        renderDeltaBadge(realizedBadge, deltaRealized, { persistId: 'realizedBadge', keepOnZero: true });
+        renderDeltaBadge(totalBadge,    deltaTotal,    { persistId: 'totalBadge',   keepOnZero: true });
 
         // 숫자
         if (!prev.initialized || prev.suppressDeltaOnce || suppressTodayReset) {
